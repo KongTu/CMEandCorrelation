@@ -228,14 +228,13 @@ double getQ3(double a1, double a2, double a3){
 
 std::vector<double> angle;
 std::vector<double> combination;
+std::vector< std::vector<double>> allCombination;
 
-std::vector< std::vector<double>> go(unsigned offset, int k) {
-  
-  using namespace std;
-  vector< vector<double>> tempAll;
+void go(unsigned offset, int k) {
 
   if (k == 0) {
-    tempAll.push_back(combination);
+    allCombination.push_back(combination);
+    return;
   }
   for (unsigned i = offset; i <= angle.size() - k; ++i) {
     combination.push_back(angle[i]);
@@ -243,7 +242,6 @@ std::vector< std::vector<double>> go(unsigned offset, int k) {
     combination.pop_back();
   }
 
-  return tempAll;
 } 
 
 
@@ -254,8 +252,6 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 {
   using namespace edm;
   using namespace std;
-
-  vector< vector<double>> allCombination;
 
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
@@ -297,7 +293,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
   } 
 
-  allCombination = go(0,2);
+  go(0,2);
 
   for(unsigned i = 0; i < allCombination.size(); i++){
 
