@@ -233,9 +233,8 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
   
   //first selection; vertices
-    if(bestvz < -15.0 || bestvz > 15.0) return;
+  if(bestvz < -15.0 || bestvz > 15.0) return;
 
-    
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
 
@@ -260,8 +259,6 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //ntrack selection:
 
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
-
-        etaDist->Fill( trk.eta() );
 
         nTracks++;
         
