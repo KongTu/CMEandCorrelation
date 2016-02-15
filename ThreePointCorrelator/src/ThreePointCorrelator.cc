@@ -283,13 +283,12 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         if(fabs(trk.ptError())/trk.pt()>0.10) continue;
         if(fabs(dzvtx/dzerror) > 3) continue;
         if(fabs(dxyvtx/dxyerror) > 3) continue;
+
+        if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
+        nTracks++;
       
         if( fabs( trk.eta() ) > 1.0 || trk.pt() < 0.4 ) continue;
         angle.push_back( trk.phi() );
-        //Ntrk selection:
-        if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
-
-        nTracks++;
         
   } 
 
