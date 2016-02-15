@@ -343,34 +343,25 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   double total3QPlusPlusPlus = 0.;
   double total3QPlusPlusMinus = 0.;
-  // double total3QMinusMinusPlus = 0.;
-  // double total3QMinusMinusMinus = 0.;
+  double total3QMinusMinusPlus = 0.;
+  double total3QMinusMinusMinus = 0.;
 
   // double total3QPlusMinusPlus = 0.;
   // double total3QPlusMinusMinus = 0.;
-  int count = 0;
+  
+  //start from plusplus pair
   for(unsigned i = 0; i < plusPlusCombination.size(); i++){
-
-    //cout << "plusPlusCombination with ++++++ no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
     for(unsigned j = 0; j < anglePlusPlus.size(); j++){
 
       if( anglePlusPlus[j] == plusPlusCombination[i][0] || anglePlusPlus[j] == plusPlusCombination[i][1] ) continue;
-      count++;
-      //cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], anglePlusPlus[j]) << endl;
       total3QPlusPlusPlus = total3QPlusPlusPlus + getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], anglePlusPlus[j]);
     }
 
-    count = 0;
-    //cout << "plusPlusCombination with ------- no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
     for(unsigned j = 0; j < angleMinusMinus.size(); j++){
 
-      if( angleMinusMinus[j] == plusPlusCombination[i][0] || angleMinusMinus[j] == plusPlusCombination[i][1] ) continue;
-      count++;
-      //cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], angleMinusMinus[j]) << endl;
+      //if( angleMinusMinus[j] == plusPlusCombination[i][0] || angleMinusMinus[j] == plusPlusCombination[i][1] ) continue;
       total3QPlusPlusMinus = total3QPlusPlusMinus + getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], angleMinusMinus[j]);
     }
-
-
   }
 
   double N3plus = (anglePlusPlus.size()-2)*choose(anglePlusPlus.size(), 2);
@@ -382,6 +373,29 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   QvsNtrkPlusPlusPlus->Fill(nTracks, averageQ3plus);
   QvsNtrkPlusPlusMinus->Fill(nTracks, averageQ2plus1minus);
 
+  //start with minus minus pair
+  for(unsigned i = 0; i < minusMinusCombination.size(); i++){
+    for(unsigned j = 0; j < angleMinusMinus.size(); j++){
+
+      if( angleMinusMinus[j] == minusMinusCombination[i][0] || angleMinusMinus[j] == minusMinusCombination[i][1] ) continue;
+      total3QMinusMinusMinus = total3QMinusMinusMinus + getQ3(minusMinusCombination[i][0], minusMinusCombination[i][1], angleMinusMinus[j]);
+    }
+
+    for(unsigned j = 0; j < anglePlusPlus.size(); j++){
+
+      //if( anglePlusPlus[j] == minusMinusCombination[i][0] || anglePlusPlus[j] == minusMinusCombination[i][1] ) continue;
+      total3QMinusMinusPlus = total3QMinusMinusPlus + getQ3(minusMinusCombination[i][0], minusMinusCombination[i][1], anglePlusPlus[j]);
+    }
+  }
+
+  double N3minus = (angleMinusMinus.size()-2)*choose(angleMinusMinus.size(), 2);
+  double averageQ3minus = total3QMinusMinusMinus/N3minus;
+
+  double N2minus1plus = (anglePlusPlus.size())*choose(angleMinusMinus.size(), 2);
+  double averageQ2minus1plus = total3QMinusMinusPlus/N2minus1plus;
+
+  QvsNtrkMinusMinusMinus->Fill(nTracks, averageQ3minus);
+  QvsNtrkMinusMinusPlus->Fill(nTracks, averageQ2minus1plus);
 
   Ntrk->Fill(nTracks);
   NtrkPlus->Fill(nTracksPlus);
@@ -403,6 +417,8 @@ ThreePointCorrelator::beginJob()
   NtrkMinus = fs->make<TH1D>("NtrkMinus",";NtrkMinus",200,0,200);
   QvsNtrkPlusPlusPlus = fs->make<TH2D>("QvsNtrkPlusPlusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
   QvsNtrkPlusPlusMinus = fs->make<TH2D>("QvsNtrkPlusPlusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
+  QvsNtrkMinusMinusPlus = fs->make<TH2D>("QvsNtrkMinusMinusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
+  QvsNtrkMinusMinusMinus = fs->make<TH2D>("QvsNtrkMinusMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
 
 }
 
