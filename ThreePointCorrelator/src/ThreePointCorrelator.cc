@@ -244,6 +244,13 @@ void go(unsigned offset, int k) {
 
 } 
 
+int choose(n, k){
+
+    if (k == 0) return 1;
+    return (n * choose(n - 1, k - 1)) / k;
+}
+    
+
 
 
 // ------------ method called for each event  ------------
@@ -291,16 +298,28 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         angle.push_back( trk.phi() );
         
   } 
-
-  cout << "test 1" << endl;
+  //store all pairs combination in allCombination
   go(0,2);
-  cout << "test 2" << endl;
 
+  double total3Q = 0;
+  int count = 0;
   for(unsigned i = 0; i < allCombination.size(); i++){
 
     cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
+    for(unsigned j = 0; j < angle.size(); j++){
+
+      if( angle[j] == allCombination[i][0] || angle[j] == allCombination[i][1] ) continue;
+      count++;
+      cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], angle[j]) << endl;
+      total3Q = total3Q + getQ3(allCombination[i][0], allCombination[i][1], angle[j]);
+    }
   }
 
+  cout << "total3Q: " << total3Q << endl;
+  cout << "number of 2 combination: " << choose(angle.size(), 2) << endl;
+  double Nn = (angle.size()-2)*choose(angle.size(), 2);
+  cout << "number of total combination: " << Nn << endl;
+  cout << "average Q vector: " << total3Q/Nn << endl;
 
   Ntrk->Fill(nTracks);
 }
