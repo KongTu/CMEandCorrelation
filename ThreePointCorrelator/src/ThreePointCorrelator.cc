@@ -244,7 +244,7 @@ void go(unsigned offset, int k) {
 
 } 
 
-int choose(n, k){
+int choose(int n, int k){
 
     if (k == 0) return 1;
     return (n * choose(n - 1, k - 1)) / k;
@@ -301,7 +301,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //store all pairs combination in allCombination
   go(0,2);
 
-  double total3Q = 0;
+  double total3Q = 0.;
   int count = 0;
   for(unsigned i = 0; i < allCombination.size(); i++){
 
