@@ -346,8 +346,8 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   double total3QMinusMinusPlus = 0.;
   double total3QMinusMinusMinus = 0.;
 
-  // double total3QPlusMinusPlus = 0.;
-  // double total3QPlusMinusMinus = 0.;
+  double total3QPlusMinusPlus = 0.;
+  double total3QPlusMinusMinus = 0.;
   
   //start from plusplus pair
   for(unsigned i = 0; i < plusPlusCombination.size(); i++){
@@ -397,6 +397,33 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   QvsNtrkMinusMinusMinus->Fill(nTracks, averageQ3minus);
   QvsNtrkMinusMinusPlus->Fill(nTracks, averageQ2minus1plus);
 
+
+  for(unsigned i = 0; i < anglePlusPlus.size(); i++){
+
+    for(unsigned j = 0; j < angleMinusMinus.size(); j++){
+
+      for( unsigned k = 0; k < anglePlusPlus.size(); k++){
+
+        if( i == k ) continue;
+        total3QPlusMinusPlus = total3QPlusMinusPlus + getQ3(anglePlusPlus[i], angleMinusMinus[j], anglePlusPlus[k]);
+      }
+      for( unsigned k = 0; k < angleMinusMinus.size(); k++){
+
+        if( j == k ) continue;
+        total3QPlusMinusMinus = total3QPlusMinusMinus + getQ3(anglePlusPlus[i], angleMinusMinus[j], angleMinusMinus[k]);
+      }
+    }
+  }
+
+  double Nplus = anglePlusPlus.size() * angleMinusMinus.size() * (anglePlusPlus.size() - 1);
+  double Nminus = anglePlusPlus.size() * angleMinusMinus.size() * (angleMinusMinus.size() - 1);
+ 
+  double averageQplus = total3QPlusMinusPlus/Nplus;
+  double averageQminus = total3QPlusMinusMinus/Nminus;
+
+  QvsNtrkPlusMinusPlus->Fill(nTracks, averageQplus);
+  QvsNtrkPlusMinusMinus->Fill(nTracks, averageQminus);
+
   Ntrk->Fill(nTracks);
   NtrkPlus->Fill(nTracksPlus);
   NtrkMinus->Fill(nTracksMinus);
@@ -419,6 +446,8 @@ ThreePointCorrelator::beginJob()
   QvsNtrkPlusPlusMinus = fs->make<TH2D>("QvsNtrkPlusPlusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
   QvsNtrkMinusMinusPlus = fs->make<TH2D>("QvsNtrkMinusMinusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
   QvsNtrkMinusMinusMinus = fs->make<TH2D>("QvsNtrkMinusMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
+  QvsNtrkPlusMinusPlus = fs->make<TH2D>("QvsNtrkPlusMinusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
+  QvsNtrkPlusMinusMinus = fs->make<TH2D>("QvsNtrkPlusMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
 
 }
 
