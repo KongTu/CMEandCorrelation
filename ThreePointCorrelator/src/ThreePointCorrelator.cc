@@ -301,7 +301,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
         angle.push_back( trk.phi() );
         if( trk.charge() == 1 ) anglePlusPlus.push_back( trk.phi() );
-        else if( trk.charge == -1 ) angleMinusMinus.push_back( trk.phi() );
+        else if( trk.charge() == -1 ) angleMinusMinus.push_back( trk.phi() );
         
   } 
   //store all pairs combination in allCombination
@@ -331,8 +331,8 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   go(0,2,angleMinusMinus);
 
-  double total3Q = 0.;
-  int count = 0;
+  total3Q = 0.;
+  count = 0;
   for(unsigned i = 0; i < allCombination.size(); i++){
 
     //cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
@@ -345,8 +345,8 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
   }
 
-  double Nn = (angleMinusMinus.size()-2)*choose(angleMinusMinus.size(), 2);
-  double averageQ = total3Q/Nn;
+  Nn = (angleMinusMinus.size()-2)*choose(angleMinusMinus.size(), 2);
+  averageQ = total3Q/Nn;
 
   QvsNtrkMinusMinus->Fill(nTracks, averageQ);
 
