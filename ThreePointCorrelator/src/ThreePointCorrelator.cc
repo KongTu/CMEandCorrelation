@@ -164,10 +164,6 @@ class ThreePointCorrelator : public edm::EDAnalyzer {
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-      vector<double> angle;
-      vector<double> combination;
-      vector< vector<double>> allCombination;
-
 
    private:
       virtual void beginJob() ;
@@ -230,9 +226,11 @@ double getQ3(double a1, double a2, double a3){
   return temp1 + temp2 + temp3 - temp4;
 }
 
-void go(int offset, int k) {
+vector< vector<double>> go(int offset, int k, vector<double> combination, vector<double> angle) {
+  vector< vector<double>> tempAll;
+
   if (k == 0) {
-    allCombination.push_back(combination);
+    tempAll.push_back(combination);
     return;
   }
   for (int i = offset; i <= angle.size() - k; ++i) {
@@ -240,7 +238,11 @@ void go(int offset, int k) {
     go(i+1, k-1);
     combination.pop_back();
   }
-}
+
+  return tempAll;
+} 
+
+
 
 // ------------ method called for each event  ------------
 void
@@ -248,6 +250,10 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 {
   using namespace edm;
   using namespace std;
+
+  vector<double> angle;
+  vector<double> combination;
+  vector< vector<double>> allCombination;
 
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
@@ -289,7 +295,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
   } 
 
-  go(0,2);
+  allCombination = go(0,2,combination,angle);
 
   for(int i = 0; i < allCombination.size(); i++){
 
