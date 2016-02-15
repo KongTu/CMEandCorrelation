@@ -341,11 +341,11 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   double total3QPlusPlusPlus = 0.;
   double total3QPlusPlusMinus = 0.;
-  double total3QMinusMinusPlus = 0.;
-  double total3QMinusMinusMinus = 0.;
+  // double total3QMinusMinusPlus = 0.;
+  // double total3QMinusMinusMinus = 0.;
 
-  double total3QPlusMinusPlus = 0.;
-  double total3QPlusMinusMinus = 0.;
+  // double total3QPlusMinusPlus = 0.;
+  // double total3QPlusMinusMinus = 0.;
   int count = 0;
   for(unsigned i = 0; i < plusPlusCombination.size(); i++){
 
