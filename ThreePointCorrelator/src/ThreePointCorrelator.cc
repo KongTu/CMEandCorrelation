@@ -254,11 +254,11 @@ void go(unsigned offset, int k, std::vector<double> angle, std::string sign){
     }
     else if( sign == "all"){
       allCombination.push_back(combination);
-      return
+      return;
     }
     else{
 
-      cout << "wrong option! Can be either plusplus, minusminus, and all" << endl;
+      std::cout << "wrong option! Can be either plusplus, minusminus, and all" << std::endl;
       return;
     }
 
