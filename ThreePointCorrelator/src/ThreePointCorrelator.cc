@@ -238,7 +238,7 @@ void go(unsigned offset, int k, std::vector<double> angle) {
   }
   for (unsigned i = offset; i <= angle.size() - k; ++i) {
     combination.push_back(angle[i]);
-    go(i+1, k-1);
+    go(i+1, k-1, angle);
     combination.pop_back();
   }
 
