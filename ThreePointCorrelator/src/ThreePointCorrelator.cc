@@ -325,7 +325,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
         nTracks++;
         if( trk.charge() == 1 ) nTracksPlus++;
-        if( trk.charge() == -1 ) nTracksMinus;
+        if( trk.charge() == -1 ) nTracksMinus++;
       
         if( fabs( trk.eta() ) > 1.0 || trk.pt() < 0.4 ) continue;
         
