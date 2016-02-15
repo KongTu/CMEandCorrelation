@@ -226,8 +226,8 @@ double getQ3(double a1, double a2, double a3){
   return temp1 + temp2 + temp3 - temp4;
 }
 
-vector< vector<double>> go(int offset, int k, vector<double> combination, vector<double> angle) {
-  vector< vector<double>> tempAll;
+std::vector< std::vector<double>> go(int offset, int k, std::vector<double> combination, std::vector<double> angle) {
+  std::vector< std::vector<double>> tempAll;
 
   if (k == 0) {
     tempAll.push_back(combination);
@@ -297,7 +297,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   allCombination = go(0,2,combination,angle);
 
-  for(int i = 0; i < allCombination.size(); i++){
+  for(unsigned i = 0; i < allCombination.size(); i++){
 
     cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
   }
