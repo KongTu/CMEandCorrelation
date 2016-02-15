@@ -297,7 +297,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   go(0,2);
   cout << "test 2" << endl;
 
-  for(int i = 0; i < allCombination.size(); i++){
+  for(unsigned i = 0; i < allCombination.size(); i++){
 
     cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
   }
