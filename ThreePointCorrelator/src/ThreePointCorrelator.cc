@@ -180,8 +180,16 @@ class ThreePointCorrelator : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
-      TH2D* QvsNtrkPlusPlus;
-      TH2D* QvsNtrkMinusMinus;
+      TH1D* NtrkPlus;
+      TH1D* NtrkMinus;
+      
+      TH2D* QvsNtrkPlusPlusPlus;
+      TH2D* QvsNtrkMinusMinusMinus;
+      TH2D* QvsNtrkPlusPlusMinus;
+      TH2D* QvsNtrkMinusMinusPlus;
+
+      TH2D* QvsNtrkPlusMinusPlus;
+      TH2D* QvsNtrkPlusMinusMinus;
 };
 
 //
@@ -229,13 +237,31 @@ double getQ3(double a1, double a2, double a3){
 }
 
 std::vector<double> combination;
+std::vector< std::vector<double>> plusPlusCombination;
+std::vector< std::vector<double>> minusMinusCombination;
 std::vector< std::vector<double>> allCombination;
 
-void go(unsigned offset, int k, std::vector<double> angle){
+void go(unsigned offset, int k, std::vector<double> angle, std::string sign){
 
   if (k == 0) {
-    allCombination.push_back(combination);
-    return;
+    if(sign == "plusplus"){
+      plusPlusCombination.push_back(combination);
+      return;
+    }
+    else if( sign == "minusminus"){
+      minusMinusCombination.push_back(combination);
+      return;
+    }
+    else if( sign == "all"){
+      allCombination.push_back(combination);
+      return
+    }
+    else{
+
+      cout << "wrong option! Can be either plusplus, minusminus, and all" << endl;
+      return;
+    }
+
   }
   for (unsigned i = offset; i <= angle.size() - k; ++i) {
     combination.push_back(angle[i]);
@@ -275,9 +301,11 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   vector<double> angle;
   vector<double> anglePlusPlus;
   vector<double> angleMinusMinus;
-  vector<double> anglePlusMinus;
 
   int nTracks = 0;
+  int nTracksPlus = 0;
+  int nTracksMinus = 0;
+
   for(unsigned it = 0; it < tracks->size(); it++){
 
      const reco::Track & trk = (*tracks)[it];
@@ -296,6 +324,8 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
         nTracks++;
+        if( trk.charge() == 1 ) nTracksPlus++;
+        if( trk.charge() == -1 ) nTracksMinus;
       
         if( fabs( trk.eta() ) > 1.0 || trk.pt() < 0.4 ) continue;
         
@@ -305,52 +335,55 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
   } 
   //store all pairs combination in allCombination
-  go(0,2,anglePlusPlus);
+  go(0,2,anglePlusPlus,"plusplus");
+  go(0,2,angleMinusMinus,"minusminus");
+  go(0,2,angle,"all");
 
-  double total3Q = 0.;
+  double total3QPlusPlusPlus = 0.;
+  double total3QPlusPlusMinus = 0.;
+  double total3QMinusMinusPlus = 0.;
+  double total3QMinusMinusMinus = 0.;
+
+  double total3QPlusMinusPlus = 0.;
+  double total3QPlusMinusMinus = 0.;
   int count = 0;
-  for(unsigned i = 0; i < allCombination.size(); i++){
+  for(unsigned i = 0; i < plusPlusCombination.size(); i++){
 
-    //cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
+    cout << "plusPlusCombination with ++++++ no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
     for(unsigned j = 0; j < anglePlusPlus.size(); j++){
 
-      if( anglePlusPlus[j] == allCombination[i][0] || anglePlusPlus[j] == allCombination[i][1] ) continue;
+      if( anglePlusPlus[j] == plusPlusCombination[i][0] || anglePlusPlus[j] == plusPlusCombination[i][1] ) continue;
       count++;
-      //cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], anglePlusPlus[j]) << endl;
-      total3Q = total3Q + getQ3(allCombination[i][0], allCombination[i][1], anglePlusPlus[j]);
+      cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], anglePlusPlus[j]) << endl;
+      total3QPlusPlusPlus = total3QPlusPlusPlus + getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], anglePlusPlus[j]);
     }
-  }
 
-  double Nn = (anglePlusPlus.size()-2)*choose(anglePlusPlus.size(), 2);
-  double averageQ = total3Q/Nn;
-
-  QvsNtrkPlusPlus->Fill(nTracks, averageQ);
-
-  combination.clear();
-  allCombination.clear();
-
-  go(0,2,angleMinusMinus);
-
-  total3Q = 0.;
-  count = 0;
-  for(unsigned i = 0; i < allCombination.size(); i++){
-
-    //cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
+    count = 0;
+    cout << "plusPlusCombination with ------- no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
     for(unsigned j = 0; j < angleMinusMinus.size(); j++){
 
-      if( angleMinusMinus[j] == allCombination[i][0] || angleMinusMinus[j] == allCombination[i][1] ) continue;
+      if( angleMinusMinus[j] == plusPlusCombination[i][0] || angleMinusMinus[j] == plusPlusCombination[i][1] ) continue;
       count++;
-      //cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], angleMinusMinus[j]) << endl;
-      total3Q = total3Q + getQ3(allCombination[i][0], allCombination[i][1], angleMinusMinus[j]);
+      cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], angleMinusMinus[j]) << endl;
+      total3QPlusPlusMinus = total3QPlusPlusMinus + getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], angleMinusMinus[j]);
     }
+
+
   }
 
-  Nn = (angleMinusMinus.size()-2)*choose(angleMinusMinus.size(), 2);
-  averageQ = total3Q/Nn;
+  double N3plus = (anglePlusPlus.size()-2)*choose(anglePlusPlus.size(), 2);
+  double averageQ3plus = total3QPlusPlusPlus/N3plus;
 
-  QvsNtrkMinusMinus->Fill(nTracks, averageQ);
+  double N2plus1minus = (angleMinusMinus.size())*choose(anglePlusPlus.size(), 2);
+  double averageQ2plus1minus = total3QPlusPlusMinus/N2plus1minus;
+
+  QvsNtrkPlusPlusPlus->Fill(nTracks, averageQ3plus);
+  QvsNtrkPlusPlusMinus->Fill(nTracks, averageQ2plus1minus);
+
 
   Ntrk->Fill(nTracks);
+  NtrkPlus->Fill(nTracksPlus);
+  NtrkMinus->Fill(nTracksMinus);
 }
 
 
@@ -364,8 +397,10 @@ ThreePointCorrelator::beginJob()
   TH3D::SetDefaultSumw2();
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
-  QvsNtrkPlusPlus = fs->make<TH2D>("QvsNtrkPlusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.01);
-  QvsNtrkMinusMinus = fs->make<TH2D>("QvsNtrkMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.01);
+  NtrkPlus = fs->make<TH1D>("NtrkPlus",";NtrkPlus",200,0,200);
+  NtrkMinus = fs->make<TH1D>("NtrkMinus",";NtrkMinus",200,0,200);
+  QvsNtrkPlusPlusPlus = fs->make<TH2D>("QvsNtrkPlusPlusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,0,0.02);
+  QvsNtrkPlusPlusMinus = fs->make<TH2D>("QvsNtrkPlusPlusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,0,0.02);
 
 }
 
