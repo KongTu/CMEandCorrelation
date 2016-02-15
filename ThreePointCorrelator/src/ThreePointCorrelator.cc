@@ -181,6 +181,10 @@ class ThreePointCorrelator : public edm::EDAnalyzer {
 
       TH1D* Ntrk;
 
+      vector<double> angle;
+      vector<double> combination;
+      vector< vector<double>> allCombination;
+
 };
 
 //
@@ -217,6 +221,28 @@ ThreePointCorrelator::~ThreePointCorrelator()
 // member functions
 //
 
+double getQ3(double a1, double a2, double a3){
+
+  double temp1 = cos(a1)*cos(a2)*cos(2*a3);
+  double temp2 = cos(a1)*sin(a2)*sin(2*a3);
+  double temp3 = sin(a1)*sin(2*a3)*cos(a2);
+  double temp4 = sin(a1)*sin(a2)*cos(2*a3);
+
+  return temp1 + temp2 + temp3 - temp4;
+}
+
+void go(int offset, int k) {
+  if (k == 0) {
+    allCombination.push_back(combination);
+    return;
+  }
+  for (int i = offset; i <= angle.size() - k; ++i) {
+    combination.push_back(angle[i]);
+    go(i+1, k-1);
+    combination.pop_back();
+  }
+}
+
 // ------------ method called for each event  ------------
 void
 ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -239,7 +265,6 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByLabel(trackSrc_, tracks);
 
   int nTracks = 0;
-
   for(unsigned it = 0; it < tracks->size(); it++){
 
      const reco::Track & trk = (*tracks)[it];
@@ -256,13 +281,22 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         if(fabs(dzvtx/dzerror) > 3) continue;
         if(fabs(dxyvtx/dxyerror) > 3) continue;
       
-  //ntrack selection:
-
+        if( fabs( trk.eta() ) > 1.0 || trk.pt() < 0.4 ) continue;
+        angle.push_back( trk.phi() );
+        //Ntrk selection:
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
 
         nTracks++;
         
   } 
+
+  go(0,2);
+
+  for(int i = 0; i < allCombination.size(); i++){
+
+    cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
+  }
+
 
   Ntrk->Fill(nTracks);
 }
