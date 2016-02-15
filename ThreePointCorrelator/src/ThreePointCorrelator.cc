@@ -336,7 +336,9 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   } 
   //store all pairs combination in allCombination
   go(0,2,anglePlusPlus,"plusplus");
+  combination.clear();
   go(0,2,angleMinusMinus,"minusminus");
+  combination.clear();
   go(0,2,angle,"all");
 
   double total3QPlusPlusPlus = 0.;
@@ -349,22 +351,22 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   int count = 0;
   for(unsigned i = 0; i < plusPlusCombination.size(); i++){
 
-    cout << "plusPlusCombination with ++++++ no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
+    //cout << "plusPlusCombination with ++++++ no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
     for(unsigned j = 0; j < anglePlusPlus.size(); j++){
 
       if( anglePlusPlus[j] == plusPlusCombination[i][0] || anglePlusPlus[j] == plusPlusCombination[i][1] ) continue;
       count++;
-      cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], anglePlusPlus[j]) << endl;
+      //cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], anglePlusPlus[j]) << endl;
       total3QPlusPlusPlus = total3QPlusPlusPlus + getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], anglePlusPlus[j]);
     }
 
     count = 0;
-    cout << "plusPlusCombination with ------- no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
+    //cout << "plusPlusCombination with ------- no." << i+1 << " [ " << plusPlusCombination[i][0] << ", " << plusPlusCombination[i][1] << " ]" << endl;
     for(unsigned j = 0; j < angleMinusMinus.size(); j++){
 
       if( angleMinusMinus[j] == plusPlusCombination[i][0] || angleMinusMinus[j] == plusPlusCombination[i][1] ) continue;
       count++;
-      cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], angleMinusMinus[j]) << endl;
+      //cout << "the " << count << " Q vector is " << getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], angleMinusMinus[j]) << endl;
       total3QPlusPlusMinus = total3QPlusPlusMinus + getQ3(plusPlusCombination[i][0], plusPlusCombination[i][1], angleMinusMinus[j]);
     }
 
