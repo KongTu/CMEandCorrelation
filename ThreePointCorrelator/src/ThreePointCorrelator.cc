@@ -180,11 +180,6 @@ class ThreePointCorrelator : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
-
-      vector<double> angle;
-      vector<double> combination;
-      vector< vector<double>> allCombination;
-
 };
 
 //
@@ -220,7 +215,10 @@ ThreePointCorrelator::~ThreePointCorrelator()
 //
 // member functions
 //
-
+      vector<double> angle;
+      vector<double> combination;
+      vector< vector<double>> allCombination;
+      
 double getQ3(double a1, double a2, double a3){
 
   double temp1 = cos(a1)*cos(a2)*cos(2*a3);
