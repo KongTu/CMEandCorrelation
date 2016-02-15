@@ -227,7 +227,9 @@ double getQ3(double a1, double a2, double a3){
 }
 
 std::vector< std::vector<double>> go(int offset, int k, std::vector<double> combination, std::vector<double> angle) {
-  std::vector< std::vector<double>> tempAll;
+  
+  using namespace std;
+  vector< vector<double>> tempAll;
 
   if (k == 0) {
     tempAll.push_back(combination);
