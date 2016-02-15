@@ -226,7 +226,7 @@ double getQ3(double a1, double a2, double a3){
   return temp1 + temp2 + temp3 - temp4;
 }
 
-std::vector< std::vector<double>> go(int offset, int k, std::vector<double> combination, std::vector<double> angle) {
+std::vector< std::vector<double>> go(unsigned offset, int k, std::vector<double> combination, std::vector<double> angle) {
   
   using namespace std;
   vector< vector<double>> tempAll;
@@ -235,7 +235,7 @@ std::vector< std::vector<double>> go(int offset, int k, std::vector<double> comb
     tempAll.push_back(combination);
     return;
   }
-  for (int i = offset; i <= angle.size() - k; ++i) {
+  for (unsigned i = offset; i <= angle.size() - k; ++i) {
     combination.push_back(angle[i]);
     go(i+1, k-1);
     combination.pop_back();
