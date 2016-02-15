@@ -180,6 +180,7 @@ class ThreePointCorrelator : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
+      TH2D* QvsNtrk;
 };
 
 //
@@ -250,9 +251,6 @@ int choose(int n, int k){
     return (n * choose(n - 1, k - 1)) / k;
 }
     
-
-
-
 // ------------ method called for each event  ------------
 void
 ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -305,22 +303,20 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   int count = 0;
   for(unsigned i = 0; i < allCombination.size(); i++){
 
-    cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
+    //cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
     for(unsigned j = 0; j < angle.size(); j++){
 
       if( angle[j] == allCombination[i][0] || angle[j] == allCombination[i][1] ) continue;
       count++;
-      cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], angle[j]) << endl;
+      //cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], angle[j]) << endl;
       total3Q = total3Q + getQ3(allCombination[i][0], allCombination[i][1], angle[j]);
     }
   }
 
-  cout << "total3Q: " << total3Q << endl;
-  cout << "number of 2 combination: " << choose(angle.size(), 2) << endl;
   double Nn = (angle.size()-2)*choose(angle.size(), 2);
-  cout << "number of total combination: " << Nn << endl;
-  cout << "average Q vector: " << total3Q/Nn << endl;
+  double averageQ = total3Q/Nn;
 
+  QvsNtrk->Fill(nTracks, averageQ);
   Ntrk->Fill(nTracks);
 }
 
@@ -335,6 +331,7 @@ ThreePointCorrelator::beginJob()
   TH3D::SetDefaultSumw2();
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
+  QvsNtrk = fs->make<TH2D>("QvsNtrk", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.01);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
