@@ -180,7 +180,8 @@ class ThreePointCorrelator : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
-      TH2D* QvsNtrk;
+      TH2D* QvsNtrkPlusPlus;
+      TH2D* QvsNtrkMinusMinus;
 };
 
 //
@@ -230,7 +231,7 @@ double getQ3(double a1, double a2, double a3){
 std::vector<double> combination;
 std::vector< std::vector<double>> allCombination;
 
-void go(unsigned offset, int k, std::vector<double> angle) {
+void go(unsigned offset, int k, std::vector<double> angle){
 
   if (k == 0) {
     allCombination.push_back(combination);
@@ -272,6 +273,9 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByLabel(trackSrc_, tracks);
 
   vector<double> angle;
+  vector<double> anglePlusPlus;
+  vector<double> angleMinusMinus;
+  vector<double> anglePlusMinus;
 
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -294,30 +298,58 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         nTracks++;
       
         if( fabs( trk.eta() ) > 1.0 || trk.pt() < 0.4 ) continue;
+        
         angle.push_back( trk.phi() );
+        if( trk.charge() == 1 ) anglePlusPlus.push_back( trk.phi() );
+        else if( trk.charge == -1 ) angleMinusMinus.push_back( trk.phi() );
         
   } 
   //store all pairs combination in allCombination
-  go(0,2,angle);
+  go(0,2,anglePlusPlus);
 
   double total3Q = 0.;
   int count = 0;
   for(unsigned i = 0; i < allCombination.size(); i++){
 
     //cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
-    for(unsigned j = 0; j < angle.size(); j++){
+    for(unsigned j = 0; j < anglePlusPlus.size(); j++){
 
-      if( angle[j] == allCombination[i][0] || angle[j] == allCombination[i][1] ) continue;
+      if( anglePlusPlus[j] == allCombination[i][0] || anglePlusPlus[j] == allCombination[i][1] ) continue;
       count++;
-      //cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], angle[j]) << endl;
-      total3Q = total3Q + getQ3(allCombination[i][0], allCombination[i][1], angle[j]);
+      //cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], anglePlusPlus[j]) << endl;
+      total3Q = total3Q + getQ3(allCombination[i][0], allCombination[i][1], anglePlusPlus[j]);
     }
   }
 
-  double Nn = (angle.size()-2)*choose(angle.size(), 2);
+  double Nn = (anglePlusPlus.size()-2)*choose(anglePlusPlus.size(), 2);
   double averageQ = total3Q/Nn;
 
-  QvsNtrk->Fill(nTracks, averageQ);
+  QvsNtrkPlusPlus->Fill(nTracks, averageQ);
+
+  combination.clear();
+  allCombination.clear();
+
+  go(0,2,angleMinusMinus);
+
+  double total3Q = 0.;
+  int count = 0;
+  for(unsigned i = 0; i < allCombination.size(); i++){
+
+    //cout << "allCombination no." << i+1 << " [ " << allCombination[i][0] << ", " << allCombination[i][1] << " ]" << endl;
+    for(unsigned j = 0; j < angleMinusMinus.size(); j++){
+
+      if( angleMinusMinus[j] == allCombination[i][0] || angleMinusMinus[j] == allCombination[i][1] ) continue;
+      count++;
+      //cout << "the " << count << " Q vector is " << getQ3(allCombination[i][0], allCombination[i][1], angleMinusMinus[j]) << endl;
+      total3Q = total3Q + getQ3(allCombination[i][0], allCombination[i][1], angleMinusMinus[j]);
+    }
+  }
+
+  double Nn = (angleMinusMinus.size()-2)*choose(angleMinusMinus.size(), 2);
+  double averageQ = total3Q/Nn;
+
+  QvsNtrkMinusMinus->Fill(nTracks, averageQ);
+
   Ntrk->Fill(nTracks);
 }
 
@@ -332,7 +364,9 @@ ThreePointCorrelator::beginJob()
   TH3D::SetDefaultSumw2();
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
-  QvsNtrk = fs->make<TH2D>("QvsNtrk", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.01);
+  QvsNtrkPlusPlus = fs->make<TH2D>("QvsNtrkPlusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.01);
+  QvsNtrkMinusMinus = fs->make<TH2D>("QvsNtrkMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.01);
+
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
