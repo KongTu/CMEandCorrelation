@@ -164,6 +164,10 @@ class ThreePointCorrelator : public edm::EDAnalyzer {
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
+      vector<double> angle;
+      vector<double> combination;
+      vector< vector<double>> allCombination;
+
 
    private:
       virtual void beginJob() ;
@@ -244,10 +248,6 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 {
   using namespace edm;
   using namespace std;
-
-  vector<double> angle;
-  vector<double> combination;
-  vector< vector<double>> allCombination;
 
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
