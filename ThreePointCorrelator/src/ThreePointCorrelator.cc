@@ -227,11 +227,10 @@ double getQ3(double a1, double a2, double a3){
   return temp1 + temp2 + temp3 - temp4;
 }
 
-std::vector<double> angle;
 std::vector<double> combination;
 std::vector< std::vector<double>> allCombination;
 
-void go(unsigned offset, int k) {
+void go(unsigned offset, int k, std::vector<double> angle) {
 
   if (k == 0) {
     allCombination.push_back(combination);
@@ -272,6 +271,8 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
 
+  vector<double> angle;
+
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
 
@@ -297,7 +298,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
   } 
   //store all pairs combination in allCombination
-  go(0,2);
+  go(0,2,angle);
 
   double total3Q = 0.;
   int count = 0;
