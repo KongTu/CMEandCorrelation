@@ -226,6 +226,9 @@ double getQ3(double a1, double a2, double a3){
   return temp1 + temp2 + temp3 - temp4;
 }
 
+vector<double> angle;
+vector<double> combination;
+
 std::vector< std::vector<double>> go(unsigned offset, int k) {
   
   using namespace std;
@@ -253,8 +256,6 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   using namespace edm;
   using namespace std;
 
-  vector<double> angle;
-  vector<double> combination;
   vector< vector<double>> allCombination;
 
   edm::Handle<reco::VertexCollection> vertices;
