@@ -215,10 +215,7 @@ ThreePointCorrelator::~ThreePointCorrelator()
 //
 // member functions
 //
-      vector<double> angle;
-      vector<double> combination;
-      vector< vector<double>> allCombination;
-      
+
 double getQ3(double a1, double a2, double a3){
 
   double temp1 = cos(a1)*cos(a2)*cos(2*a3);
@@ -247,6 +244,10 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 {
   using namespace edm;
   using namespace std;
+
+  vector<double> angle;
+  vector<double> combination;
+  vector< vector<double>> allCombination;
 
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
