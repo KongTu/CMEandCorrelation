@@ -265,7 +265,7 @@ void go(unsigned offset, int k, std::vector<double> angle, std::string sign){
   }
   for (unsigned i = offset; i <= angle.size() - k; ++i) {
     combination.push_back(angle[i]);
-    go(i+1, k-1, angle);
+    go(i+1, k-1, angle, sign);
     combination.pop_back();
   }
 
