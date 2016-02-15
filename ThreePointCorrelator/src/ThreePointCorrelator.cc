@@ -236,7 +236,6 @@ std::vector< std::vector<double>> go(unsigned offset, int k) {
 
   if (k == 0) {
     tempAll.push_back(combination);
-    return;
   }
   for (unsigned i = offset; i <= angle.size() - k; ++i) {
     combination.push_back(angle[i]);
@@ -298,7 +297,7 @@ ThreePointCorrelator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
   } 
 
-  allCombination = go(0,2,combination,angle);
+  allCombination = go(0,2);
 
   for(unsigned i = 0; i < allCombination.size(); i++){
 
