@@ -369,19 +369,15 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       double normalizeQminusplus = totalQminusplus/Nminusplus;
       
       if( Nplusplus == 0 ){
-        cout <<"totalQplusplus should be " << totalQplusplus << endl;
         normalizeQplusplus = 0.0;
       }
       else if( Nminusminus == 0 ){
-        cout <<"totalQminusminus should be " << totalQminusminus << endl;
         normalizeQminusminus = 0.0;
       }
       else if( Nplusminus == 0 ){
-        cout <<"totalQplusminus should be " << totalQplusminus << endl;
         normalizeQplusminus = 0.0;
       }
       else if( Nminusplus == 0 ){
-        cout <<"totalQminusplus should be " << totalQminusplus << endl;
         normalizeQminusplus = 0.0;
       }
 
