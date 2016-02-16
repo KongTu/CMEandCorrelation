@@ -272,7 +272,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         HFqVcos = HFqVcos + w*CosTerm;
         HFqVsin = HFqVsin + w*SinTerm;
-        HFcounts++
+        HFcounts++;
   }
 
   cout << "HFcounts: " << HFcounts << endl;
@@ -290,7 +290,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     increment = increment + 0.1;
   }
 
-  for(eta = 0; eta < etabins.size(); eta++){
+  for(int eta = 0; eta < etabins.size(); eta++){
 
     cout << "eta bins " << eta << ": " << etabins[eta] << endl;
   }
