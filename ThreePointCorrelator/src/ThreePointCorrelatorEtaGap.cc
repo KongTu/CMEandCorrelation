@@ -177,6 +177,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
+      edm::InputTag towerSrc_
       std::string vertexSrc_;
 
       TH1D* Ntrk;
@@ -209,7 +210,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
    //now do what ever initialization is needed
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   vertexSrc_ = iConfig.getParameter<std::string>("vertexSrc");
-
+  towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
 }
 
 
@@ -244,9 +245,37 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   
   //first selection; vertices
   if(bestvz < -15.0 || bestvz > 15.0) return;
+  
+  Handle<CaloTowerCollection> towers;
+  iEvent.getByLabel(TowerSrc_, towers);
 
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
+
+//loop over calo towers (HF)
+
+  double HFqVcos = 0.;
+  double HFqVsin = 0.;
+  for(unsigned int i = 0; i < towers->size(); ++i){
+
+        const CaloTower & hit= (*towers)[i];
+
+        double caloEta = hit.eta();
+        double caloPhi = hit.phi();
+
+        if( fabs(caloEta) < 3 || fabs(caloEta) > 5 ) continue;
+
+        double CosTerm = cos( caloPhi );
+        double SinTerm = sin( caloPhi );
+        double w = hit.et();
+
+        HFqVcos = HFqVcos + w*CosTerm;
+        HFqVsin = HFqVsin + w*SinTerm;
+
+  }
+
+  cout << "HFqVsin: " << HFqVsin << endl;
+  cout << "HFqVcos: " << HFqVcos << endl;
 
   int nTracks = 0;
   int nTracksPlus = 0;
