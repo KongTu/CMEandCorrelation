@@ -256,6 +256,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   double HFqVcos = 0.;
   double HFqVsin = 0.;
+  int HFcounts = 0;
   for(unsigned int i = 0; i < towers->size(); ++i){
 
         const CaloTower & hit= (*towers)[i];
@@ -271,16 +272,30 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         HFqVcos = HFqVcos + w*CosTerm;
         HFqVsin = HFqVsin + w*SinTerm;
-
+        HFcounts++
   }
 
+  cout << "HFcounts: " << HFcounts << endl;
   cout << "HFqVsin: " << HFqVsin << endl;
   cout << "HFqVcos: " << HFqVcos << endl;
 
-  int nTracks = 0;
-  int nTracksPlus = 0;
-  int nTracksMinus = 0;
 
+// define eta bins:
+  vector<double> etabins;
+  double increment = 0.0;
+  for(int eta = 0; eta < 48; eta++){
+
+    double initial = -2.4;
+    etabins.push_back( initial + increment );
+    increment = increment + 0.1;
+  }
+
+  for(eta = 0; eta < etabins.size(); eta++){
+
+    cout << "eta bins " << eta << ": " << etabins[eta] << endl;
+  }
+
+  int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
 
      const reco::Track & trk = (*tracks)[it];
@@ -296,18 +311,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.ptError())/trk.pt()>0.10) continue;
         if(fabs(dzvtx/dzerror) > 3) continue;
         if(fabs(dxyvtx/dxyerror) > 3) continue;
-
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
-        nTracks++;
-        if( trk.charge() == 1 ) nTracksPlus++;
-        if( trk.charge() == -1 ) nTracksMinus++;
-        
+        nTracks++;        
   } 
 
-
   Ntrk->Fill(nTracks);
-  NtrkPlus->Fill(nTracksPlus);
-  NtrkMinus->Fill(nTracksMinus);
+
 }
 
 
@@ -321,8 +330,6 @@ ThreePointCorrelatorEtaGap::beginJob()
   TH3D::SetDefaultSumw2();
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
-  NtrkPlus = fs->make<TH1D>("NtrkPlus",";NtrkPlus",200,0,200);
-  NtrkMinus = fs->make<TH1D>("NtrkMinus",";NtrkMinus",200,0,200);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
