@@ -184,13 +184,11 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* NtrkPlus;
       TH1D* NtrkMinus;
       
-      TH2D* QvsNtrkPlusPlusPlus;
-      TH2D* QvsNtrkMinusMinusMinus;
-      TH2D* QvsNtrkPlusPlusMinus;
-      TH2D* QvsNtrkMinusMinusPlus;
+      TH2D* QvsdEtaPlusPlus;
+      TH2D* QvsdEtaMinusMinus;
+      TH2D* QvsdEtaPlusMinus;
+      TH2D* QvsdEtaMinusPlus;
 
-      TH2D* QvsNtrkPlusMinusPlus;
-      TH2D* QvsNtrkPlusMinusMinus;
 };
 
 //
@@ -226,6 +224,18 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 //
 // member functions
 //
+
+
+double getReal(double cos1, double cos2, double cos3, double sin1, double sin2, double sin3){
+
+  double t1 = cos1*cos2*cos3;
+  double t2 = cos1*sin2*sin3;
+  double t3 = cos2*sin1*sin3;
+  double t4 = sin1*sin2*cos3;
+
+  return t1+t2+t3-t4;
+
+}
 
     
 // ------------ method called for each event  ------------
@@ -266,19 +276,14 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         if( fabs(caloEta) < 3 || fabs(caloEta) > 5 ) continue;
 
-        double CosTerm = cos( caloPhi );
-        double SinTerm = sin( caloPhi );
+        double CosTerm = cos( 2*caloPhi );
+        double SinTerm = sin( 2*caloPhi );
         double w = hit.et();
 
         HFqVcos = HFqVcos + w*CosTerm;
         HFqVsin = HFqVsin + w*SinTerm;
         HFcounts++;
   }
-
-  cout << "HFcounts: " << HFcounts << endl;
-  cout << "HFqVsin: " << HFqVsin << endl;
-  cout << "HFqVcos: " << HFqVcos << endl;
-
 
 // define eta bins:
   vector<double> etabins;
@@ -344,6 +349,31 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   Ntrk->Fill(nTracks);
 
+  for(int ieta = 0; ieta < 48; ieta++){
+    for(int jeta = 0; jeta < 48; jeta++){
+
+      if( ieta == jeta ) continue;
+
+      double totalQplusplus = getReal(Qcos[ieta][0],Qcos[jeta][0], HFqVcos, Qsin[ieta][0], Qsin[jeta][0], HFqVsin );
+      double totalQminusminus = getReal(Qcos[ieta][1],Qcos[jeta][1], HFqVcos, Qsin[ieta][1], Qsin[jeta][1], HFqVsin );
+      double totalQplusminus = getReal(Qcos[ieta][0],Qcos[jeta][1], HFqVcos, Qsin[ieta][0], Qsin[jeta][1], HFqVsin );
+      double totalQminusplus = getReal(Qcos[ieta][1],Qcos[jeta][0], HFqVcos, Qsin[ieta][1], Qsin[jeta][0], HFqVsin );
+
+      double Nplusplus = Qcounts[ieta][0]*Qcounts[jeta][0]*HFcounts;
+      double Nminusminus = Qcounts[ieta][1]*Qcounts[jeta][1]*HFcounts;
+      double Nplusminus = Qcounts[ieta][0]*Qcounts[jeta][1]*HFcounts;
+      double Nminusplus = Qcounts[ieta][1]*Qcounts[jeta][0]*HFcounts;
+
+      double deltaEta = fabs(etabins[jeta] - etabins[ieta]);
+
+      QvsdEtaPlusPlus->Fill(deltaEta, totalQplusplus/Nplusplus);
+      QvsdEtaMinusMinus->Fill(deltaEta, totalQminusminus/Nminusminus);
+      QvsdEtaPlusMinus->Fill(deltaEta, totalQplusminus/Nplusminus);
+      QvsdEtaMinusPlus->Fill(deltaEta, totalQminusplus/Nminusplus);
+
+    }
+  }
+
 }
 
 
@@ -357,6 +387,10 @@ ThreePointCorrelatorEtaGap::beginJob()
   TH3D::SetDefaultSumw2();
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
+  QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
+  QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
+  QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
+  QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
