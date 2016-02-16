@@ -247,7 +247,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   if(bestvz < -15.0 || bestvz > 15.0) return;
   
   Handle<CaloTowerCollection> towers;
-  iEvent.getByLabel(TowerSrc_, towers);
+  iEvent.getByLabel(towerSrc_, towers);
 
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
