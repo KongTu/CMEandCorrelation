@@ -362,8 +362,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       double Nminusplus = Qcounts[ieta][1]*Qcounts[jeta][0]*HFcounts;
 
       double deltaEta = fabs(etabins[jeta] - etabins[ieta]);
-      if( deltaEta < 0.1 ){
+      if( deltaEta < 0.09999 ){
         cout << "deltaEta: " << deltaEta << endl;
+        continue;
       }
 
       double normalizeQplusplus = totalQplusplus/Nplusplus;
