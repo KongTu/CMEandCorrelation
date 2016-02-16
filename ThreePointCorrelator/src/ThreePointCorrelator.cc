@@ -442,12 +442,12 @@ ThreePointCorrelator::beginJob()
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
   NtrkPlus = fs->make<TH1D>("NtrkPlus",";NtrkPlus",200,0,200);
   NtrkMinus = fs->make<TH1D>("NtrkMinus",";NtrkMinus",200,0,200);
-  QvsNtrkPlusPlusPlus = fs->make<TH2D>("QvsNtrkPlusPlusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
-  QvsNtrkPlusPlusMinus = fs->make<TH2D>("QvsNtrkPlusPlusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
-  QvsNtrkMinusMinusPlus = fs->make<TH2D>("QvsNtrkMinusMinusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
-  QvsNtrkMinusMinusMinus = fs->make<TH2D>("QvsNtrkMinusMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
-  QvsNtrkPlusMinusPlus = fs->make<TH2D>("QvsNtrkPlusMinusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
-  QvsNtrkPlusMinusMinus = fs->make<TH2D>("QvsNtrkPlusMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 10000,0,0.1);
+  QvsNtrkPlusPlusPlus = fs->make<TH2D>("QvsNtrkPlusPlusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,-0.1,0.1);
+  QvsNtrkPlusPlusMinus = fs->make<TH2D>("QvsNtrkPlusPlusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,-0.1,0.1);
+  QvsNtrkMinusMinusPlus = fs->make<TH2D>("QvsNtrkMinusMinusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,-0.1,0.1);
+  QvsNtrkMinusMinusMinus = fs->make<TH2D>("QvsNtrkMinusMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,-0.1,0.1);
+  QvsNtrkPlusMinusPlus = fs->make<TH2D>("QvsNtrkPlusMinusPlus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,-0.1,0.1);
+  QvsNtrkPlusMinusMinus = fs->make<TH2D>("QvsNtrkPlusMinusMinus", ";Ntrk;<cos(#phi_{1} + #phi_{2} - 2#phi_{3})>", 300,0,300, 20000,-0.1,0.1);
 
 }
 
