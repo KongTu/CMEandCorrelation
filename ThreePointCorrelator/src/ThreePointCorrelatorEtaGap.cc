@@ -290,7 +290,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     increment = increment + 0.1;
   }
 
-  for(int eta = 0; eta < etabins.size(); eta++){
+  for(unsigned eta = 0; eta < etabins.size(); eta++){
 
     cout << "eta bins " << eta << ": " << etabins[eta] << endl;
   }
