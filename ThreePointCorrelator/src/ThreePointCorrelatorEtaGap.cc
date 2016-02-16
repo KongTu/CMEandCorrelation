@@ -339,8 +339,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }     
   } 
 
-  cout << "Qcount eta 10 plus " << Qcount[10][0] << endl;
-  cout << "Qcount eta 10 minus " << Qcount[10][1] << endl;
+  cout << "Qcount eta 10 plus " << Qcounts[10][0] << endl;
+  cout << "Qcount eta 10 minus " << Qcounts[10][1] << endl;
 
   Ntrk->Fill(nTracks);
 
