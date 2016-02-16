@@ -344,9 +344,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }     
   } 
 
-  cout << "Qcount eta 10 plus " << Qcounts[10][0] << endl;
-  cout << "Qcount eta 10 minus " << Qcounts[10][1] << endl;
-
   Ntrk->Fill(nTracks);
 
   for(int ieta = 0; ieta < 48; ieta++){
@@ -366,10 +363,32 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
       double deltaEta = fabs(etabins[jeta] - etabins[ieta]);
 
-      QvsdEtaPlusPlus->Fill(deltaEta, totalQplusplus/Nplusplus);
-      QvsdEtaMinusMinus->Fill(deltaEta, totalQminusminus/Nminusminus);
-      QvsdEtaPlusMinus->Fill(deltaEta, totalQplusminus/Nplusminus);
-      QvsdEtaMinusPlus->Fill(deltaEta, totalQminusplus/Nminusplus);
+      double normalizeQplusplus = totalQplusplus/Nplusplus;
+      double normalizeQminusminus = totalQminusminus/Nminusminus;
+      double normalizeQplusminus = totalQplusminus/Nplusminus;
+      double normalizeQminusplus = totalQminusplus/Nminusplus;
+      
+      if( Nplusplus == 0 ){
+        cout <<"totalQplusplus should be " << totalQplusplus << endl;
+        normalizeQplusplus = 0.0;
+      }
+      else if( Nminusminus == 0 ){
+        cout <<"totalQminusminus should be " << totalQminusminus << endl;
+        normalizeQminusminus = 0.0;
+      }
+      else if( Nplusminus == 0 ){
+        cout <<"totalQplusminus should be " << totalQplusminus << endl;
+        normalizeQplusminus = 0.0;
+      }
+      else if( Nminusplus == 0 ){
+        cout <<"totalQminusplus should be " << totalQminusplus << endl;
+        normalizeQminusplus = 0.0;
+      }
+
+      QvsdEtaPlusPlus->Fill(deltaEta, normalizeQplusplus);
+      QvsdEtaMinusMinus->Fill(deltaEta, normalizeQminusminus);
+      QvsdEtaPlusMinus->Fill(deltaEta, normalizeQplusminus);
+      QvsdEtaMinusPlus->Fill(deltaEta, normalizeQminusplus);
 
     }
   }
