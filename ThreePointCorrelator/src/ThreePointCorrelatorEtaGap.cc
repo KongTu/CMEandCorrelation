@@ -177,7 +177,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
-      edm::InputTag towerSrc_
+      edm::InputTag towerSrc_;
       std::string vertexSrc_;
 
       TH1D* Ntrk;
