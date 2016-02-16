@@ -283,16 +283,24 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 // define eta bins:
   vector<double> etabins;
   double increment = 0.0;
-  for(int eta = 0; eta < 48; eta++){
+  for(int eta = 0; eta < 49; eta++){
 
     double initial = -2.4;
     etabins.push_back( initial + increment );
     increment = increment + 0.1;
   }
 
-  for(unsigned eta = 0; eta < etabins.size(); eta++){
+// initialize Qcos and Qsin
+  double Qcos[48][2];
+  double Qsin[48][2];
+  int Qcounts[48][2];
+  for(int eta = 0; eta < 48; eta++){
+    for(int sign = 0; sign < 2; sign++){
 
-    cout << "eta bins " << eta << ": " << etabins[eta] << endl;
+      Qcounts[eta][sign] = 0;
+      Qcos[eta][sign] = 0.;
+      Qsin[eta][sign] = 0.;
+    }
   }
 
   int nTracks = 0;
@@ -312,7 +320,26 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(dzvtx/dzerror) > 3) continue;
         if(fabs(dxyvtx/dxyerror) > 3) continue;
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
-        nTracks++;        
+        nTracks++;   
+
+        for(unsigned eta = 0; eta < etabins.size()-1; eta++){
+          if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
+
+             if(trk.charge() == 1){
+                Qcos[eta][0] += cos( trk.phi() );
+                Qsin[eta][0] += sin( trk.phi() );
+                Qcounts[eta][0]++;
+             }
+             if(trk.charge() == -1){
+                Qcos[eta][1] += cos( trk.phi() );
+                Qsin[eta][1] += sin( trk.phi() );
+                Qcounts[eta][1]++;
+             }
+             else{
+              cout << "Error!" << endl;
+             }
+          }
+        }     
   } 
 
   Ntrk->Fill(nTracks);
