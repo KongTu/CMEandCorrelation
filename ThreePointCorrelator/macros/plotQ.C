@@ -4,13 +4,30 @@ using namespace std;
 
 void plotQ(){
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v2.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v3.root");
 	TH2D* QPlusPlus = file->Get("ana/QvsdEtaPlusPlus");
 	TH2D* QMinusMinus = file->Get("ana/QvsdEtaMinusMinus");
 	TH2D* QPlusMinus = file->Get("ana/QvsdEtaPlusMinus");
 	TH2D* QMinusPlus = file->Get("ana/QvsdEtaMinusPlus");
+	
+	TH1D* evtWeightedQp3 = file->Get("ana/evtWeightedQp3");
+	TH1D* evtWeight = file->Get("ana/evtWeight");
+	TH1D* Ntrk = file->Get("ana/Ntrk");
 
+	double integral = 0;
+	for(int i = 0; i < evtWeight->GetNbinsX(); i++ ){
 
+		double temp = evtWeight->GetBinContent(i+1);
+		double center = evtWeight->GetBinCenter(i+1);
+		if(temp != 0 ){
+
+			cout << "found in bin " << i+1 <<", bin center = " << evtWeight->GetBinCenter(i+1) <<  ", with entires = " << temp << endl;
+			integral = integral + temp*center;
+		}
+	}
+
+	cout << "integral: " << integral << endl;
+	
 
 	TH1D* Qplusplus1D[48];
 	TH1D* Qminusminus1D[48];
