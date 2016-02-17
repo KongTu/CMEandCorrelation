@@ -49,6 +49,14 @@ void plotQ(){
 	hist2->Draw("Psame");
 	hist3->Draw("Psame");
 	hist4->Draw("Psame");
+
+	TLegend *w1 = new TLegend(0.2,0.20,0.45,0.43);
+    w1->SetLineColor(kWhite);
+    w1->SetFillColor(0);
+    w1->AddEntry(hist1,"++","P");
+    w1->AddEntry(hist2,"--","P");
+    w1->AddEntry(hist4,"+-/-+","P");
+    w1->Draw("same");
 	
 
 

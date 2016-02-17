@@ -181,8 +181,8 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
-      TH1D* NtrkPlus;
-      TH1D* NtrkMinus;
+      TH1D* evtWeightedQp3;
+      TH1D* evtWeight;
       
       TH2D* QvsdEtaPlusPlus;
       TH2D* QvsdEtaMinusMinus;
@@ -296,6 +296,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   }
 
 // initialize Qcos and Qsin
+  //q vector in tracker for particle 3, that correlate with HF. 
+  double QcosP3 = 0.;
+  double QsinP3 = 0.;
+  int QcountsP3 = 0;
+
   double Qcos[48][2];
   double Qsin[48][2];
   int Qcounts[48][2];
@@ -327,6 +332,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
         nTracks++;   
 
+        if( fabs(trk.eta() ) < 1.0 ){
+
+          QcosP3 += QcosP3 + cos( 2*trk.phi() );
+          QsinP3 += QsinP3 + sin( 2*trk.phi() );
+          QcountsP3++;
+
+        }
         for(unsigned eta = 0; eta < etabins.size()-1; eta++){
           if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
 
@@ -340,11 +352,20 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
                 Qsin[eta][1] += sin( trk.phi() );
                 Qcounts[eta][1]++;
              }
+
           }
         }     
   } 
 
   Ntrk->Fill(nTracks);
+
+  double Q = QcosP3*HFqVcos + QsinP3*HFqVsin;
+  double weight = QcountsP3*HFcounts;
+  double weightedQ = Q/weight;
+  double W2 = nTracks*(nTracks-1);
+    
+  evtWeight->Fill( W2 );
+  evtWeightedQp3->Fill( W2*weightedQ );
 
   for(int ieta = 0; ieta < 48; ieta++){
     for(int jeta = 0; jeta < 48; jeta++){
@@ -406,6 +427,8 @@ ThreePointCorrelatorEtaGap::beginJob()
   TH3D::SetDefaultSumw2();
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
+  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000,0,100000);
+  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,0,100000);
   QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
   QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
   QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
