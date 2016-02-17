@@ -359,10 +359,16 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   Ntrk->Fill(nTracks);
 
+
+
   double Q = QcosP3*HFqVcos + QsinP3*HFqVsin;
   double weight = QcountsP3*HFcounts;
   double weightedQ = Q/weight;
   double W2 = nTracks*(nTracks-1);
+
+  cout << "QcosP3: " << QcosP3 << endl;
+  cout << "QsinP3: " << QsinP3 << endl;
+  cout << "weightQ: " << weightQ << endl;
     
   evtWeight->Fill( W2 );
   evtWeightedQp3->Fill( W2*weightedQ );
