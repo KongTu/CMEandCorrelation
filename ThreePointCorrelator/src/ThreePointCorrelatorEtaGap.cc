@@ -334,8 +334,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         if( fabs(trk.eta() ) < 1.0 ){
 
-          QcosP3 += QcosP3 + cos( 2*trk.phi() );
-          QsinP3 += QsinP3 + sin( 2*trk.phi() );
+          QcosP3 = QcosP3 + cos( 2*trk.phi() );
+          QsinP3 = QsinP3 + sin( 2*trk.phi() );
           QcountsP3++;
 
           cout << "QcosP3: " << QcosP3 << endl;
