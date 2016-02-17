@@ -338,20 +338,18 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           QsinP3 = QsinP3 + sin( 2*trk.phi() );
           QcountsP3++;
 
-          cout << "QcosP3: " << QcosP3 << endl;
-
         }
         for(unsigned eta = 0; eta < etabins.size()-1; eta++){
           if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
 
              if(trk.charge() == 1){
-                Qcos[eta][0] += cos( trk.phi() );
-                Qsin[eta][0] += sin( trk.phi() );
+                Qcos[eta][0] = Qcos[eta][0] + cos( trk.phi() );
+                Qsin[eta][0] = Qsin[eta][0] + sin( trk.phi() );
                 Qcounts[eta][0]++;
              }
              if(trk.charge() == -1){
-                Qcos[eta][1] += cos( trk.phi() );
-                Qsin[eta][1] += sin( trk.phi() );
+                Qcos[eta][1] = Qcos[eta][1] + cos( trk.phi() );
+                Qsin[eta][1] = Qsin[eta][1] + sin( trk.phi() );
                 Qcounts[eta][1]++;
              }
 
@@ -367,10 +365,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double weight = QcountsP3*HFcounts;
   double weightedQ = Q/weight;
   double W2 = nTracks*(nTracks-1);
-
-  cout << "QcosP3: " << QcosP3 << endl;
-  cout << "QsinP3: " << QsinP3 << endl;
-  cout << "weightQ: " << weightedQ << endl;
     
   evtWeight->Fill( W2 );
   evtWeightedQp3->Fill( W2*weightedQ );
@@ -436,7 +430,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",200,0,200);
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000,0,100000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,0,100000);
+  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 100000,0,500);
   QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
   QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
   QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
