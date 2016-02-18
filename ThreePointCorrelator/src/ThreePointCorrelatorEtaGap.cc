@@ -269,6 +269,15 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double HFqVcos = 0.;
   double HFqVsin = 0.;
   int HFcounts = 0;
+
+  double HFqVcosPlus = 0.;
+  double HFqVsinPlus = 0.;
+  int HFminusCounts = 0;
+
+  double HFqVcosMinus = 0.;
+  double HFqVsinMinus = 0.;
+  int HFplusCounts = 0;
+
   for(unsigned int i = 0; i < towers->size(); ++i){
 
         const CaloTower & hit= (*towers)[i];
@@ -276,15 +285,31 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
 
-        if( fabs(caloEta) < 3 || fabs(caloEta) > 5 ) continue;
+        if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
 
-        double CosTerm = cos( 2*caloPhi );
-        double SinTerm = sin( 2*caloPhi );
-        double w = hit.et();
+          double CosTerm = cos( 2*caloPhi );
+          double SinTerm = sin( 2*caloPhi );
+          double w = hit.et();
 
-        HFqVcos = HFqVcos + w*CosTerm;
-        HFqVsin = HFqVsin + w*SinTerm;
-        HFcounts++;
+          HFqVcos = HFqVcos + w*CosTerm;
+          HFqVsin = HFqVsin + w*SinTerm;
+          HFcounts++;
+        }
+        if( caloEta < -4.4 && caloEta > -5 ){
+
+          HFqVcosMinus = HFqVcosMinus + cos( 2*caloPhi );
+          HFqVsinMinus = HFqVsinMinus + sin( 2*caloPhi );
+          HFminusCounts++;
+
+        }
+        if( caloEta < 5 && caloEta > 4.4 ){
+          
+          HFqVcosPlus = HFqVcosPlus + cos( 2*caloPhi );
+          HFqVsinPlus = HFqVsinPlus + sin( 2*caloPhi );
+          HFplusCounts++;
+        }
+
+
   }
 
 // define eta bins:
@@ -298,11 +323,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   }
 
 // initialize Qcos and Qsin
-  //q vector in tracker for particle 3, that correlate with HF. 
-  double QcosP3 = 0.;
-  double QsinP3 = 0.;
-  int QcountsP3 = 0;
-
   double Qcos[48][2];
   double Qsin[48][2];
   int Qcounts[48][2];
@@ -334,13 +354,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
         nTracks++;   
 
-        if( fabs(trk.eta() ) < 1.0 ){
-
-          QcosP3 = QcosP3 + cos( 2*trk.phi() );
-          QsinP3 = QsinP3 + sin( 2*trk.phi() );
-          QcountsP3++;
-
-        }
         for(unsigned eta = 0; eta < etabins.size()-1; eta++){
           if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
 
@@ -361,16 +374,19 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   Ntrk->Fill(nTracks);
 
-  double Q = QcosP3*HFqVcos + QsinP3*HFqVsin;
-  double weight = QcountsP3*HFcounts;
+  double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
+  double weight = HFplusCounts*HFminusCounts;
   double weightedQ = Q/weight;
   double W2 = nTracks*(nTracks-1);
     
   evtWeight->Fill( W2 );
   evtWeightedQp3->Fill( W2*weightedQ );
 
-  averageCos->Fill( QcosP3/QcountsP3 );
-  averageSin->Fill( QsinP3/QcountsP3 );
+  double aveCos = (HFqVcosPlus + HFqVcosMinus)/weight;
+  double aveSin = (HFqVsinPlus + HFqVsinMinus)/weight;
+
+  averageCos->Fill( aveCos );
+  averageSin->Fill( aveSin );
 
   for(int ieta = 0; ieta < 48; ieta++){
     for(int jeta = 0; jeta < 48; jeta++){
