@@ -191,6 +191,8 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH2D* QvsdEtaPlusMinus;
       TH2D* QvsdEtaMinusPlus;
 
+      TH1D* testDeta;
+
       int Nmin_;
       int Nmax_;
 
@@ -327,7 +329,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     double initial = -2.4;
     double temp = initial + increment;
     if( fabs(temp) < 0.001 ) temp = 0.0;
-    cout << "etabins: " << temp << endl;
     etabins.push_back( temp );
     increment = increment + 0.1;
   }
@@ -364,7 +365,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
         nTracks++;   
 
-        for(unsigned eta = 0; eta < etabins.size()-1; eta++){
+        for(unsigned eta = 0; eta < 48; eta++){
           if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
 
              if(trk.charge() == 1){
@@ -439,6 +440,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         normalizeQminusplus = 0.0;
       }
 
+      testDeta->Fill(deltaEta);
+
       QvsdEtaPlusPlus->Fill(deltaEta, normalizeQplusplus);
       QvsdEtaMinusMinus->Fill(deltaEta, normalizeQminusminus);
       QvsdEtaPlusMinus->Fill(deltaEta, normalizeQplusminus);
@@ -472,6 +475,8 @@ ThreePointCorrelatorEtaGap::beginJob()
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 100000,0,5000);
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
+
+  testDeta = fs->make<TH1D>("testDeta",";delta eta", 48, dEtaBins);
 
   QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
   QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
