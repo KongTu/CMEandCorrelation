@@ -462,10 +462,10 @@ ThreePointCorrelatorEtaGap::beginJob()
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
-  QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
-  QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
-  QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
-  QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48,0,4.8,20000,-0.1,0.1 );
+  QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 49,-0.1,4.8,20000,-0.1,0.1 );
+  QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 49,-0.1,4.8,20000,-0.1,0.1 );
+  QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 49,-0.1,4.8,20000,-0.1,0.1 );
+  QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 49,-0.1,4.8,20000,-0.1,0.1 );
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
