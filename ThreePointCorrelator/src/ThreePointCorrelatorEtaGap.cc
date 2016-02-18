@@ -325,7 +325,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   for(int eta = 0; eta < 49; eta++){
 
     double initial = -2.4;
-    etabins.push_back( initial + increment );
+    double temp = initial + increment;
+    if( temp < 0.00001 ) temp = 0.0;
+    etabins.push_back( temp );
     increment = increment + 0.1;
   }
 
