@@ -191,6 +191,9 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH2D* QvsdEtaPlusMinus;
       TH2D* QvsdEtaMinusPlus;
 
+      int Nmin_;
+      int Nmax_;
+
 };
 
 //
@@ -211,6 +214,10 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   vertexSrc_ = iConfig.getParameter<std::string>("vertexSrc");
   towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
+  
+  Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
+  Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
+
 }
 
 
@@ -371,6 +378,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           }
         }     
   } 
+
+  if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
 
   Ntrk->Fill(nTracks);
 
