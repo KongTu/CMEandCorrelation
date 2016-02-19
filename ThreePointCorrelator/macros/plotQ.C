@@ -4,7 +4,7 @@ using namespace std;
 
 void plotQ(){
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v3.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v4.root");
 	TH2D* QPlusPlus = file->Get("ana/QvsdEtaPlusPlus");
 	TH2D* QMinusMinus = file->Get("ana/QvsdEtaMinusMinus");
 	TH2D* QPlusMinus = file->Get("ana/QvsdEtaPlusMinus");
@@ -15,13 +15,13 @@ void plotQ(){
 	TH1D* Ntrk = file->Get("ana/Ntrk");
 
 	double integral = 0;
-	for(int i = 0; i < evtWeight->GetNbinsX(); i++ ){
+	for(int i = 0; i < evtWeightedQp3->GetNbinsX(); i++ ){
 
-		double temp = evtWeight->GetBinContent(i+1);
-		double center = evtWeight->GetBinCenter(i+1);
+		double temp = evtWeightedQp3->GetBinContent(i+1);
+		double center = evtWeightedQp3->GetBinCenter(i+1);
 		if(temp != 0 ){
 
-			cout << "found in bin " << i+1 <<", bin center = " << evtWeight->GetBinCenter(i+1) <<  ", with entires = " << temp << endl;
+			cout << "found in bin " << i+1 <<", bin center = " << evtWeightedQp3->GetBinCenter(i+1) <<  ", with entires = " << temp << endl;
 			integral = integral + temp*center;
 		}
 	}
@@ -44,7 +44,13 @@ void plotQ(){
 
 	}
 
-	TH1D* hist = makeHist("hist","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kBlack);
+	TCanvas* c1 = makeCanvas("c1","");
+	gPad->SetLeftMargin(0.15);
+	gPad->SetBottomMargin(0.15);
+	gPad->SetTicks();
+
+	TH1D* hist = makeHist("hist","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>/v_{2,3}", 48,0,4.8, kBlack);
+	
 	TH1D* hist1 = makeHist("hist1","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kBlack);
 	TH1D* hist2 = makeHist("hist2","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kRed);
 	TH1D* hist3 = makeHist("hist3","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kBlue);
@@ -60,8 +66,13 @@ void plotQ(){
 	}
 
 	hist->GetXaxis()->SetTitleColor(kBlack);
-	hist->GetYaxis()->SetRangeUser(-0.00005,0.00005);
+	hist->GetYaxis()->SetRangeUser(-0.0005,0.0005);
 	hist->Draw();
+	hist1->Scale(1.0/0.0614);
+	hist2->Scale(1.0/0.0614);
+	hist3->Scale(1.0/0.0614);
+	hist4->Scale(1.0/0.0614);
+	
 	hist1->Draw("Psame");
 	hist2->Draw("Psame");
 	hist3->Draw("Psame");
