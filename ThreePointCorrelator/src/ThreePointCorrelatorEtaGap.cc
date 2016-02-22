@@ -395,16 +395,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 //weight by ET() and renormalize by ETT in order to have dimensionless 
 
-  cout << "HFqVcosPlus before: " << HFqVcosPlus << endl;
-  cout << "ETTplus before: " << ETTplus << endl;
-
-
   HFqVcosPlus = HFqVcosPlus/ETTplus;
   HFqVsinPlus = HFqVsinPlus/ETTplus;
-
-
-  cout <<"HFqVcosPlus after: " << HFqVcosPlus << endl;
-
 
   HFqVcosMinus = HFqVcosMinus/ETTminus;
   HFqVsinMinus = HFqVsinMinus/ETTminus;
@@ -418,7 +410,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double W2 = nTracks*(nTracks-1);
     
   evtWeight->Fill( W2 );
-  evtWeightedQp3->Fill( W2*weightedQ );
+  evtWeightedQp3->Fill( weightedQ );
 
   double aveCos = (HFqVcosPlus + HFqVcosMinus)/weight;
   double aveSin = (HFqVsinPlus + HFqVsinMinus)/weight;
