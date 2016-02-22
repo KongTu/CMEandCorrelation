@@ -296,7 +296,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
-        double w = hit.et( vtx.z() );
+        double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
