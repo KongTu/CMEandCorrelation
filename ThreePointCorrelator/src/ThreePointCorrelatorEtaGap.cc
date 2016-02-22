@@ -405,10 +405,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   HFqVsin = HFqVsin/ETT;
 
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
-  double W2 = nTracks*(nTracks-1);
+  double W2 = ETTminus*ETTplus;
     
   evtWeight->Fill( W2 );//not using now
-  evtWeightedQp3->Fill( Q );
+  evtWeightedQp3->Fill( W2*Q );
 
   double aveCos = (HFqVcosPlus + HFqVcosMinus)/2.0;
   double aveSin = (HFqVsinPlus + HFqVsinMinus)/2.0;
@@ -487,7 +487,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000,0,100000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 10000,0,50);
+  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 100000,0,5000);
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
