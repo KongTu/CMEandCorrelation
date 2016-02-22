@@ -405,15 +405,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   HFqVsin = HFqVsin/ETT;
 
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
-  double weight = HFplusCounts*HFminusCounts;
-  double weightedQ = Q/weight;
   double W2 = nTracks*(nTracks-1);
     
-  evtWeight->Fill( W2 );
-  evtWeightedQp3->Fill( weightedQ );
+  evtWeight->Fill( W2 );//not using now
+  evtWeightedQp3->Fill( Q );
 
-  double aveCos = (HFqVcosPlus + HFqVcosMinus)/weight;
-  double aveSin = (HFqVsinPlus + HFqVsinMinus)/weight;
+  double aveCos = (HFqVcosPlus + HFqVcosMinus)/2.0;
+  double aveSin = (HFqVsinPlus + HFqVsinMinus)/2.0;
 
   averageCos->Fill( aveCos );
   averageSin->Fill( aveSin );
@@ -428,10 +426,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       double totalQplusminus = getReal(Qcos[ieta][0],Qcos[jeta][1], HFqVcos, Qsin[ieta][0], Qsin[jeta][1], HFqVsin );
       double totalQminusplus = getReal(Qcos[ieta][1],Qcos[jeta][0], HFqVcos, Qsin[ieta][1], Qsin[jeta][0], HFqVsin );
 
-      double Nplusplus = Qcounts[ieta][0]*Qcounts[jeta][0]*HFcounts;
-      double Nminusminus = Qcounts[ieta][1]*Qcounts[jeta][1]*HFcounts;
-      double Nplusminus = Qcounts[ieta][0]*Qcounts[jeta][1]*HFcounts;
-      double Nminusplus = Qcounts[ieta][1]*Qcounts[jeta][0]*HFcounts;
+      double Nplusplus = Qcounts[ieta][0]*Qcounts[jeta][0];
+      double Nminusminus = Qcounts[ieta][1]*Qcounts[jeta][1];
+      double Nplusminus = Qcounts[ieta][0]*Qcounts[jeta][1];
+      double Nminusplus = Qcounts[ieta][1]*Qcounts[jeta][0];
 
       double deltaEta = fabs(etabins[jeta] - etabins[ieta]);
       if( deltaEta < 0.09999 ){
@@ -489,7 +487,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000,0,100000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 100000,0,5000);
+  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 10000,0,50);
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
