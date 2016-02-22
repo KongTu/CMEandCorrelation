@@ -278,14 +278,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double HFqVcos = 0.;
   double HFqVsin = 0.;
   int HFcounts = 0;
+  double ETT = 0.;
 
   double HFqVcosPlus = 0.;
   double HFqVsinPlus = 0.;
   int HFminusCounts = 0;
+  double ETTplus = 0.;
 
   double HFqVcosMinus = 0.;
   double HFqVsinMinus = 0.;
   int HFplusCounts = 0;
+  double ETTminus = 0.;
 
   for(unsigned int i = 0; i < towers->size(); ++i){
 
@@ -293,29 +296,32 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
+        double w = hit.et();
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
-
-          double CosTerm = cos( 2*caloPhi );
-          double SinTerm = sin( 2*caloPhi );
-          double w = hit.et();
-
-          HFqVcos = HFqVcos + w*CosTerm;
-          HFqVsin = HFqVsin + w*SinTerm;
+          
+          HFqVcos = HFqVcos + w*cos( 2*caloPhi );
+          HFqVsin = HFqVsin + w*sin( 2*caloPhi );
+          
           HFcounts++;
+          ETT += w;
         }
         if( caloEta < -4.4 && caloEta > -5 ){
 
-          HFqVcosMinus = HFqVcosMinus + cos( 2*caloPhi );
-          HFqVsinMinus = HFqVsinMinus + sin( 2*caloPhi );
-          HFminusCounts++;
+          HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
+          HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
+         
+          HFminusCounts++; 
+          ETTminus += w;
 
         }
         if( caloEta < 5 && caloEta > 4.4 ){
           
-          HFqVcosPlus = HFqVcosPlus + cos( 2*caloPhi );
-          HFqVsinPlus = HFqVsinPlus + sin( 2*caloPhi );
+          HFqVcosPlus = HFqVcosPlus + w*cos( 2*caloPhi );
+          HFqVsinPlus = HFqVsinPlus + w*sin( 2*caloPhi );
+          
           HFplusCounts++;
+          ETTplus += w;
         }
 
 
@@ -386,6 +392,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
 
   Ntrk->Fill(nTracks);
+
+//weight by ET() and renormalize by ETT in order to have dimensionless 
+
+  HFqVcosPlus = HFqVcosPlus/ETTplus;
+  HFqVsinPlus = HFqVsinPlus/ETTplus;
+
+  HFqVcosMinus = HFqVcosMinus/ETTminus;
+  HFqVsinMinus = HFqVsinMinus/ETTminus;
+
+  HFqVcos = HFqVcos/ETT;
+  HFqVsin = HFqVsin/ETT;
 
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
   double weight = HFplusCounts*HFminusCounts;
