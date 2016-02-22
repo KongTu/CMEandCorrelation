@@ -290,13 +290,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   int HFplusCounts = 0;
   double ETTminus = 0.;
 
-  for(unsigned int i = 0; i < towers->size(); ++i){
+  for(unsigned i = 0; i < towers->size(); ++i){
 
         const CaloTower & hit= (*towers)[i];
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
-        double w = hit.et();
+        double w = hit.et( vtx.z() );
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
