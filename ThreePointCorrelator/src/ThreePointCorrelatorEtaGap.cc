@@ -304,7 +304,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         if( fabs(caloEta) < 5.0 && fabs(caloEta) > 3.0 ){
 
-          EvsEta->Fill(caloEta, energy )
+          EvsEta->Fill(caloEta, energy );
         }
 
         if( w < 0.3 ) continue;
