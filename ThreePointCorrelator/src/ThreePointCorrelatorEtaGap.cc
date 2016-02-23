@@ -304,6 +304,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           HFqVcos = HFqVcos + cos( 2*caloPhi );
           HFqVsin = HFqVsin + sin( 2*caloPhi );
           
+          cout << "ET in " << i << "th tower: " << w << endl; 
           HFcounts++;
           ETT += w;
         }
