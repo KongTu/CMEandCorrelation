@@ -193,6 +193,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH2D* QvsdEtaMinusPlus;
 
       TH2D* EvsEta;
+      TH2D* ETvsEta;
 
       TH1D* testDeta;
 
@@ -305,6 +306,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if( fabs(caloEta) < 5.0 && fabs(caloEta) > 3.0 ){
 
           EvsEta->Fill(caloEta, energy );
+          ETvsEta->Fill(caloEta, w);
         }
 
         if( w < 0.3 ) continue;
@@ -510,6 +512,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   testDeta = fs->make<TH1D>("testDeta",";delta eta", 48, dEtaBins);
   EvsEta = fs->make<TH2D>("EvsEta",";#eta;Energy(GeV)", 100, -5.0 , 5.0, 10000,0,500);
+  ETvsEta = fs->make<TH2D>("ETvsEta",";#eta;E_{T}(GeV)", 100, -5.0 , 5.0, 10000,0,500);
 
   QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
   QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
