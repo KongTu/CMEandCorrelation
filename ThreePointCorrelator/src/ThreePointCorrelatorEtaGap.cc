@@ -297,21 +297,20 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
-
+        if( w < 0.3 ) continue;
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
-          HFqVcos = HFqVcos + cos( 2*caloPhi );
-          HFqVsin = HFqVsin + sin( 2*caloPhi );
+          HFqVcos = HFqVcos + w*cos( 2*caloPhi );
+          HFqVsin = HFqVsin + w*sin( 2*caloPhi );
           
-          cout << "ET in " << i << "th tower: " << w << endl; 
           HFcounts++;
           ETT += w;
         }
         if( caloEta < -4.4 && caloEta > -5 ){
 
-          HFqVcosMinus = HFqVcosMinus + cos( 2*caloPhi );
-          HFqVsinMinus = HFqVsinMinus + sin( 2*caloPhi );
+          HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
+          HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
          
           HFminusCounts++; 
           ETTminus += w;
@@ -319,8 +318,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }
         if( caloEta < 5 && caloEta > 4.4 ){
           
-          HFqVcosPlus = HFqVcosPlus + cos( 2*caloPhi );
-          HFqVsinPlus = HFqVsinPlus + sin( 2*caloPhi );
+          HFqVcosPlus = HFqVcosPlus + w*cos( 2*caloPhi );
+          HFqVsinPlus = HFqVsinPlus + w*sin( 2*caloPhi );
           
           HFplusCounts++;
           ETTplus += w;
@@ -397,14 +396,14 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 //weight by ET() and renormalize by ETT in order to have dimensionless 
 
-  // HFqVcosPlus = HFqVcosPlus/ETTplus;
-  // HFqVsinPlus = HFqVsinPlus/ETTplus;
+  HFqVcosPlus = HFqVcosPlus/ETTplus;
+  HFqVsinPlus = HFqVsinPlus/ETTplus;
 
-  // HFqVcosMinus = HFqVcosMinus/ETTminus;
-  // HFqVsinMinus = HFqVsinMinus/ETTminus;
+  HFqVcosMinus = HFqVcosMinus/ETTminus;
+  HFqVsinMinus = HFqVsinMinus/ETTminus;
 
-  // HFqVcos = HFqVcos/ETT;
-  // HFqVsin = HFqVsin/ETT;
+  HFqVcos = HFqVcos/ETT;
+  HFqVsin = HFqVsin/ETT;
 
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
   double weight = HFplusCounts*HFminusCounts;
