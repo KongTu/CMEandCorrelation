@@ -187,10 +187,22 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* averageCos;
       TH1D* averageSin;
       
+      //culmulants:
       TH2D* QvsdEtaPlusPlus;
       TH2D* QvsdEtaMinusMinus;
       TH2D* QvsdEtaPlusMinus;
       TH2D* QvsdEtaMinusPlus;
+
+      //two and single particle sum
+      //HF:
+      TH1D* HFcosSum;
+      TH1D* HFsinSum;
+      TH1D* weightSum; 
+
+      TH1D* TRKcosPlusSum[48];
+      TH1D* TRKsinPlusSum[48];
+      TH1D* TRKcosMinusSum[48];
+      TH1D* TRKsinMinusSum[48];
 
       TH2D* EvsEta;
       TH2D* ETvsEta;
@@ -313,6 +325,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
+          HFcosSum->Fill( w*cos( 2*caloPhi ) );
+          HFsinSum->Fill( w*sin( 2*caloPhi ) );
+          weightSum->Fill( w );
+
           HFqVcos = HFqVcos + w*cos( 2*caloPhi );
           HFqVsin = HFqVsin + w*sin( 2*caloPhi );
           
@@ -388,11 +404,19 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
 
              if(trk.charge() == 1){
+
+                TRKcosPlusSum[eta]->Fill( cos( trk.phi() ) );
+                TRKsinPlusSum[eta]->Fill( sin( trk.phi() ) );
+
                 Qcos[eta][0] = Qcos[eta][0] + cos( trk.phi() );
                 Qsin[eta][0] = Qsin[eta][0] + sin( trk.phi() );
                 Qcounts[eta][0]++;
              }
              if(trk.charge() == -1){
+                
+                TRKcosMinusSum[eta]->Fill( cos( trk.phi() ) );
+                TRKsinMinusSum[eta]->Fill( sin( trk.phi() ) );
+                
                 Qcos[eta][1] = Qcos[eta][1] + cos( trk.phi() );
                 Qsin[eta][1] = Qsin[eta][1] + sin( trk.phi() );
                 Qcounts[eta][1]++;
@@ -518,6 +542,20 @@ ThreePointCorrelatorEtaGap::beginJob()
   QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
   QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
   QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
+
+  HFsinSum = fs->make<TH1D>("HFsinSum", ";HFsinSum", 20000, -1.0, 1.0 );
+  HFcosSum = fs->make<TH1D>("HFcosSum", ";HFcosSum", 20000, -1.0, 1.0 );
+  weightSum = fs->make<TH1D>("weightSum", ";weightSum", 3000, 0, 300 );
+
+  for(int eta = 0; eta < 48; eta++){
+
+    TRKcosPlusSum[eta] = fs->make<TH1D>(Form("TRKcosPlusSum_%d", eta), Form(";TRKcosPlusSum_%d", eta), 20000, -1.0, 1.0 );
+    TRKsinPlusSum[eta] = fs->make<TH1D>(Form("TRKsinPlusSum_%d", eta), Form(";TRKsinPlusSum_%d", eta), 20000, -1.0, 1.0 );
+    TRKcosMinusSum[eta] = fs->make<TH1D>(Form("TRKcosMinusSum_%d", eta), Form(";TRKcosMinusSum_%d", eta), 20000, -1.0, 1.0 );
+    TRKsinMinusSum[eta] = fs->make<TH1D>(Form("TRKsinMinusSum_%d", eta), Form(";TRKsinMinusSum_%d", eta), 20000, -1.0, 1.0 );
+
+  }
+
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
