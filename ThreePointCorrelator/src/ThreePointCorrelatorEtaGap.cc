@@ -208,6 +208,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH2D* ETvsEta;
 
       TH1D* testDeta;
+      TH1D* testV2;
 
       int Nmin_;
       int Nmax_;
@@ -306,6 +307,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   int HFplusCounts = 0;
   double ETTminus = 0.;
 
+  double tV2 = 0.0;
+  int norm = 0;
+
   for(unsigned i = 0; i < towers->size(); ++i){
 
         const CaloTower & hit= (*towers)[i];
@@ -315,11 +319,27 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         double energy = hit.emEnergy() + hit.hadEnergy();
 
+        for(unsigned j = 0; j < towers->size(); j++){
+
+          const CaloTower & hit2 = (*towers)[j];
+
+          if( i == j ) continue;
+          if( (hit.eta() > 4.4 && hit.eta() < 5.0 && hit2.eta() < -4.4 && hit2.eta() > -5) || (hit2.eta() > 4.4 && hit2.eta() < 5.0 && hit.eta() < -4.4 && hit.eta() > -5) ){
+
+            tV2 += cos( 2*( hit.phi() - hit2.phi() ));
+            norm++;
+          }
+
+            
+        }
+
         if( fabs(caloEta) < 5.0 && fabs(caloEta) > 3.0 ){
 
           EvsEta->Fill(caloEta, energy );
           ETvsEta->Fill(caloEta, w);
         }
+
+        w = 10.0;
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
@@ -353,6 +373,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 
   }
+
+  testV2->Fill( tV2/norm );
 
 // define eta bins:
   vector<double> etabins;
@@ -532,6 +554,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
+  testV2 = fs->make<TH1D>("testV2";";cos", 10000,-1,1);
   testDeta = fs->make<TH1D>("testDeta",";delta eta", 48, dEtaBins);
   EvsEta = fs->make<TH2D>("EvsEta",";#eta;Energy(GeV)", 100, -5.0 , 5.0, 10000,0,500);
   ETvsEta = fs->make<TH2D>("ETvsEta",";#eta;E_{T}(GeV)", 100, -5.0 , 5.0, 10000,0,500);
