@@ -346,15 +346,23 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   HFqVcosMinus = HFqVcosMinus/ETTminus;
   HFqVsinMinus = HFqVsinMinus/ETTminus;
 
+  cout << "ETTplus: " << ETTplus << endl;
+  cout << "ETTminus: " << ETTminus << endl;
+
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
   double W2 = ETTminus*ETTplus;
+  cout << "W2: " << W2 << endl;
   evtWeight->Fill( W2 );
+  cout << "W2*Q:" << W2*Q << endl;
   evtWeightedQp3->Fill( W2*Q );
   Qp3->Fill( Q );
 
+  if( (tV2/norm) != Q ){
 
-  cout << "test v2: " << tV2/norm << endl;
-  cout << "Q: " << Q << endl;
+    cout << "test v2: " << tV2/norm << endl;
+    cout << "Q: " << Q << endl;
+  } 
+  
 
 }
 
