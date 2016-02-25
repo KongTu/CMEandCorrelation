@@ -376,7 +376,7 @@ testAnalyzer::beginJob()
     
   TH3D::SetDefaultSumw2();
 
-  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,500);
+  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,50000);
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,0,50);
   Qp3 = fs->make<TH1D>("Qp3",";Qp3", 1000000,0,50);
 
