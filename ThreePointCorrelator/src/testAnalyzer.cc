@@ -357,7 +357,7 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   evtWeightedQp3->Fill( W2*Q );
   Qp3->Fill( Q );
 
-  if( (tV2/norm) != Q ){
+  if( (tV2/norm) - Q > 0.0000001 ){
 
     cout << "test v2: " << tV2/norm << endl;
     cout << "Q: " << Q << endl;
