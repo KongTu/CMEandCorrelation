@@ -266,7 +266,6 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   double bestvz=-999.9;
   const reco::Vertex & vtx = (*vertices)[0];
   bestvz = vtx.z();
-
   
   //first selection; vertices
   if(bestvz < -15.0 || bestvz > 15.0) return;
@@ -298,7 +297,7 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
-        double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+        double w = 1.0;
         //double energy = hit.emEnergy() + hit.hadEnergy();
 
         for(unsigned j = 0; j < towers->size(); j++){
@@ -352,6 +351,10 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   evtWeight->Fill( W2 );
   evtWeightedQp3->Fill( W2*Q );
   Qp3->Fill( Q );
+
+
+  cout << "test v2: " << tV2/norm << endl;
+  cout << "Q: " << Q << endl;
 
 }
 
