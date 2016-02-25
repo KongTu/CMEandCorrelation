@@ -338,6 +338,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           ETvsEta->Fill(caloEta, w);
         }
 
+        w = 1.0;
+
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
           HFcosSum->Fill( w*cos( 2*caloPhi ) );
@@ -461,8 +463,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   HFqVsin = HFqVsin/ETT;
 
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
-  //double weight = HFplusCounts*HFminusCounts;
-  //double weightedQ = Q/weight;
   double W2 = ETTminus*ETTplus;
   evtWeight->Fill( W2 );
   evtWeightedQp3->Fill( W2*Q );
