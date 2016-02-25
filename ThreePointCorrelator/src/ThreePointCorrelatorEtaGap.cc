@@ -329,7 +329,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
             tV2 += cos( 2*( hit.phi() - hit2.phi() ));
             norm++;
           }
-
             
         }
 
@@ -339,7 +338,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           ETvsEta->Fill(caloEta, w);
         }
 
-        w = 1.0;
+        if( energy < 3.0 ) continue;
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
@@ -548,13 +547,13 @@ ThreePointCorrelatorEtaGap::beginJob()
   }
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
-  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000,0,100000);
+  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,500);
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,0,50);
   Qp3 = fs->make<TH1D>("Qp3",";Qp3", 1000000,0,50);
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
-  testV2 = fs->make<TH1D>("testV2",";cos", 10000,-1,1);
+  testV2 = fs->make<TH1D>("testV2",";cos", 100000,-1,1);
   testDeta = fs->make<TH1D>("testDeta",";delta eta", 48, dEtaBins);
   EvsEta = fs->make<TH2D>("EvsEta",";#eta;Energy(GeV)", 100, -5.0 , 5.0, 10000,0,500);
   ETvsEta = fs->make<TH2D>("ETvsEta",";#eta;E_{T}(GeV)", 100, -5.0 , 5.0, 10000,0,500);
