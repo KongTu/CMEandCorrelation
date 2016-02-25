@@ -452,8 +452,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   evtWeightedQp3->Fill( W2*Q );
   Qp3->Fill( Q );
 
-  double aveCos = (HFqVcosPlus + HFqVcosMinus)/weight;
-  double aveSin = (HFqVsinPlus + HFqVsinMinus)/weight;
+  double aveCos = (HFqVcosPlus + HFqVcosMinus)/2.0;
+  double aveSin = (HFqVsinPlus + HFqVsinMinus)/2.0;
 
   averageCos->Fill( aveCos );
   averageSin->Fill( aveSin );
@@ -468,10 +468,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       double totalQplusminus = getReal(Qcos[ieta][0],Qcos[jeta][1], HFqVcos, Qsin[ieta][0], Qsin[jeta][1], HFqVsin );
       double totalQminusplus = getReal(Qcos[ieta][1],Qcos[jeta][0], HFqVcos, Qsin[ieta][1], Qsin[jeta][0], HFqVsin );
 
-      double Nplusplus = Qcounts[ieta][0]*Qcounts[jeta][0]*HFcounts;
-      double Nminusminus = Qcounts[ieta][1]*Qcounts[jeta][1]*HFcounts;
-      double Nplusminus = Qcounts[ieta][0]*Qcounts[jeta][1]*HFcounts;
-      double Nminusplus = Qcounts[ieta][1]*Qcounts[jeta][0]*HFcounts;
+      double Nplusplus = Qcounts[ieta][0]*Qcounts[jeta][0];
+      double Nminusminus = Qcounts[ieta][1]*Qcounts[jeta][1];
+      double Nplusminus = Qcounts[ieta][0]*Qcounts[jeta][1];
+      double Nminusplus = Qcounts[ieta][1]*Qcounts[jeta][0];
 
       double deltaEta = fabs(etabins[jeta] - etabins[ieta]);
       if( deltaEta < 0.09999 ){
