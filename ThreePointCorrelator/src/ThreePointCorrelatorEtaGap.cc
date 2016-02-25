@@ -323,6 +323,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         if( energy < 3.0 ) continue;
 
+        w = 100.0;
+
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
           HFcosSum->Fill( w*cos( 2*caloPhi ) );
@@ -337,8 +339,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }
         if( caloEta < -4.4 && caloEta > -5 ){
 
-          HFqVcosMinus = HFqVcosMinus + cos( 2*caloPhi );
-          HFqVsinMinus = HFqVsinMinus + sin( 2*caloPhi );
+          HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
+          HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
          
           HFminusCounts++; 
           ETTminus += w;
@@ -346,8 +348,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }
         if( caloEta < 5 && caloEta > 4.4 ){
           
-          HFqVcosPlus = HFqVcosPlus + cos( 2*caloPhi );
-          HFqVsinPlus = HFqVsinPlus + sin( 2*caloPhi );
+          HFqVcosPlus = HFqVcosPlus + w*cos( 2*caloPhi );
+          HFqVsinPlus = HFqVsinPlus + w*sin( 2*caloPhi );
           
           HFplusCounts++;
           ETTplus += w;
@@ -434,23 +436,23 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   if( HFplusCounts == 0 || HFminusCounts == 0 ) return;
 
-  // HFqVcosPlus = HFqVcosPlus/ETTplus;
-  // HFqVsinPlus = HFqVsinPlus/ETTplus;
+  HFqVcosPlus = HFqVcosPlus/ETTplus;
+  HFqVsinPlus = HFqVsinPlus/ETTplus;
 
-  // HFqVcosMinus = HFqVcosMinus/ETTminus;
-  // HFqVsinMinus = HFqVsinMinus/ETTminus;
+  HFqVcosMinus = HFqVcosMinus/ETTminus;
+  HFqVsinMinus = HFqVsinMinus/ETTminus;
 
   HFqVcos = HFqVcos/ETT;
   HFqVsin = HFqVsin/ETT;
 
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
-  double weight = HFplusCounts*HFminusCounts;
-  double weightedQ = Q/weight;
+  //double weight = HFplusCounts*HFminusCounts;
+  //double weightedQ = Q/weight;
   double W2 = ETTminus*ETTplus;
     
   evtWeight->Fill( W2 );
-  evtWeightedQp3->Fill( W2*weightedQ );
-  Qp3->Fill( weightedQ );
+  evtWeightedQp3->Fill( W2*Q );
+  Qp3->Fill( Q );
 
   double aveCos = (HFqVcosPlus + HFqVcosMinus)/2.0;
   double aveSin = (HFqVsinPlus + HFqVsinMinus)/2.0;
