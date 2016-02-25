@@ -263,11 +263,10 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
-  double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
-  double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
+  double bestvz=-999.9;
   const reco::Vertex & vtx = (*vertices)[0];
-  bestvz = vtx.z(); bestvx = vtx.x(); bestvy = vtx.y();
-  bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
+  bestvz = vtx.z();
+
   
   //first selection; vertices
   if(bestvz < -15.0 || bestvz > 15.0) return;
