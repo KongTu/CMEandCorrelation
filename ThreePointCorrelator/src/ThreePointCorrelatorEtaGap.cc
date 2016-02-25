@@ -545,8 +545,8 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000000,0,5000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 2000000,-50,50);
-  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 1000000,-2,2);
+  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
+  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 100000,-1,1);
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
