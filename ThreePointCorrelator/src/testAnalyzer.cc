@@ -300,7 +300,7 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
-        double energy = hit.emEnergy() + hit.hadEnergy();
+        //double energy = hit.emEnergy() + hit.hadEnergy();
 
         for(unsigned j = 0; j < towers->size(); j++){
 
@@ -347,9 +347,6 @@ testAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   HFqVcosMinus = HFqVcosMinus/ETTminus;
   HFqVsinMinus = HFqVsinMinus/ETTminus;
-
-  HFqVcos = HFqVcos/ETT;
-  HFqVsin = HFqVsin/ETT;
 
   double Q = HFqVcosMinus*HFqVcosPlus + HFqVsinMinus*HFqVsinPlus;
   double W2 = ETTminus*ETTplus;
