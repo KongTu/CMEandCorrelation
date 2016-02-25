@@ -321,10 +321,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           ETvsEta->Fill(caloEta, w);
         }
 
-        if( energy < 3.0 ) continue;
-
-        w = 1.0;
-
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
           HFcosSum->Fill( w*cos( 2*caloPhi ) );
