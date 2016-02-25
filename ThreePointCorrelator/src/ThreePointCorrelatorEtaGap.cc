@@ -449,8 +449,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double W2 = ETTminus*ETTplus;
     
   evtWeight->Fill( W2 );
-  evtWeightedQp3->Fill( W2*Q );
-  Qp3->Fill( Q );
+  evtWeightedQp3->Fill( W2*weightedQ );
+  Qp3->Fill( weightedQ );
 
   double aveCos = (HFqVcosPlus + HFqVcosMinus)/2.0;
   double aveSin = (HFqVsinPlus + HFqVsinMinus)/2.0;
