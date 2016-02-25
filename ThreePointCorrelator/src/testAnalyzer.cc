@@ -378,7 +378,7 @@ testAnalyzer::beginJob()
 
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,50000);
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,0,50);
-  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 1000000,0,50);
+  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 200000,-2,2);
 
   testV2 = fs->make<TH1D>("testV2",";cos", 100000,-1,1);
 }
