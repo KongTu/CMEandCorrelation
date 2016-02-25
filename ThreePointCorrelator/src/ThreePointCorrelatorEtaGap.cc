@@ -554,7 +554,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
-  testV2 = fs->make<TH1D>("testV2";";cos", 10000,-1,1);
+  testV2 = fs->make<TH1D>("testV2",";cos", 10000,-1,1);
   testDeta = fs->make<TH1D>("testDeta",";delta eta", 48, dEtaBins);
   EvsEta = fs->make<TH2D>("EvsEta",";#eta;Energy(GeV)", 100, -5.0 , 5.0, 10000,0,500);
   ETvsEta = fs->make<TH2D>("ETvsEta",";#eta;E_{T}(GeV)", 100, -5.0 , 5.0, 10000,0,500);
