@@ -208,7 +208,6 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH2D* ETvsEta;
 
       TH1D* testDeta;
-      TH1D* testV2;
 
       int Nmin_;
       int Nmax_;
@@ -307,9 +306,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   int HFplusCounts = 0;
   double ETTminus = 0.;
 
-  double tV2 = 0.0;
-  int norm = 0;
-
   for(unsigned i = 0; i < towers->size(); ++i){
 
         const CaloTower & hit= (*towers)[i];
@@ -319,26 +315,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         double energy = hit.emEnergy() + hit.hadEnergy();
 
-        for(unsigned j = 0; j < towers->size(); j++){
-
-          const CaloTower & hit2 = (*towers)[j];
-
-          if( i == j ) continue;
-          if( (hit.eta() > 4.4 && hit.eta() < 5.0 && hit2.eta() < -4.4 && hit2.eta() > -5) || (hit2.eta() > 4.4 && hit2.eta() < 5.0 && hit.eta() < -4.4 && hit.eta() > -5) ){
-
-            tV2 += cos( 2*( hit.phi() - hit2.phi() ));
-            norm++;
-          }
-            
-        }
-
         if( fabs(caloEta) < 5.0 && fabs(caloEta) > 3.0 ){
 
           EvsEta->Fill(caloEta, energy );
           ETvsEta->Fill(caloEta, w);
         }
-
-        w = 1.0;
 
         if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
           
@@ -373,7 +354,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   }
 
-  testV2->Fill( tV2/norm );
 
 // define eta bins:
   vector<double> etabins;
@@ -544,13 +524,12 @@ ThreePointCorrelatorEtaGap::beginJob()
   }
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
-  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000000,0,5000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
-  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 100000,-1,1);
+  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000,0,5000);
+  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 100000,-50,50);
+  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 2000,-1,1);
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
-  testV2 = fs->make<TH1D>("testV2",";cos", 100000,-1,1);
   testDeta = fs->make<TH1D>("testDeta",";delta eta", 48, dEtaBins);
   EvsEta = fs->make<TH2D>("EvsEta",";#eta;Energy(GeV)", 100, -5.0 , 5.0, 10000,0,500);
   ETvsEta = fs->make<TH2D>("ETvsEta",";#eta;E_{T}(GeV)", 100, -5.0 , 5.0, 10000,0,500);
@@ -560,8 +539,8 @@ ThreePointCorrelatorEtaGap::beginJob()
   QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
   QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
 
-  HFsinSum = fs->make<TH1D>("HFsinSum", ";HFsinSum", 20000, -1.0, 1.0 );
-  HFcosSum = fs->make<TH1D>("HFcosSum", ";HFcosSum", 20000, -1.0, 1.0 );
+  HFsinSum = fs->make<TH1D>("HFsinSum", ";HFsinSum", 2000, -1.0, 1.0 );
+  HFcosSum = fs->make<TH1D>("HFcosSum", ";HFcosSum", 2000, -1.0, 1.0 );
   weightSum = fs->make<TH1D>("weightSum", ";weightSum", 3000, 0, 300 );
 
   for(int eta = 0; eta < 48; eta++){
