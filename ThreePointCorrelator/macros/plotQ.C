@@ -4,7 +4,7 @@ using namespace std;
 
 void plotQ(){
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v4.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v12.root");
 	TH2D* QPlusPlus = file->Get("ana/QvsdEtaPlusPlus");
 	TH2D* QMinusMinus = file->Get("ana/QvsdEtaMinusMinus");
 	TH2D* QPlusMinus = file->Get("ana/QvsdEtaPlusMinus");
@@ -12,6 +12,7 @@ void plotQ(){
 	
 	TH1D* evtWeightedQp3 = file->Get("ana/evtWeightedQp3");
 	TH1D* evtWeight = file->Get("ana/evtWeight");
+	TH1D* Qp3 = file->Get("ana/Qp3");
 	TH1D* Ntrk = file->Get("ana/Ntrk");
 
 	double integral = 0;
@@ -26,9 +27,42 @@ void plotQ(){
 		}
 	}
 
-	cout << "integral: " << integral << endl;
-	
+	int integral1 = 0;
+	for(int i = 0; i < evtWeight->GetNbinsX(); i++ ){
 
+		double temp = evtWeight->GetBinContent(i+1);
+		double center = evtWeight->GetBinCenter(i+1);
+		if(temp != 0 ){
+
+			cout << "found in bin " << i+1 <<", bin center = " << evtWeight->GetBinCenter(i+1) <<  ", with entires = " << temp << endl;
+			integral1 = integral1 + temp*center;
+		}
+	}
+
+	double integral2 = 0;
+	for(int i = 0; i < Qp3->GetNbinsX(); i++ ){
+
+		double temp = Qp3->GetBinContent(i+1);
+		double center = Qp3->GetBinCenter(i+1);
+		if(temp != 0 ){
+
+			cout << "found in bin " << i+1 <<", bin center = " << Qp3->GetBinCenter(i+1) <<  ", with entires = " << temp << endl;
+			integral2 = integral2 + temp*center;
+		}
+	}
+
+	cout << "integral of weightedQ: " << integral << endl;
+	cout << "integral of event weight: " << integral1 << endl;
+	cout << "integral of Qp3: " << integral2 << endl;
+
+	double v2_3 = sqrt(integral/integral1);
+	double v2_3_Q = sqrt( ( integral2/Qp3->GetEntries() ) );
+	double v2_3_1 = sqrt( ( integral/evtWeightedQp3->GetEntries() ) ); 
+
+	cout << "v2_3: " << v2_3 << endl;
+	cout << "v2_3_1: " << v2_3_1 << endl;
+	cout << "v2_3_Q: " << v2_3_Q << endl;
+	
 	TH1D* Qplusplus1D[48];
 	TH1D* Qminusminus1D[48];
 	TH1D* Qplusminus1D[48];
@@ -66,12 +100,12 @@ void plotQ(){
 	}
 
 	hist->GetXaxis()->SetTitleColor(kBlack);
-	hist->GetYaxis()->SetRangeUser(-0.0005,0.0005);
+	hist->GetYaxis()->SetRangeUser(-0.0009,0.0009);
 	hist->Draw();
-	hist1->Scale(1.0/0.0614);
-	hist2->Scale(1.0/0.0614);
-	hist3->Scale(1.0/0.0614);
-	hist4->Scale(1.0/0.0614);
+	hist1->Scale(1.0/v2_3_Q);
+	hist2->Scale(1.0/v2_3_Q);
+	hist3->Scale(1.0/v2_3_Q);
+	hist4->Scale(1.0/v2_3_Q);
 	
 	hist1->Draw("Psame");
 	hist2->Draw("Psame");
