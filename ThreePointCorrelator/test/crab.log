@@ -1,0 +1,20 @@
+DEBUG 2016-02-23 13:02:38,623: 	 Executing command: 'submit'
+DEBUG 2016-02-23 13:02:38,624: 	 Found CRAB cache file /afs/cern.ch/user/z/ztu/.crab3
+DEBUG 2016-02-23 13:02:38,649: 	 Checking credentials
+DEBUG 2016-02-23 13:02:38,649: 	 Found proxy file /tmp/x509up_u30140
+DEBUG 2016-02-23 13:02:38,649: 	 Getting proxy life time left
+DEBUG 2016-02-23 13:02:41,185: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 41485
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-23 13:02:42,528: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 
+ error: No VOMS attributes found!
+
+ retcode : 1
+DEBUG 2016-02-23 13:02:42,528: 	 Proxy valid for 00:00:00 hours
+DEBUG 2016-02-23 13:02:42,528: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+ERROR 2016-02-23 13:03:40,113: 	 Keyboard Interrupted
