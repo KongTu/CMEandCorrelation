@@ -369,7 +369,6 @@ vector<TH1D*> loadingHistogram( TFile * file, TString hName, int Nbins ){
 
 	    HistName << hName;
 	    HistName << mult;
-	    HistName << "/leadingpT";
 
 	    TH1D* temp = (TH1D*)file->Get( HistName.str().c_str() );
 	    temp->SetMarkerSize(1.3);

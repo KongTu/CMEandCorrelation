@@ -18,6 +18,8 @@
 //
 
 
+//Version v12, using both the HF+/- for the 3p correlators
+
 // system include files
 #include <memory>
 #include <string>
