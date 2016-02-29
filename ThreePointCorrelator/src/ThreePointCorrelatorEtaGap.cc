@@ -17,9 +17,6 @@
 //
 //
 
-
-//Version v12, using both the HF+/- for the 3p correlators
-
 // system include files
 #include <memory>
 #include <string>
@@ -461,10 +458,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
       if( ieta == jeta ) continue;
 
-      double totalQplusplus = getReal(Qcos[ieta][0],Qcos[jeta][0], HFqVcos, Qsin[ieta][0], Qsin[jeta][0], HFqVsin );
-      double totalQminusminus = getReal(Qcos[ieta][1],Qcos[jeta][1], HFqVcos, Qsin[ieta][1], Qsin[jeta][1], HFqVsin );
-      double totalQplusminus = getReal(Qcos[ieta][0],Qcos[jeta][1], HFqVcos, Qsin[ieta][0], Qsin[jeta][1], HFqVsin );
-      double totalQminusplus = getReal(Qcos[ieta][1],Qcos[jeta][0], HFqVcos, Qsin[ieta][1], Qsin[jeta][0], HFqVsin );
+      double totalQplusplus = getReal(Qcos[ieta][0],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][0], HFqVsinPlus );
+      double totalQminusminus = getReal(Qcos[ieta][1],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][1], HFqVsinPlus );
+      double totalQplusminus = getReal(Qcos[ieta][0],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][1], HFqVsinPlus );
+      double totalQminusplus = getReal(Qcos[ieta][1],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][0], HFqVsinPlus );
 
       double Nplusplus = Qcounts[ieta][0]*Qcounts[jeta][0];
       double Nminusminus = Qcounts[ieta][1]*Qcounts[jeta][1];
