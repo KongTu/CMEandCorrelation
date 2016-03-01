@@ -225,6 +225,8 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       int Nmin_;
       int Nmax_;
 
+      bool useCentrality_;
+
 };
 
 //
@@ -249,6 +251,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
+  useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
 
 }
 
@@ -312,14 +315,18 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
   
-  CentralityProvider * centProvider = 0;
+  if( useCentrality_ ){
 
-  if (!centProvider) centProvider = new CentralityProvider(iSetup);
-  centProvider->newEvent(iEvent,iSetup);
-  //const reco::Centrality* centrality = centProvider->raw();
-  int hiBin = centProvider->getBin();
+    CentralityProvider * centProvider = 0;
 
-  cbinHist->Fill( hiBin );
+    if (!centProvider) centProvider = new CentralityProvider(iSetup);
+    centProvider->newEvent(iEvent,iSetup);
+    //const reco::Centrality* centrality = centProvider->raw();
+    int hiBin = centProvider->getBin();
+
+    cbinHist->Fill( hiBin );
+  }
+
   
   // define eta bins:
   vector<double> etabins;
