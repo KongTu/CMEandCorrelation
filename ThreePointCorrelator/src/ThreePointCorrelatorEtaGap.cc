@@ -136,6 +136,7 @@
 
 // Heavyion
 #include "DataFormats/HeavyIonEvent/interface/Centrality.h"
+#include "RecoHI/HiCentralityAlgos/interface/CentralityProvider.h"
 
 // Particle Flow
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
@@ -310,15 +311,16 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
-
-  Handle<int> centralityBin;
-  iEvent.getByLabel(centralitySrc_, centralityBin);
-  int cbin = *centralityBin;
   
-  cbinHist->Fill( cbin );
+  CentralityProvider * centProvider = 0;
 
+  if (!centProvider) centProvider = new CentralityProvider(iSetup);
+  centProvider->newEvent(iEvent,iSetup);
+  const reco::Centrality* centrality = centProvider->raw();
+  int hiBin = centProvider->getBin();
 
-
+  cbinHist->Fill( hiBin );
+  
   // define eta bins:
   vector<double> etabins;
   double increment = 0.0;
