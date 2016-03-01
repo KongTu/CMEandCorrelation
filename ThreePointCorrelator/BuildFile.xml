@@ -20,6 +20,7 @@
 
 
 <use name="RecoBTag/SecondaryVertex"/>
+<use name="RecoHI/HiCentralityAlgos"/>
 
 <use name="L1Trigger/GlobalTrigger"/>
 
