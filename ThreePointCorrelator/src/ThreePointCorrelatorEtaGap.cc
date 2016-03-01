@@ -183,6 +183,9 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* Qp3;
       TH1D* evtWeightedQp3;
       TH1D* evtWeight;
+      TH1D* c2_m;
+      TH1D* c2_p;
+      
       TH1D* averageCos;
       TH1D* averageSin;
       
@@ -197,6 +200,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* HFcosSum;
       TH1D* HFsinSum;
       TH1D* weightSum; 
+
 
       TH1D* TRKcosPlusSum[48];
       TH1D* TRKsinPlusSum[48];
@@ -251,8 +255,8 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 // member functions
 //
 
-
-double getReal(double cos1, double cos2, double cos3, double sin1, double sin2, double sin3){
+//cos(p1+p2-p3)
+double get3Real(double cos1, double cos2, double cos3, double sin1, double sin2, double sin3){
 
   double t1 = cos1*cos2*cos3;
   double t2 = cos1*sin2*sin3;
@@ -261,6 +265,15 @@ double getReal(double cos1, double cos2, double cos3, double sin1, double sin2, 
 
   return t1+t2+t3-t4;
 
+}
+
+//cos(p1-p2)
+double get2Real(double cos1, double cos2, double sin1, double sin2){
+
+  double t1 = cos1*cos2;
+  double t2 = sin1*sin2;
+
+  return t1+t2;
 }
 
     
@@ -287,6 +300,89 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
+
+
+  // define eta bins:
+  vector<double> etabins;
+  double increment = 0.0;
+  for(int eta = 0; eta < 49; eta++){
+
+    double initial = -2.4;
+    double temp = initial + increment;
+    if( fabs(temp) < 0.001 ) temp = 0.0;
+    etabins.push_back( temp );
+    increment = increment + 0.1;
+  }
+
+// initialize Qcos and Qsin
+  double Qcos[48][2];
+  double Qsin[48][2];
+  int Qcounts[48][2];
+  for(int eta = 0; eta < 48; eta++){
+    for(int sign = 0; sign < 2; sign++){
+
+      Qcounts[eta][sign] = 0;
+      Qcos[eta][sign] = 0.;
+      Qsin[eta][sign] = 0.;
+    }
+  }
+
+  double QcosTRK = 0.;
+  double QsinTRK = 0.;
+  int QcountsTrk = 0;
+
+  int nTracks = 0;
+  for(unsigned it = 0; it < tracks->size(); it++){
+
+     const reco::Track & trk = (*tracks)[it];
+
+     math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+        
+        double dzvtx = trk.dz(bestvtx);
+        double dxyvtx = trk.dxy(bestvtx);
+        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+        
+        if(!trk.quality(reco::TrackBase::highPurity)) continue;
+        if(fabs(trk.ptError())/trk.pt()>0.10) continue;
+        if(fabs(dzvtx/dzerror) > 3) continue;
+        if(fabs(dxyvtx/dxyerror) > 3) continue;
+        if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
+        nTracks++;   
+
+        QcosTRK = QcosTRK + cos( 2*trk.phi() );
+        QsinTRK = QsinTRK + sin( 2*trk.phi() );
+        QcountsTrk++;
+
+        for(unsigned eta = 0; eta < 48; eta++){
+          if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
+
+             if(trk.charge() == 1){
+
+                TRKcosPlusSum[eta]->Fill( cos( trk.phi() ) );
+                TRKsinPlusSum[eta]->Fill( sin( trk.phi() ) );
+
+                Qcos[eta][0] = Qcos[eta][0] + cos( trk.phi() );
+                Qsin[eta][0] = Qsin[eta][0] + sin( trk.phi() );
+                Qcounts[eta][0]++;
+             }
+             if(trk.charge() == -1){
+                
+                TRKcosMinusSum[eta]->Fill( cos( trk.phi() ) );
+                TRKsinMinusSum[eta]->Fill( sin( trk.phi() ) );
+                
+                Qcos[eta][1] = Qcos[eta][1] + cos( trk.phi() );
+                Qsin[eta][1] = Qsin[eta][1] + sin( trk.phi() );
+                Qcounts[eta][1]++;
+             }
+
+          }
+        }     
+  } 
+
+  if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
+
+  Ntrk->Fill(nTracks);
 
 //loop over calo towers (HF)
 
@@ -353,81 +449,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   }
 
-
-// define eta bins:
-  vector<double> etabins;
-  double increment = 0.0;
-  for(int eta = 0; eta < 49; eta++){
-
-    double initial = -2.4;
-    double temp = initial + increment;
-    if( fabs(temp) < 0.001 ) temp = 0.0;
-    etabins.push_back( temp );
-    increment = increment + 0.1;
-  }
-
-// initialize Qcos and Qsin
-  double Qcos[48][2];
-  double Qsin[48][2];
-  int Qcounts[48][2];
-  for(int eta = 0; eta < 48; eta++){
-    for(int sign = 0; sign < 2; sign++){
-
-      Qcounts[eta][sign] = 0;
-      Qcos[eta][sign] = 0.;
-      Qsin[eta][sign] = 0.;
-    }
-  }
-
-  int nTracks = 0;
-  for(unsigned it = 0; it < tracks->size(); it++){
-
-     const reco::Track & trk = (*tracks)[it];
-
-     math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
-        
-        double dzvtx = trk.dz(bestvtx);
-        double dxyvtx = trk.dxy(bestvtx);
-        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
-        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
-        
-        if(!trk.quality(reco::TrackBase::highPurity)) continue;
-        if(fabs(trk.ptError())/trk.pt()>0.10) continue;
-        if(fabs(dzvtx/dzerror) > 3) continue;
-        if(fabs(dxyvtx/dxyerror) > 3) continue;
-        if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
-        nTracks++;   
-
-        for(unsigned eta = 0; eta < 48; eta++){
-          if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
-
-             if(trk.charge() == 1){
-
-                TRKcosPlusSum[eta]->Fill( cos( trk.phi() ) );
-                TRKsinPlusSum[eta]->Fill( sin( trk.phi() ) );
-
-                Qcos[eta][0] = Qcos[eta][0] + cos( trk.phi() );
-                Qsin[eta][0] = Qsin[eta][0] + sin( trk.phi() );
-                Qcounts[eta][0]++;
-             }
-             if(trk.charge() == -1){
-                
-                TRKcosMinusSum[eta]->Fill( cos( trk.phi() ) );
-                TRKsinMinusSum[eta]->Fill( sin( trk.phi() ) );
-                
-                Qcos[eta][1] = Qcos[eta][1] + cos( trk.phi() );
-                Qsin[eta][1] = Qsin[eta][1] + sin( trk.phi() );
-                Qcounts[eta][1]++;
-             }
-
-          }
-        }     
-  } 
-
-  if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
-
-  Ntrk->Fill(nTracks);
-
 //weight by ET() and renormalize by ETT in order to have dimensionless 
 
   if( HFplusCounts == 0 || HFminusCounts == 0 ) return;
@@ -437,6 +458,19 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   HFqVcosMinus = HFqVcosMinus/ETTminus;
   HFqVsinMinus = HFqVsinMinus/ETTminus;
+
+  QcosTRK = QcosTRK/QcountsTrk;
+  QsinTRK = QsinTRK/QcountsTrk;
+
+  double QaQc = get2Real(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
+  double QaQb = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
+  double QcQb = get2Real(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
+
+  double c2_minus = (QaQc * QaQb)/QcQb;
+  double c2_plus = (QcQb * QaQb)/QaQc;
+
+  c2_m->Fill( c2_minus );
+  c2_p->Fill( c2_plus  );
 
   HFqVcos = HFqVcos/ETT;
   HFqVsin = HFqVsin/ETT;
@@ -458,10 +492,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
       if( ieta == jeta ) continue;
 
-      double totalQplusplus = getReal(Qcos[ieta][0],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][0], HFqVsinPlus );
-      double totalQminusminus = getReal(Qcos[ieta][1],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][1], HFqVsinPlus );
-      double totalQplusminus = getReal(Qcos[ieta][0],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][1], HFqVsinPlus );
-      double totalQminusplus = getReal(Qcos[ieta][1],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][0], HFqVsinPlus );
+      double totalQplusplus = get3Real(Qcos[ieta][0],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][0], HFqVsinPlus );
+      double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][1], HFqVsinPlus );
+      double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][1], HFqVsinPlus );
+      double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][0], HFqVsinPlus );
 
       double Nplusplus = Qcounts[ieta][0]*Qcounts[jeta][0];
       double Nminusminus = Qcounts[ieta][1]*Qcounts[jeta][1];
@@ -523,12 +557,12 @@ ThreePointCorrelatorEtaGap::beginJob()
   }
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
-  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 100000,0,5000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 100000,-50,50);
-  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 2000,-1,1);
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,5000);
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
-  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 100000,-1,1);
+  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 10000,-1,1);
+  c2_m = fs->make<TH1D>("Qp3",";Qp3", 10000,-1,1);
+  c2_p = fs->make<TH1D>("Qp3",";Qp3", 10000,-1,1);
+
   averageCos = fs->make<TH1D>("averageCos",";averageCos", 200,-1,1);
   averageSin = fs->make<TH1D>("averageSin",";averageSin", 200,-1,1);
 
