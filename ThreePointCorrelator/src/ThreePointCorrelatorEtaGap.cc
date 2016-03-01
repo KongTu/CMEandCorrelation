@@ -316,7 +316,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   if (!centProvider) centProvider = new CentralityProvider(iSetup);
   centProvider->newEvent(iEvent,iSetup);
-  const reco::Centrality* centrality = centProvider->raw();
+  //const reco::Centrality* centrality = centProvider->raw();
   int hiBin = centProvider->getBin();
 
   cbinHist->Fill( hiBin );
