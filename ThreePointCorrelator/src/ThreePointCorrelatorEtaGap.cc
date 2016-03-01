@@ -177,6 +177,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
       edm::InputTag towerSrc_;
+      edm::InputTag centralitySrc_;
       std::string vertexSrc_;
 
       TH1D* Ntrk;
@@ -218,6 +219,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH2D* ETvsEta;
 
       TH1D* testDeta;
+      TH1D* cbinHist;
 
       int Nmin_;
       int Nmax_;
@@ -242,6 +244,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   vertexSrc_ = iConfig.getParameter<std::string>("vertexSrc");
   towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
+  centralitySrc_ iConfig.getParameter<edm::InputTag>("centralitySrc")
   
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
@@ -307,6 +310,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(trackSrc_, tracks);
+
+  Handle<int> centralityBin;
+  iEvent.getByLabel(centralitySrc_, centralityBin);
+  cbin = *centralityBin;
+  
+  cbinHist->Fill( cbin );
+
 
 
   // define eta bins:
@@ -559,6 +569,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   }
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
+  cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
  
 //HF:
 
