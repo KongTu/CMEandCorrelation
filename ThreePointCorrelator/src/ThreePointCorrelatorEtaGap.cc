@@ -244,7 +244,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   vertexSrc_ = iConfig.getParameter<std::string>("vertexSrc");
   towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
-  centralitySrc_ iConfig.getParameter<edm::InputTag>("centralitySrc")
+  centralitySrc_ = iConfig.getParameter<edm::InputTag>("centralitySrc");
   
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
@@ -313,7 +313,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   Handle<int> centralityBin;
   iEvent.getByLabel(centralitySrc_, centralityBin);
-  cbin = *centralityBin;
+  int cbin = *centralityBin;
   
   cbinHist->Fill( cbin );
 
