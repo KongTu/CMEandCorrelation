@@ -178,7 +178,6 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
       edm::InputTag towerSrc_;
-      edm::InputTag centralitySrc_;
       std::string vertexSrc_;
 
       TH1D* Ntrk;
@@ -253,7 +252,6 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   vertexSrc_ = iConfig.getParameter<std::string>("vertexSrc");
   towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
-  centralitySrc_ = iConfig.getParameter<edm::InputTag>("centralitySrc");
   
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
