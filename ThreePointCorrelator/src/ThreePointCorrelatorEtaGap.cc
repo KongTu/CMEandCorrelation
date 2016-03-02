@@ -507,12 +507,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   cout << "QaQb: " << QaQb << endl;
   cout << "QcQb: " << QcQb << endl;
 
+  double c2_minus = (QaQc * QaQb)/QcQb;
+  double c2_plus = (QcQb * QaQb)/QaQc;
+
   cout << " ------- " << endl;
   cout << "c2_m: " << c2_minus << endl;
   cout << "c2_p: " << c2_plus << endl;
-
-  double c2_minus = (QaQc * QaQb)/QcQb;
-  double c2_plus = (QcQb * QaQb)/QaQc;
 
   c2_m->Fill( c2_minus );
   c2_p->Fill( c2_plus  );
