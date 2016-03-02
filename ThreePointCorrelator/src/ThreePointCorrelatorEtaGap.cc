@@ -329,8 +329,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     centProvider->newEvent(iEvent,iSetup);
     //const reco::Centrality* centrality = centProvider->raw();
     int hiBin = centProvider->getBin();
+    cout << "hiBin: " << hiBin << endl;
 
     cbinHist->Fill( hiBin );
+
+    if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
   }
 
   
@@ -412,8 +415,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }     
   } 
 
-  if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
-
+  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
+  
   Ntrk->Fill(nTracks);
 
 //loop over calo towers (HF)
