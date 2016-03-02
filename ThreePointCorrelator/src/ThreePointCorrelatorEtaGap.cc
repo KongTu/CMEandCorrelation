@@ -336,7 +336,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   }
 
-  const int binSize_ = etaBins_.size() - 1 ;
+  const unsigned binSize_ = etaBins_.size() - 1 ;
 
 // initialize Qcos and Qsin
   double Qcos[binSize_][2];
@@ -607,23 +607,23 @@ ThreePointCorrelatorEtaGap::beginJob()
 //TRK:
   if( useBothSide_ ){
   
-    QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
 
   }
   else{
     
-    HFp_QvsdEtaPlusPlus = fs->make<TH2D>("HFp_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    HFp_QvsdEtaMinusMinus = fs->make<TH2D>("HFp_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    HFp_QvsdEtaPlusMinus = fs->make<TH2D>("HFp_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    HFp_QvsdEtaMinusPlus = fs->make<TH2D>("HFp_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFp_QvsdEtaPlusPlus = fs->make<TH2D>("HFp_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    HFp_QvsdEtaMinusMinus = fs->make<TH2D>("HFp_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    HFp_QvsdEtaPlusMinus = fs->make<TH2D>("HFp_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    HFp_QvsdEtaMinusPlus = fs->make<TH2D>("HFp_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
 
-    HFm_QvsdEtaPlusPlus = fs->make<TH2D>("HFm_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    HFm_QvsdEtaMinusMinus = fs->make<TH2D>("HFm_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    HFm_QvsdEtaPlusMinus = fs->make<TH2D>("HFm_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
-    HFm_QvsdEtaMinusPlus = fs->make<TH2D>("HFm_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFm_QvsdEtaPlusPlus = fs->make<TH2D>("HFm_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    HFm_QvsdEtaMinusMinus = fs->make<TH2D>("HFm_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    HFm_QvsdEtaPlusMinus = fs->make<TH2D>("HFm_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
+    HFm_QvsdEtaMinusPlus = fs->make<TH2D>("HFm_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins_, 20000,-0.1,0.1 );
   }
 
 
