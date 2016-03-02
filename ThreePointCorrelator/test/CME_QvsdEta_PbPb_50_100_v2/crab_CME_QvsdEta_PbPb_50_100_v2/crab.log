@@ -1,0 +1,350 @@
+DEBUG 2016-02-26 18:06:36,377: 	 Executing command: 'submit'
+DEBUG 2016-02-26 18:06:36,378: 	 Found CRAB cache file /afs/cern.ch/user/z/ztu/.crab3
+DEBUG 2016-02-26 18:06:36,397: 	 Checking credentials
+DEBUG 2016-02-26 18:06:36,398: 	 Found proxy file /tmp/x509up_u30140
+DEBUG 2016-02-26 18:06:36,398: 	 Getting proxy life time left
+DEBUG 2016-02-26 18:06:37,705: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 43183
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:38,214: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 
+ error: No VOMS attributes found!
+
+ retcode : 1
+DEBUG 2016-02-26 18:06:38,214: 	 Proxy valid for 00:00:00 hours
+DEBUG 2016-02-26 18:06:38,214: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2016-02-26 18:06:45,782: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2016-02-26 18:06:46,289: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:46,895: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:47,401: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u30140 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/uscms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:47,402: 	 Proxy created.
+INFO 2016-02-26 18:06:47,402: 	 Will use CRAB configuration file crab_ana_PbPb.py
+DEBUG 2016-02-26 18:06:47,402: 	 Loading CRAB configuration file.
+DEBUG 2016-02-26 18:06:50,028: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2016-02-26 18:06:50,177: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-02-26 18:06:50,177: 	 Checking credentials
+DEBUG 2016-02-26 18:06:50,178: 	 Found proxy file /tmp/x509up_u30140
+DEBUG 2016-02-26 18:06:50,178: 	 Getting proxy life time left
+DEBUG 2016-02-26 18:06:50,687: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 86394
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:51,193: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 86393
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:51,194: 	 Proxy valid for 23:59:54 hours
+DEBUG 2016-02-26 18:06:51,799: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u30140 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/uscms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:52,199: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+DEBUG 2016-02-26 18:06:52,313: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-02-26 18:06:52,313: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-02-26 18:06:52,313: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu_cmsweb.cern.ch for credential name
+DEBUG 2016-02-26 18:06:52,922: 	 Executing : 
+ command : myproxy-info -l aeeb635c02ab2354cd0696fedaf0d9122a1d7b0d -s myproxy.cern.ch
+ output : username: aeeb635c02ab2354cd0696fedaf0d9122a1d7b0d
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  timeleft: 617:18:56  (25.7 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-26 18:06:52,923: 	 Myproxy is valid: 2222336
+DEBUG 2016-02-26 18:06:52,923: 	 Command use: submit
+DEBUG 2016-02-26 18:06:52,923: 	 Options use: ['-c', 'crab_ana_PbPb.py']
+DEBUG 2016-02-26 18:06:53,340: 	 CRABClient version: 3.3.1602
+DEBUG 2016-02-26 18:06:53,340: 	 Instance is prod
+DEBUG 2016-02-26 18:06:53,340: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-02-26 18:06:53,340: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-02-26 18:06:53,340: 	 Started submission
+DEBUG 2016-02-26 18:06:53,340: 	 Working on /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2
+DEBUG 2016-02-26 18:06:53,788: 	 Loading required information from the environment
+DEBUG 2016-02-26 18:06:53,788: 	 Found CMSSW_5_3_20 for slc6_amd64_gcc472 with base /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20
+DEBUG 2016-02-26 18:06:53,835: 	 UNIQUE NAME: tarUUID 558cbe25-5a4a-4634-8578-d8b9c54c3111 
+DEBUG 2016-02-26 18:06:53,835: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.transferLogs = True
+config.General.transferOutputs = True
+config.General.workArea = 'CME_QvsdEta_PbPb_50_100_v2'
+config.General.requestName = 'CME_QvsdEta_PbPb_50_100_v2'
+config.section_('JobType')
+config.JobType.psetName = 'threepointcorrelatoretagap_cfg.py'
+config.JobType.pluginName = 'Analysis'
+config.JobType.allowUndistributedCMSSW = True
+config.section_('Data')
+config.Data.inputDataset = '/HIMinBiasUPC/davidlw-PR2011_MBPPRereco_TRKANASKIM_v6-ccf03100d177f42de0f9cdc7627799d3/USER'
+config.Data.publication = False
+config.Data.unitsPerJob = 10
+config.Data.ignoreLocality = False
+config.Data.inputDBS = 'phys03'
+config.Data.splitting = 'FileBased'
+config.Data.outLFNDirBase = '/store/user/ztu/'
+config.section_('Site')
+config.Site.storageSite = 'T2_US_MIT'
+config.section_('User')
+config.section_('Debug')
+
+DEBUG 2016-02-26 18:06:53,835: 	 self.config.JobType.psetName: threepointcorrelatoretagap_cfg.py
+INFO 2016-02-26 18:06:53,835: 	 Importing CMSSW configuration threepointcorrelatoretagap_cfg.py
+INFO 2016-02-26 18:06:59,426: 	 Finished importing CMSSW configuration threepointcorrelatoretagap_cfg.py
+DEBUG 2016-02-26 18:06:59,426: 	 Writing CMSSW configuration to /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/inputs/PSet.py
+DEBUG 2016-02-26 18:07:02,048: 	 The following EDM output files will be collected: []
+DEBUG 2016-02-26 18:07:02,048: 	 The following TFile output files will be collected: ['test.root']
+DEBUG 2016-02-26 18:07:02,048: 	 The following user output files will be collected: []
+DEBUG 2016-02-26 18:07:02,048: 	 Loading required information from the environment
+DEBUG 2016-02-26 18:07:02,048: 	 Found CMSSW_5_3_20 for slc6_amd64_gcc472 with base /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20
+DEBUG 2016-02-26 18:07:02,048: 	 Making tarball in /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/inputs/558cbe25-5a4a-4634-8578-d8b9c54c3111default.tgz
+DEBUG 2016-02-26 18:07:02,049: 	 Checking directory /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/lib
+DEBUG 2016-02-26 18:07:02,049: 	 Adding directory /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/lib to tarball
+DEBUG 2016-02-26 18:07:02,166: 	 Checking directory /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/biglib
+DEBUG 2016-02-26 18:07:02,166: 	 Checking directory /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/module
+DEBUG 2016-02-26 18:07:04,172: 	 Adding data directory /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/interface to tarball
+DEBUG 2016-02-26 18:07:05,391: 	 Uploading archive /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/inputs/558cbe25-5a4a-4634-8578-d8b9c54c3111default.tgz to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2016-02-26 18:07:06,316: 	 Result uploading input files: 28732d6f31be9d20b983694ae738b125e00dafde78520a8acb54fbdf4e3c0de2.tar.gz 
+INFO 2016-02-26 18:07:06,316: 	 Sending the request to the server
+DEBUG 2016-02-26 18:07:06,316: 	 Submitting {'maxjobruntime': 1250, 'ignorelocality': 0, 'savelogsflag': 1, 'useparent': 0, 'asyncdest': 'T2_US_MIT', 'algoargs': 10, 'cachefilename': '28732d6f31be9d20b983694ae738b125e00dafde78520a8acb54fbdf4e3c0de2.tar.gz', 'numcores': 1, 'addoutputfiles': [], 'generator': 'pythia', 'maxmemory': 2000, 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'priority': 10, 'jobsw': 'CMSSW_5_3_20', 'edmoutfiles': [], 'userfiles': [], 'primarydataset': '', 'inputdata': '/HIMinBiasUPC/davidlw-PR2011_MBPPRereco_TRKANASKIM_v6-ccf03100d177f42de0f9cdc7627799d3/USER', 'lfn': '/store/user/ztu/', 'dryrun': 0, 'workflow': 'crab_CME_QvsdEta_PbPb_50_100_v2', 'adduserfiles': [], 'nonprodsw': 1, 'tfileoutfiles': ['test.root'], 'oneEventMode': 0, 'cacheurl': 'https://cmsweb.cern.ch/crabcache', 'saveoutput': 1, 'publication': 0, 'jobarch': 'slc6_amd64_gcc472', 'totalunits': 0, 'splitalgo': 'FileBased', 'nonvaliddata': 0, 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', 'publishgroupname': 0, 'jobtype': 'Analysis', 'publishname2': ''} 
+DEBUG 2016-02-26 18:07:06,317: 	 Encoded submit request: maxjobruntime=1250&ignorelocality=0&savelogsflag=1&useparent=0&asyncdest=T2_US_MIT&algoargs=10&cachefilename=28732d6f31be9d20b983694ae738b125e00dafde78520a8acb54fbdf4e3c0de2.tar.gz&numcores=1&generator=pythia&maxmemory=2000&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&priority=10&jobsw=CMSSW_5_3_20&primarydataset=&inputdata=%2FHIMinBiasUPC%2Fdavidlw-PR2011_MBPPRereco_TRKANASKIM_v6-ccf03100d177f42de0f9cdc7627799d3%2FUSER&lfn=%2Fstore%2Fuser%2Fztu%2F&dryrun=0&workflow=crab_CME_QvsdEta_PbPb_50_100_v2&nonprodsw=1&oneEventMode=0&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%2Fcrabcache&saveoutput=1&publication=0&jobarch=slc6_amd64_gcc472&totalunits=0&splitalgo=FileBased&nonvaliddata=0&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSReader&publishgroupname=0&jobtype=Analysis&publishname2=&tfileoutfiles=test.root
+DEBUG 2016-02-26 18:07:06,773: 	 Result: {'result': [{'RequestName': '160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2'}]}
+INFO 2016-02-26 18:07:06,778: 	 Success: Your task has been delivered to the CRAB3 server.
+INFO 2016-02-26 18:07:06,778: 	 Task name: 160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2
+INFO 2016-02-26 18:07:06,778: 	 Please use 'crab status' to check how the submission process proceeds.
+DEBUG 2016-02-26 18:07:06,778: 	 About to return
+INFO 2016-02-26 18:07:06,782: 	 Log file is /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/crab.log
+DEBUG 2016-02-29 08:40:05,811: 	 Executing command: 'status'
+DEBUG 2016-02-29 08:40:05,813: 	 Found CRAB cache file /afs/cern.ch/user/z/ztu/.crab3
+DEBUG 2016-02-29 08:40:05,849: 	 Checking credentials
+DEBUG 2016-02-29 08:40:05,849: 	 Found proxy file /tmp/x509up_u30140
+DEBUG 2016-02-29 08:40:05,849: 	 Getting proxy life time left
+DEBUG 2016-02-29 08:40:06,353: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 43176
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:40:06,859: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 
+ error: No VOMS attributes found!
+
+ retcode : 1
+DEBUG 2016-02-29 08:40:06,859: 	 Proxy valid for 00:00:00 hours
+DEBUG 2016-02-29 08:40:06,859: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2016-02-29 08:40:12,590: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2016-02-29 08:40:13,199: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:40:13,705: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:40:14,210: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u30140 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/uscms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:40:14,210: 	 Proxy created.
+DEBUG 2016-02-29 08:40:14,418: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-02-29 08:40:14,419: 	 Checking credentials
+DEBUG 2016-02-29 08:40:14,419: 	 Found proxy file /tmp/x509up_u30140
+DEBUG 2016-02-29 08:40:14,419: 	 Getting proxy life time left
+DEBUG 2016-02-29 08:40:14,923: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 86397
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:40:15,431: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 86396
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:40:15,432: 	 Proxy valid for 23:59:57 hours
+DEBUG 2016-02-29 08:40:15,777: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+DEBUG 2016-02-29 08:40:15,890: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-02-29 08:40:15,890: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-02-29 08:40:15,890: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu_cmsweb.cern.ch for credential name
+DEBUG 2016-02-29 08:40:16,394: 	 Executing : 
+ command : myproxy-info -l aeeb635c02ab2354cd0696fedaf0d9122a1d7b0d -s myproxy.cern.ch
+ output : username: aeeb635c02ab2354cd0696fedaf0d9122a1d7b0d
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  timeleft: 554:45:32  (23.1 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:40:16,395: 	 Myproxy is valid: 1997132
+DEBUG 2016-02-29 08:40:16,395: 	 Command use: status
+DEBUG 2016-02-29 08:40:16,395: 	 Options use: ['CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/']
+DEBUG 2016-02-29 08:40:16,771: 	 CRABClient version: 3.3.1602
+DEBUG 2016-02-29 08:40:16,771: 	 Instance is prod
+DEBUG 2016-02-29 08:40:16,771: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-02-29 08:40:16,771: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-02-29 08:40:16,771: 	 Looking up detailed status of task 160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2
+DEBUG 2016-02-29 08:40:17,172: 	 {'status': 'SUBMITFAILED', 'schedd': '', 'totalJobdefs': 0, 'jobsPerStatus': {}, 'taskWarningMsg': [], 'statusFailureMsg': '', 'taskFailureMsg': 'Problem handling 160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2 because of (28, \'Operation timed out after 300002 milliseconds with 0 bytes received\') failure, traceback follows\nTraceback (most recent call last):\n  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/TaskWorker/Actions/Handler.py", line 99, in actionWork\n    output = work.execute(nextinput, task=self._task)\n  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/TaskWorker/Actions/DagmanSubmitter.py", line 180, in execute\n    userServer.post(self.restURInoAPI + \'/task\', data=urllib.urlencode(configreq))\n  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/RESTInteractions.py", line 69, in post\n    return self.makeRequest(uri = uri, data = data, verb = \'POST\')\n  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/RESTInteractions.py", line 113, in makeRequest\n    capath=caCertPath)#, verbose=True)# for debug\n  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/WMCore/Services/pycurl_manager.py", line 186, in request\n    curl.perform()\nerror: (28, \'Operation timed out after 300002 milliseconds with 0 bytes received\')\n', 'failedJobdefs': 0, 'jobdefErrors': [], 'collector': '', 'jobList': []}
+INFO 2016-02-29 08:40:17,172: 	 CRAB project directory:		/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2
+INFO 2016-02-29 08:40:17,173: 	 Task name:			160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2
+INFO 2016-02-29 08:40:17,173: 	 Task status:			SUBMITFAILED
+ERROR 2016-02-29 08:40:17,173: 	 Failure message:		Problem handling 160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2 because of (28, 'Operation timed out after 300002 milliseconds with 0 bytes received') failure, traceback follows
+				Traceback (most recent call last):
+				  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/TaskWorker/Actions/Handler.py", line 99, in actionWork
+				    output = work.execute(nextinput, task=self._task)
+				  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/TaskWorker/Actions/DagmanSubmitter.py", line 180, in execute
+				    userServer.post(self.restURInoAPI + '/task', data=urllib.urlencode(configreq))
+				  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/RESTInteractions.py", line 69, in post
+				    return self.makeRequest(uri = uri, data = data, verb = 'POST')
+				  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/RESTInteractions.py", line 113, in makeRequest
+				    capath=caCertPath)#, verbose=True)# for debug
+				  File "/data/srv/TaskManager/3.3.1602.rc5/slc6_amd64_gcc493/cms/crabtaskworker/3.3.1602.rc5/lib/python2.7/site-packages/WMCore/Services/pycurl_manager.py", line 186, in request
+				    curl.perform()
+				error: (28, 'Operation timed out after 300002 milliseconds with 0 bytes received')
+				
+INFO 2016-02-29 08:40:17,177: 	 Log file is /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/crab.log
+DEBUG 2016-02-29 08:41:08,772: 	 Executing command: 'resubmit'
+DEBUG 2016-02-29 08:41:08,772: 	 Found CRAB cache file /afs/cern.ch/user/z/ztu/.crab3
+DEBUG 2016-02-29 08:41:08,786: 	 Checking credentials
+DEBUG 2016-02-29 08:41:08,786: 	 Found proxy file /tmp/x509up_u30140
+DEBUG 2016-02-29 08:41:08,786: 	 Getting proxy life time left
+DEBUG 2016-02-29 08:41:09,390: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 86342
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:41:09,898: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 86342
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:41:09,898: 	 Proxy valid for 23:59:02 hours
+DEBUG 2016-02-29 08:41:10,015: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-02-29 08:41:10,015: 	 Checking credentials
+DEBUG 2016-02-29 08:41:10,015: 	 Found proxy file /tmp/x509up_u30140
+DEBUG 2016-02-29 08:41:10,015: 	 Getting proxy life time left
+DEBUG 2016-02-29 08:41:10,521: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -timeleft
+ output : 86341
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:41:11,027: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30140 -actimeleft
+ output : 86341
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:41:11,028: 	 Proxy valid for 23:59:01 hours
+DEBUG 2016-02-29 08:41:11,536: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+DEBUG 2016-02-29 08:41:11,646: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-02-29 08:41:11,646: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-02-29 08:41:11,646: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu_cmsweb.cern.ch for credential name
+DEBUG 2016-02-29 08:41:12,350: 	 Executing : 
+ command : myproxy-info -l aeeb635c02ab2354cd0696fedaf0d9122a1d7b0d -s myproxy.cern.ch
+ output : username: aeeb635c02ab2354cd0696fedaf0d9122a1d7b0d
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ztu/CN=732466/CN=Zhoudunming Tu
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  timeleft: 554:44:36  (23.1 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-29 08:41:12,351: 	 Myproxy is valid: 1997076
+DEBUG 2016-02-29 08:41:12,351: 	 Command use: resubmit
+DEBUG 2016-02-29 08:41:12,352: 	 Options use: ['CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/']
+DEBUG 2016-02-29 08:41:12,781: 	 CRABClient version: 3.3.1602
+DEBUG 2016-02-29 08:41:12,781: 	 Instance is prod
+DEBUG 2016-02-29 08:41:12,781: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-02-29 08:41:12,781: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-02-29 08:41:12,781: 	 Requesting resubmission of failed jobs in task 160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2
+INFO 2016-02-29 08:41:12,782: 	 Sending resubmit request to the server.
+DEBUG 2016-02-29 08:41:12,782: 	 Submitting {'publication': 0, 'force': 0, 'subresource': 'resubmit', 'workflow': '160226_170706:ztu_crab_CME_QvsdEta_PbPb_50_100_v2'} 
+DEBUG 2016-02-29 08:41:12,782: 	 Encoded resubmit request: publication=0&force=0&subresource=resubmit&workflow=160226_170706%3Aztu_crab_CME_QvsdEta_PbPb_50_100_v2
+DEBUG 2016-02-29 08:41:14,008: 	 Result: {'result': [{'result': 'ok'}], 'desc': {'columns': ['tm_taskname', 'panda_jobset_id', 'tm_task_status', 'tm_user_role', 'tm_user_group', 'tm_task_failure', 'tm_split_args', 'panda_resubmitted_jobs', 'tm_save_logs', 'tm_username', 'tm_user_dn', 'tm_arguments', 'tm_input_dataset', 'tm_dbs_url', 'tm_task_warnings', 'tm_publication', 'tm_user_webdir', 'tm_asourl', 'tm_asodb', 'tm_output_dataset', 'tm_collector', 'tm_schedd', 'tm_dry_run']}}
+INFO 2016-02-29 08:41:14,008: 	 Resubmit request sent to the server.
+INFO 2016-02-29 08:41:14,008: 	 Please use 'crab status' to check how the resubmission process proceeds.
+Notice it may take a couple of minutes for the resubmission to get fully processed.
+INFO 2016-02-29 08:41:14,011: 	 Log file is /afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/CME_QvsdEta_PbPb_50_100_v2/crab_CME_QvsdEta_PbPb_50_100_v2/crab.log
