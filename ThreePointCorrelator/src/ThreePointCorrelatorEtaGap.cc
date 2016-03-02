@@ -336,7 +336,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   }
 
-  const unsigned binSize_ = etaBins_.size() - 1 ;
+  const int binSize_ = etaBins_.size() - 1 ;
 
 // initialize Qcos and Qsin
   double Qcos[binSize_][2];
@@ -378,7 +378,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QsinTRK = QsinTRK + sin( 2*trk.phi() );
         QcountsTrk++;
 
-        for(unsigned eta = 0; eta < binSize_; eta++){
+        for(int eta = 0; eta < binSize_; eta++){
           if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
 
              if(trk.charge() == 1){
@@ -580,8 +580,8 @@ ThreePointCorrelatorEtaGap::beginJob()
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
-  int bins = dEtaBins_.size() - 1;
-  int etaBinSize = etaBins_.size() - 1; 
+  const int bins = dEtaBins_.size() - 1;
+  const int etaBinSize = etaBins_.size() - 1; 
  
 //HF:
 
