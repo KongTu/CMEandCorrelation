@@ -329,8 +329,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     centProvider->newEvent(iEvent,iSetup);
     //const reco::Centrality* centrality = centProvider->raw();
     int hiBin = centProvider->getBin();
-    cout << "hiBin: " << hiBin << endl;
-
     cbinHist->Fill( hiBin );
 
     if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
@@ -601,7 +599,7 @@ ThreePointCorrelatorEtaGap::beginJob()
     bin += 0.1;
   }
 
-  Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",400,0,400);
+  Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
  
 //HF:
