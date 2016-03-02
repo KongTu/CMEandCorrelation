@@ -580,8 +580,9 @@ ThreePointCorrelatorEtaGap::beginJob()
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
-  int bins = dEtaBins_.size() - 1;
-  double dEtaBinsArray[dEtaBins_.size()];
+  const int bins = dEtaBins_.size() - 1;
+  const int temp = dEtaBins_.size();
+  double dEtaBinsArray[temp];
   for(int eta = 0; eta < dEtaBins_.size(); eta++){
 
     dEtaBinsArray[eta] = dEtaBins_[eta];
