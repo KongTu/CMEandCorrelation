@@ -582,7 +582,9 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   const int bins = dEtaBins_.size() - 1;
   const int temp = dEtaBins_.size();
-  double dEtaBinsArray[];
+  const int NbinsEta = etaBins_.size() - 1;
+
+  double dEtaBinsArray[100];
   for(int eta = 0; eta < temp; eta++){
 
     dEtaBinsArray[eta] = dEtaBins_[eta];
@@ -633,7 +635,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
 
 
-  for(int eta = 0; eta < etaBins_.size() - 1; eta++){
+  for(int eta = 0; eta < NbinsEta; eta++){
 
     TRKcosPlusSum[eta] = fs->make<TH1D>(Form("TRKcosPlusSum_%d", eta), Form(";TRKcosPlusSum_%d", eta), 20000, -1.0, 1.0 );
     TRKsinPlusSum[eta] = fs->make<TH1D>(Form("TRKsinPlusSum_%d", eta), Form(";TRKsinPlusSum_%d", eta), 20000, -1.0, 1.0 );
