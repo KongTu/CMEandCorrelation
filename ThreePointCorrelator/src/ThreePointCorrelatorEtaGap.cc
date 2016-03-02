@@ -231,6 +231,9 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       double etaLowHF_;
       double etaHighHF_;
 
+      double offlineptErr_;
+      double offlineDCA_;
+
       bool useCentrality_;
       bool useBothSide_;
 
@@ -266,6 +269,9 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
+
+  offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
+  offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
@@ -374,9 +380,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
         
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
-        if(fabs(trk.ptError())/trk.pt()>0.10) continue;
-        if(fabs(dzvtx/dzerror) > 3) continue;
-        if(fabs(dxyvtx/dxyerror) > 3) continue;
+        if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
+        if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
+        if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
         nTracks++;   
 
@@ -405,7 +411,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
                 Qsin[eta][1] = Qsin[eta][1] + sin( trk.phi() );
                 Qcounts[eta][1]++;
              }
-
           }
         }     
   } 
@@ -460,8 +465,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }
         if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
 
-          cout << "caloEta " << caloEta << endl;
-
           HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
           HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
          
@@ -477,8 +480,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           HFplusCounts++;
           ETTplus += w;
         }
-
-
   }
 
 //weight by ET() and renormalize by ETT in order to have dimensionless 
