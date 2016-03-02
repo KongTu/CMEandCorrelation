@@ -214,7 +214,6 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* HFsinSum;
       TH1D* weightSum; 
 
-
       TH1D* TRKcosPlusSum[48];
       TH1D* TRKsinPlusSum[48];
       TH1D* TRKcosMinusSum[48];
@@ -231,6 +230,9 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
       bool useCentrality_;
       bool useBothSide_;
+
+      std::vector<double> etaBins_;
+      std::vector<double> dEtaBins_;
 
 };
 
@@ -259,6 +261,9 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
   useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");
 
+  etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
+  dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
+
 }
 
 
@@ -269,7 +274,6 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
    // (e.g. close files, deallocate resources etc.)
 
 }
-
 
 //
 // member functions
@@ -324,34 +328,21 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   if( useCentrality_ ){
 
     CentralityProvider * centProvider = 0;
-
     if (!centProvider) centProvider = new CentralityProvider(iSetup);
     centProvider->newEvent(iEvent,iSetup);
-    //const reco::Centrality* centrality = centProvider->raw();
     int hiBin = centProvider->getBin();
     cbinHist->Fill( hiBin );
-
     if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
+
   }
 
-  
-  // define eta bins:
-  vector<double> etabins;
-  double increment = 0.0;
-  for(int eta = 0; eta < 49; eta++){
-
-    double initial = -2.4;
-    double temp = initial + increment;
-    if( fabs(temp) < 0.001 ) temp = 0.0;
-    etabins.push_back( temp );
-    increment = increment + 0.1;
-  }
+  const int binSize_ = etaBins_.size() - 1 ;
 
 // initialize Qcos and Qsin
-  double Qcos[48][2];
-  double Qsin[48][2];
-  int Qcounts[48][2];
-  for(int eta = 0; eta < 48; eta++){
+  double Qcos[binSize_][2];
+  double Qsin[binSize_][2];
+  int Qcounts[binSize_][2];
+  for(int eta = 0; eta < binSize_; eta++){
     for(int sign = 0; sign < 2; sign++){
 
       Qcounts[eta][sign] = 0;
@@ -387,8 +378,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QsinTRK = QsinTRK + sin( 2*trk.phi() );
         QcountsTrk++;
 
-        for(unsigned eta = 0; eta < 48; eta++){
-          if( trk.eta() > etabins[eta] && trk.eta() < etabins[eta+1] ){
+        for(unsigned eta = 0; eta < binSize_; eta++){
+          if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
 
              if(trk.charge() == 1){
 
@@ -518,7 +509,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 //3 point correlator
 //self normalize the Qvectors;
- for(int eta = 0; eta < 48; eta++){
+ for(int eta = 0; eta < binSize_; eta++){
     for(int sign = 0; sign < 2; sign++){
 
       if( Qcounts[eta][sign] == 0 ) continue;
@@ -528,12 +519,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
-  for(int ieta = 0; ieta < 48; ieta++){
-    for(int jeta = 0; jeta < 48; jeta++){
+  for(int ieta = 0; ieta < binSize_; ieta++){
+    for(int jeta = 0; jeta < binSize_; jeta++){
 
       if( ieta == jeta ) continue;
       
-      double deltaEta = fabs(etabins[jeta] - etabins[ieta]);
+      double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
       testDeta->Fill(deltaEta);
 
       if( useBothSide_ ){
@@ -586,16 +577,11 @@ ThreePointCorrelatorEtaGap::beginJob()
     
   TH3D::SetDefaultSumw2();
 
-  double dEtaBins[49];
-  double bin = 0.0;
-  for(int i = 0; i < 49; i++){
-
-    dEtaBins[i] = bin;
-    bin += 0.1;
-  }
-
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
+
+  int bins = dEtaBins_.size() - 1;
+  int etaBinSize = etaBins_.size() - 1; 
  
 //HF:
 
@@ -610,7 +596,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   averageCosMinus = fs->make<TH1D>("averageCosMinus",";averageCosMinus", 200,-1,1);
   averageSinMinus = fs->make<TH1D>("averageSinMinus",";averageSinMinus", 200,-1,1);
 
-  testDeta = fs->make<TH1D>("testDeta",";delta eta", 48, dEtaBins);
+  testDeta = fs->make<TH1D>("testDeta",";delta eta", bins, dEtaBins_);
   EvsEta = fs->make<TH2D>("EvsEta",";#eta;Energy(GeV)", 100, -5.0 , 5.0, 10000,0,500);
   ETvsEta = fs->make<TH2D>("ETvsEta",";#eta;E_{T}(GeV)", 100, -5.0 , 5.0, 10000,0,500);
 
@@ -621,28 +607,28 @@ ThreePointCorrelatorEtaGap::beginJob()
 //TRK:
   if( useBothSide_ ){
   
-    QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
+    QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
 
   }
   else{
     
-    HFp_QvsdEtaPlusPlus = fs->make<TH2D>("HFp_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    HFp_QvsdEtaMinusMinus = fs->make<TH2D>("HFp_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    HFp_QvsdEtaPlusMinus = fs->make<TH2D>("HFp_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    HFp_QvsdEtaMinusPlus = fs->make<TH2D>("HFp_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
+    HFp_QvsdEtaPlusPlus = fs->make<TH2D>("HFp_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFp_QvsdEtaMinusMinus = fs->make<TH2D>("HFp_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFp_QvsdEtaPlusMinus = fs->make<TH2D>("HFp_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFp_QvsdEtaMinusPlus = fs->make<TH2D>("HFp_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
 
-    HFm_QvsdEtaPlusPlus = fs->make<TH2D>("HFm_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    HFm_QvsdEtaMinusMinus = fs->make<TH2D>("HFm_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    HFm_QvsdEtaPlusMinus = fs->make<TH2D>("HFm_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
-    HFm_QvsdEtaMinusPlus = fs->make<TH2D>("HFm_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", 48, dEtaBins, 20000,-0.1,0.1 );
+    HFm_QvsdEtaPlusPlus = fs->make<TH2D>("HFm_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFm_QvsdEtaMinusMinus = fs->make<TH2D>("HFm_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFm_QvsdEtaPlusMinus = fs->make<TH2D>("HFm_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
+    HFm_QvsdEtaMinusPlus = fs->make<TH2D>("HFm_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBins, 20000,-0.1,0.1 );
   }
 
 
 
-  for(int eta = 0; eta < 48; eta++){
+  for(int eta = 0; eta < etaBinSize; eta++){
 
     TRKcosPlusSum[eta] = fs->make<TH1D>(Form("TRKcosPlusSum_%d", eta), Form(";TRKcosPlusSum_%d", eta), 20000, -1.0, 1.0 );
     TRKsinPlusSum[eta] = fs->make<TH1D>(Form("TRKsinPlusSum_%d", eta), Form(";TRKsinPlusSum_%d", eta), 20000, -1.0, 1.0 );
