@@ -228,6 +228,9 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       int Nmin_;
       int Nmax_;
 
+      double etaLowHF_;
+      double etaHighHF_;
+
       bool useCentrality_;
       bool useBothSide_;
 
@@ -260,6 +263,9 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
   useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");
+
+  etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
+  etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
@@ -440,7 +446,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           ETvsEta->Fill(caloEta, w);
         }
 
-        if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5 ){
+        if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
           
           HFcosSum->Fill( w*cos( 2*caloPhi ) );
           HFsinSum->Fill( w*sin( 2*caloPhi ) );
@@ -452,7 +458,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           HFcounts++;
           ETT += w;
         }
-        if( caloEta < -4.4 && caloEta > -5 ){
+        if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
+
+          cout << "caloEta " << caloEta << endl;
 
           HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
           HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
@@ -461,7 +469,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           ETTminus += w;
 
         }
-        if( caloEta < 5 && caloEta > 4.4 ){
+        if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
           
           HFqVcosPlus = HFqVcosPlus + w*cos( 2*caloPhi );
           HFqVsinPlus = HFqVsinPlus + w*sin( 2*caloPhi );
