@@ -582,8 +582,8 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   const int bins = dEtaBins_.size() - 1;
   const int temp = dEtaBins_.size();
-  double dEtaBinsArray[temp];
-  for(int eta = 0; eta < dEtaBins_.size(); eta++){
+  double dEtaBinsArray[];
+  for(int eta = 0; eta < temp; eta++){
 
     dEtaBinsArray[eta] = dEtaBins_[eta];
 
