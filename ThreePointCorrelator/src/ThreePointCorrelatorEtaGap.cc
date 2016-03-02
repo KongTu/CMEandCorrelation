@@ -503,16 +503,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double QaQb = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
   double QcQb = get2Real(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
 
-  cout << "QaQc: " << QaQc << endl;
-  cout << "QaQb: " << QaQb << endl;
-  cout << "QcQb: " << QcQb << endl;
-
   double c2_minus = (QaQc * QaQb)/QcQb;
   double c2_plus = (QcQb * QaQb)/QaQc;
-
-  cout << " ------- " << endl;
-  cout << "c2_m: " << c2_minus << endl;
-  cout << "c2_p: " << c2_plus << endl;
 
   c2_m->Fill( QaQc );
   c2_p->Fill( QcQb  );
