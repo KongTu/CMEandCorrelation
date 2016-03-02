@@ -181,11 +181,11 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
-      TH1D* Qp3;
       TH1D* evtWeightedQp3;
       TH1D* evtWeight;
-      TH1D* c2_m;
-      TH1D* c2_p;
+      TH1D* c2_ab;
+      TH1D* c2_ac;
+      TH1D* c2_cb;
       
       TH1D* averageCosPlus;
       TH1D* averageSinPlus;
@@ -500,21 +500,16 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   HFqVsin = HFqVsin/ETT;
 
   double QaQc = get2Real(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
-  //double QaQb = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
+  double QaQb = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
   double QcQb = get2Real(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
 
-  //double c2_minus = (QaQc * QaQb)/QcQb;
-  //double c2_plus = (QcQb * QaQb)/QaQc;
-
-  c2_m->Fill( QaQc );
-  c2_p->Fill( QcQb  );
-
-  double Q = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
-  Qp3->Fill( Q );
+  c2_ac->Fill( QaQc );
+  c2_cb->Fill( QcQb  );
+  c2_ab->Fill( QaQb );
 
   double W2 = ETTminus*ETTplus;
   evtWeight->Fill( W2 );
-  evtWeightedQp3->Fill( W2*Q );
+  evtWeightedQp3->Fill( W2*QaQb );
 
   averageCosPlus->Fill( HFqVcosPlus );
   averageSinPlus->Fill( HFqVsinPlus );
@@ -606,9 +601,9 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,5000);
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
-  Qp3 = fs->make<TH1D>("Qp3",";Qp3", 10000,-1,1);
-  c2_m = fs->make<TH1D>("c2_m",";c2_m", 10000,-1,1);
-  c2_p = fs->make<TH1D>("c2_p",";c2_p", 10000,-1,1);
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 10000,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 10000,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 10000,-1,1);
 
   averageCosPlus = fs->make<TH1D>("averageCosPlus",";averageCosPlus", 200,-1,1);
   averageSinPlus = fs->make<TH1D>("averageSinPlus",";averageSinPlus", 200,-1,1);
