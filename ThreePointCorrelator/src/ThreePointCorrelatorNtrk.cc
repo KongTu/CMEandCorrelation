@@ -541,7 +541,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
       realPart_like = realPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
       imagPart_like = imagPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
 
-      double fQ = get2Real(realPart_like, tempHFcos, imagePart_like, tempHFsin);
+      double fQ = get2Real(realPart_like, tempHFcos, imagPart_like, tempHFsin);
 
       if( sign == 0 ) QvsNtrkPlusPlus[type]->Fill( nTracks, fQ );
       else if (sign == 1) QvsNtrkMinusMinus[type]->Fill( nTracks, fQ );
@@ -576,7 +576,7 @@ ThreePointCorrelatorNtrk::beginJob()
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
-  ntrkBinsFill[100];
+  double ntrkBinsFill[100];
   const int nNtrkBins = ntrkBins_.size() - 1;
   for(unsigned num = 0; num < ntrkBins_.size(); num++ ){
 
