@@ -511,17 +511,20 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
 //like-sign correlator:
   for(int type = 0; type < 3; type++){
 
+    double tempHFcos = 0.0;
+    double tempHFsin = 0.0;
+
     if( type == 0 ) {
-      double tempHFcos = HFqVcosPlus;
-      double tempHFsin = HFqVsinPlus;
+      tempHFcos = HFqVcosPlus;
+      tempHFsin = HFqVsinPlus;
     }
     else if ( type == 1 ){
-      double tempHFcos = HFqVcosMinus;
-      double tempHFsin = HFqVsinMinus;
+      tempHFcos = HFqVcosMinus;
+      tempHFsin = HFqVsinMinus;
     }
     else if ( type == 3 ){
-      double tempHFcos = HFqVcos;
-      double tempHFsin = HFqVsin;
+      tempHFcos = HFqVcos;
+      tempHFsin = HFqVsin;
     }
     else{
       return;
@@ -574,10 +577,10 @@ ThreePointCorrelatorNtrk::beginJob()
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
   ntrkBinsFill[100];
-  const int nNtrkBins = ntrkBins_.size() - 1
+  const int nNtrkBins = ntrkBins_.size() - 1;
   for(unsigned num = 0; num < ntrkBins_.size(); num++ ){
 
-    NtrkBinsFill[num] = ntrkBins[num];
+    NtrkBinsFill[num] = ntrkBins_[num];
   }
 
 //HF:
