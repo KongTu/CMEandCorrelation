@@ -580,7 +580,7 @@ ThreePointCorrelatorNtrk::beginJob()
   const int nNtrkBins = ntrkBins_.size() - 1;
   for(unsigned num = 0; num < ntrkBins_.size(); num++ ){
 
-    NtrkBinsFill[num] = ntrkBins_[num];
+    ntrkBinsFill[num] = ntrkBins_[num];
   }
 
 //HF:
