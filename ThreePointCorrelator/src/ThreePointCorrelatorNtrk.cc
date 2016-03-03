@@ -603,10 +603,10 @@ ThreePointCorrelatorNtrk::beginJob()
 //TRK:
     for(int type = 0; type < 3; type++ ){
      
-      QvsNtrkPlusPlus[type] = fs->make<TH2D>(Form("QvsNtrkPlusPlus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, NtrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkMinusMinus[type] = fs->make<TH2D>(Form("QvsNtrkMinusMinus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, NtrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkPlusMinus[type] = fs->make<TH2D>(Form("QvsNtrkPlusMinus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, NtrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkMinusPlus[type] = fs->make<TH2D>(Form("QvsNtrkMinusPlus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, NtrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkPlusPlus[type] = fs->make<TH2D>(Form("QvsNtrkPlusPlus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkMinusMinus[type] = fs->make<TH2D>(Form("QvsNtrkMinusMinus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkPlusMinus[type] = fs->make<TH2D>(Form("QvsNtrkPlusMinus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkMinusPlus[type] = fs->make<TH2D>(Form("QvsNtrkMinusPlus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
 
     }
 
