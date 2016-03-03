@@ -282,7 +282,7 @@ ThreePointCorrelatorNtrk::~ThreePointCorrelatorNtrk()
 
 
 //cos(p1-p2)
-double get2Real(double cos1, double cos2, double sin1, double sin2){
+double get2RealduP(double cos1, double cos2, double sin1, double sin2){
 
   double t1 = cos1*cos2;
   double t2 = sin1*sin2;
@@ -489,9 +489,9 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
   QcosTRK = QcosTRK/QcountsTrk;
   QsinTRK = QsinTRK/QcountsTrk;
 
-  double QaQc = get2Real(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
-  double QaQb = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
-  double QcQb = get2Real(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
+  double QaQc = get2RealduP(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
+  double QaQb = get2RealduP(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
+  double QcQb = get2RealduP(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
 
   c2_ac->Fill( QaQc );
   c2_cb->Fill( QcQb  );
@@ -541,7 +541,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
       realPart_like = realPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
       imagPart_like = imagPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
 
-      double fQ = get2Real(realPart_like, tempHFcos, imagPart_like, tempHFsin);
+      double fQ = get2RealduP(realPart_like, tempHFcos, imagPart_like, tempHFsin);
 
       if( sign == 0 ) QvsNtrkPlusPlus[type]->Fill( nTracks, fQ );
       else if (sign == 1) QvsNtrkMinusMinus[type]->Fill( nTracks, fQ );
@@ -555,7 +555,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
     realPart_unlike = realPart_unlike/(Qcounts[0]*Qcounts[1]);
     imagPart_unlike = imagPart_unlike/(Qcounts[0]*Qcounts[1]);
 
-    double fQ_unlike = get2Real(realPart_unlike, tempHFcos, imagPart_unlike, tempHFsin);
+    double fQ_unlike = get2RealduP(realPart_unlike, tempHFcos, imagPart_unlike, tempHFsin);
 
     QvsNtrkPlusMinus[type]->Fill( nTracks, fQ_unlike );  
       
@@ -603,10 +603,10 @@ ThreePointCorrelatorNtrk::beginJob()
 //TRK:
     for(int type = 0; type < 3; type++ ){
      
-      QvsNtrkPlusPlus[type] = fs->make<TH2D>(Form("QvsNtrkPlusPlus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkMinusMinus[type] = fs->make<TH2D>(Form("QvsNtrkMinusMinus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkPlusMinus[type] = fs->make<TH2D>(Form("QvsNtrkPlusMinus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkMinusPlus[type] = fs->make<TH2D>(Form("QvsNtrkMinusPlus_%d", type),Form(";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", type), nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkPlusPlus[type] = fs->make<TH2D>(Form("QvsNtrkPlusPlus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkMinusMinus[type] = fs->make<TH2D>(Form("QvsNtrkMinusMinus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkPlusMinus[type] = fs->make<TH2D>(Form("QvsNtrkPlusMinus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkMinusPlus[type] = fs->make<TH2D>(Form("QvsNtrkMinusPlus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
 
     }
 
