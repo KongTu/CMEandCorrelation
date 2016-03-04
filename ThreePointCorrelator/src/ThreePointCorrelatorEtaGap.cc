@@ -181,38 +181,24 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
+
       TH1D* evtWeightedQp3;
       TH1D* evtWeight;
       TH1D* c2_ab;
       TH1D* c2_ac;
       TH1D* c2_cb;
       
-      TH1D* averageCosPlus;
-      TH1D* averageSinPlus;
-      TH1D* averageCosMinus;
-      TH1D* averageSinMinus;
-      
-      //culmulants:
-      TH2D* HFp_QvsdEtaPlusPlus;
-      TH2D* HFp_QvsdEtaMinusMinus;
-      TH2D* HFp_QvsdEtaPlusMinus;
-      TH2D* HFp_QvsdEtaMinusPlus;
-
-      TH2D* HFm_QvsdEtaPlusPlus;
-      TH2D* HFm_QvsdEtaMinusMinus;
-      TH2D* HFm_QvsdEtaPlusMinus;
-      TH2D* HFm_QvsdEtaMinusPlus;
-    
-      TH2D* QvsdEtaPlusPlus;
-      TH2D* QvsdEtaMinusMinus;
-      TH2D* QvsdEtaPlusMinus;
-      TH2D* QvsdEtaMinusPlus;
+      //culmulants: 
+      TH2D* QvsdEtaPlusPlus[3];
+      TH2D* QvsdEtaMinusMinus[3];
+      TH2D* QvsdEtaPlusMinus[3];
+      TH2D* QvsdEtaMinusPlus[3];
 
       //two and single particle sum
       //HF:
-      TH1D* HFcosSum;
-      TH1D* HFsinSum;
-      TH1D* weightSum; 
+      TH1D* HFcosSum[2];
+      TH1D* HFsinSum[2];
+      TH1D* weightSum[2]; 
 
       TH1D* TRKcosPlusSum[48];
       TH1D* TRKsinPlusSum[48];
@@ -452,10 +438,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }
 
         if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
-          
-          HFcosSum->Fill( w*cos( 2*caloPhi ) );
-          HFsinSum->Fill( w*sin( 2*caloPhi ) );
-          weightSum->Fill( w );
 
           HFqVcos = HFqVcos + w*cos( 2*caloPhi );
           HFqVsin = HFqVsin + w*sin( 2*caloPhi );
@@ -467,7 +449,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
           HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
           HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
-         
+          
+          HFcosSum[1]->Fill( w*cos( 2*caloPhi ) );
+          HFsinSum[1]->Fill( w*sin( 2*caloPhi ) );
+          weightSum[1]->Fill( w );
+
           HFminusCounts++; 
           ETTminus += w;
 
@@ -476,7 +462,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           
           HFqVcosPlus = HFqVcosPlus + w*cos( 2*caloPhi );
           HFqVsinPlus = HFqVsinPlus + w*sin( 2*caloPhi );
-          
+
+          HFcosSum[0]->Fill( w*cos( 2*caloPhi ) );
+          HFsinSum[0]->Fill( w*sin( 2*caloPhi ) );
+          weightSum[0]->Fill( w );
+
           HFplusCounts++;
           ETTplus += w;
         }
@@ -511,11 +501,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   evtWeight->Fill( W2 );
   evtWeightedQp3->Fill( W2*QaQb );
 
-  averageCosPlus->Fill( HFqVcosPlus );
-  averageSinPlus->Fill( HFqVsinPlus );
-  averageCosMinus->Fill( HFqVcosMinus );
-  averageSinMinus->Fill( HFqVsinMinus );
-
 //3 point correlator
 //self normalize the Qvectors;
  for(int eta = 0; eta < binSize_; eta++){
@@ -535,41 +520,37 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       
       double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
       testDeta->Fill(deltaEta);
+    
+      for(int type = 0; type < 3; type++){
 
-      if( useBothSide_ ){
+        double tempHFcos = 0.0;
+        double tempHFsin = 0.0;
 
-        double totalQplusplus = get3Real(Qcos[ieta][0],Qcos[jeta][0], HFqVcos, Qsin[ieta][0], Qsin[jeta][0], HFqVsin );
-        double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], HFqVcos, Qsin[ieta][1], Qsin[jeta][1], HFqVsin );
-        double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], HFqVcos, Qsin[ieta][0], Qsin[jeta][1], HFqVsin );
-        double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], HFqVcos, Qsin[ieta][1], Qsin[jeta][0], HFqVsin );
+        if( type == 0 ) {
+          tempHFcos = HFqVcosPlus;
+          tempHFsin = HFqVsinPlus;
+        }
+        else if ( type == 1 ){
+          tempHFcos = HFqVcosMinus;
+          tempHFsin = HFqVsinMinus;
+        }
+        else if ( type == 3 ){
+          tempHFcos = HFqVcos;
+          tempHFsin = HFqVsin;
+        }
+        else{
+          return;
+        }
 
-        QvsdEtaPlusPlus->Fill(deltaEta, totalQplusplus);
-        QvsdEtaMinusMinus->Fill(deltaEta, totalQminusminus);
-        QvsdEtaPlusMinus->Fill(deltaEta, totalQplusminus);
-        QvsdEtaMinusPlus->Fill(deltaEta, totalQminusplus);        
-      
-      }
-      else{
-      //Correlate with HFplus
-      double totalQplusplus = get3Real(Qcos[ieta][0],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][0], HFqVsinPlus );
-      double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][1], HFqVsinPlus );
-      double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], HFqVcosPlus, Qsin[ieta][0], Qsin[jeta][1], HFqVsinPlus );
-      double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], HFqVcosPlus, Qsin[ieta][1], Qsin[jeta][0], HFqVsinPlus );
+        double totalQplusplus = get3Real(Qcos[ieta][0],Qcos[jeta][0], tempHFcos, Qsin[ieta][0], Qsin[jeta][0], tempHFsin );
+        double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], tempHFcos, Qsin[ieta][1], Qsin[jeta][1], tempHFsin );
+        double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
+        double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], tempHFcos, Qsin[ieta][1], Qsin[jeta][0], tempHFsin );
 
-      HFp_QvsdEtaPlusPlus->Fill(deltaEta, totalQplusplus);
-      HFp_QvsdEtaMinusMinus->Fill(deltaEta, totalQminusminus);
-      HFp_QvsdEtaPlusMinus->Fill(deltaEta, totalQplusminus);
-      HFp_QvsdEtaMinusPlus->Fill(deltaEta, totalQminusplus);
-
-      totalQplusplus = get3Real(Qcos[ieta][0],Qcos[jeta][0], HFqVcosMinus, Qsin[ieta][0], Qsin[jeta][0], HFqVsinMinus );
-      totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], HFqVcosMinus, Qsin[ieta][1], Qsin[jeta][1], HFqVsinMinus );
-      totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], HFqVcosMinus, Qsin[ieta][0], Qsin[jeta][1], HFqVsinMinus );
-      totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], HFqVcosMinus, Qsin[ieta][1], Qsin[jeta][0], HFqVsinMinus );
-
-      HFm_QvsdEtaPlusPlus->Fill(deltaEta, totalQplusplus);
-      HFm_QvsdEtaMinusMinus->Fill(deltaEta, totalQminusminus);
-      HFm_QvsdEtaPlusMinus->Fill(deltaEta, totalQplusminus);
-      HFm_QvsdEtaMinusPlus->Fill(deltaEta, totalQminusplus);
+        QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
+        QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
+        QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
+        QvsdEtaMinusPlus[type]->Fill(deltaEta, totalQminusplus);
 
       }
     }
@@ -600,49 +581,34 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   }
 //HF:
-
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,5000);
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 10000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 10000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 10000,-1,1);
 
-  averageCosPlus = fs->make<TH1D>("averageCosPlus",";averageCosPlus", 200,-1,1);
-  averageSinPlus = fs->make<TH1D>("averageSinPlus",";averageSinPlus", 200,-1,1);
-  averageCosMinus = fs->make<TH1D>("averageCosMinus",";averageCosMinus", 200,-1,1);
-  averageSinMinus = fs->make<TH1D>("averageSinMinus",";averageSinMinus", 200,-1,1);
-
   testDeta = fs->make<TH1D>("testDeta",";delta eta", bins, dEtaBinsArray);
   EvsEta = fs->make<TH2D>("EvsEta",";#eta;Energy(GeV)", 100, -5.0 , 5.0, 10000,0,500);
   ETvsEta = fs->make<TH2D>("ETvsEta",";#eta;E_{T}(GeV)", 100, -5.0 , 5.0, 10000,0,500);
 
-  HFsinSum = fs->make<TH1D>("HFsinSum", ";HFsinSum", 2000, -1.0, 1.0 );
-  HFcosSum = fs->make<TH1D>("HFcosSum", ";HFcosSum", 2000, -1.0, 1.0 );
-  weightSum = fs->make<TH1D>("weightSum", ";weightSum", 3000, 0, 300 );
+  for(int sign = 0; sign < 2; sign++){
+
+    HFsinSum[sign] = fs->make<TH1D>(Form("HFsinSum_%d", sign), ";HFsinSum", 2000, -1.0, 1.0 );
+    HFcosSum[sign] = fs->make<TH1D>(Form("HFcosSum_%d", sign), ";HFcosSum", 2000, -1.0, 1.0 );
+    weightSum[sign] = fs->make<TH1D>(Form("weightSum_%d", sign), ";weightSum", 3000, 0, 150 );
+
+  }
 
 //TRK:
-  if( useBothSide_ ){
-  
-    QvsdEtaPlusPlus = fs->make<TH2D>("QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    QvsdEtaMinusMinus = fs->make<TH2D>("QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    QvsdEtaPlusMinus = fs->make<TH2D>("QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    QvsdEtaMinusPlus = fs->make<TH2D>("QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
 
-  }
-  else{
+  for(int type = 0; type < 3; type++){
     
-    HFp_QvsdEtaPlusPlus = fs->make<TH2D>("HFp_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    HFp_QvsdEtaMinusMinus = fs->make<TH2D>("HFp_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    HFp_QvsdEtaPlusMinus = fs->make<TH2D>("HFp_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    HFp_QvsdEtaMinusPlus = fs->make<TH2D>("HFp_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-
-    HFm_QvsdEtaPlusPlus = fs->make<TH2D>("HFm_QvsdEtaPlusPlus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    HFm_QvsdEtaMinusMinus = fs->make<TH2D>("HFm_QvsdEtaMinusMinus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    HFm_QvsdEtaPlusMinus = fs->make<TH2D>("HFm_QvsdEtaPlusMinus",";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
-    HFm_QvsdEtaMinusPlus = fs->make<TH2D>("HFm_QvsdEtaMinusPlus",";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
+    QvsNtrkPlusPlus[type] = fs->make<TH2D>(Form("QvsNtrkPlusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
+    QvsdEtaMinusMinus[type] = fs->make<TH2D>(Form("QvsdEtaMinusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
+    QvsdEtaPlusMinus[type] = fs->make<TH2D>(Form("QvsdEtaPlusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
+    QvsdEtaMinusPlus[type] = fs->make<TH2D>(Form("QvsdEtaMinusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.1,0.1 );
+  
   }
-
-
 
   for(int eta = 0; eta < NbinsEta; eta++){
 
