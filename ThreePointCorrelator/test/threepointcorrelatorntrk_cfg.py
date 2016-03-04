@@ -20,7 +20,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
 process.options   = cms.untracked.PSet( wantSummary =
 cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.load("Configuration.StandardSequences.Digi_cff")
 process.load('Configuration.StandardSequences.GeometryDB_cff')
