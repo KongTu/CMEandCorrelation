@@ -228,7 +228,6 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       double offlineDCA_;
 
       bool useCentrality_;
-      bool useBothSide_;
 
       std::vector<double> ntrkBins_;
 
@@ -257,7 +256,6 @@ ThreePointCorrelatorNtrk::ThreePointCorrelatorNtrk(const edm::ParameterSet& iCon
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
   
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
-  useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
