@@ -221,6 +221,8 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
 
       double etaLowHF_;
       double etaHighHF_;
+      double vzLow_;
+      double vzHigh_;
 
       double offlineptErr_;
       double offlineDCA_;
@@ -259,6 +261,8 @@ ThreePointCorrelatorNtrk::ThreePointCorrelatorNtrk(const edm::ParameterSet& iCon
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
+  vzLow_ = iConfig.getUntrackedParameter<double>("vzLow");
+  vzHigh_ = iConfig.getUntrackedParameter<double>("vzHigh");
 
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
@@ -307,7 +311,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
   bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
   
   //first selection; vertices
-  if(bestvz < -15.0 || bestvz > 15.0) return;
+  if(bestvz < vzLow_ || bestvz > vzHigh_ ) return;
   
   Handle<CaloTowerCollection> towers;
   iEvent.getByLabel(towerSrc_, towers);
@@ -521,7 +525,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
       tempHFcos = HFqVcosMinus;
       tempHFsin = HFqVsinMinus;
     }
-    else if ( type == 3 ){
+    else if ( type == 2 ){
       tempHFcos = HFqVcos;
       tempHFsin = HFqVsin;
     }
@@ -589,7 +593,7 @@ ThreePointCorrelatorNtrk::beginJob()
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 10000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 10000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 10000,-1,1);
-  
+
   for(int sign = 0; sign < 2; sign++){
 
     HFsinSum[sign] = fs->make<TH1D>(Form("HFsinSum_%d", sign), ";HFsinSum", 2000, -1.0, 1.0 );

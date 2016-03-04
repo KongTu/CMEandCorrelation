@@ -216,6 +216,8 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
       double etaLowHF_;
       double etaHighHF_;
+      double vzLow_;
+      double vzHigh_;
 
       double offlineptErr_;
       double offlineDCA_;
@@ -253,6 +255,8 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
+  vzLow_ = iConfig.getUntrackedParameter<double>("vzLow");
+  vzHigh_ = iConfig.getUntrackedParameter<double>("vzHigh");
 
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
@@ -313,7 +317,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
   
   //first selection; vertices
-  if(bestvz < -15.0 || bestvz > 15.0) return;
+  if(bestvz < vzLow_ || bestvz > vzHigh_ ) return;
   
   Handle<CaloTowerCollection> towers;
   iEvent.getByLabel(towerSrc_, towers);
@@ -532,7 +536,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           tempHFcos = HFqVcosMinus;
           tempHFsin = HFqVsinMinus;
         }
-        else if ( type == 3 ){
+        else if ( type == 2 ){
           tempHFcos = HFqVcos;
           tempHFsin = HFqVsin;
         }
