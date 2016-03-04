@@ -198,7 +198,10 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       //HF:
       TH1D* HFcosSum[2];
       TH1D* HFsinSum[2];
-      TH1D* weightSum[2]; 
+      TH1D* weightSum[2];
+
+      TH1D* averageCosHF[2];
+      TH1D* averageSinHF[2];
 
       TH1D* TRKcosPlusSum[48];
       TH1D* TRKsinPlusSum[48];
@@ -223,6 +226,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       double offlineDCA_;
 
       bool useCentrality_;
+      bool reverseBeam_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
@@ -252,6 +256,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
   
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
+  reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
@@ -433,6 +438,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         double energy = hit.emEnergy() + hit.hadEnergy();
 
+        if( reverseBeam_ ) caloEta = -hit.eta();
+
         if( fabs(caloEta) < 5.0 && fabs(caloEta) > 3.0 ){
 
           EvsEta->Fill(caloEta, energy );
@@ -484,6 +491,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   HFqVcosMinus = HFqVcosMinus/ETTminus;
   HFqVsinMinus = HFqVsinMinus/ETTminus;
+
+  averageCosHF[0]->Fill( HFqVcosPlus );
+  averageSinHF[0]->Fill( HFqVsinPlus );
+  
+  averageCosHF[1]->Fill( HFqVcosMinus );
+  averageSinHF[1]->Fill( HFqVsinMinus );
 
   QcosTRK = QcosTRK/QcountsTrk;
   QsinTRK = QsinTRK/QcountsTrk;
@@ -599,6 +612,8 @@ ThreePointCorrelatorEtaGap::beginJob()
     HFcosSum[sign] = fs->make<TH1D>(Form("HFcosSum_%d", sign), ";HFcosSum", 2000, -1.0, 1.0 );
     weightSum[sign] = fs->make<TH1D>(Form("weightSum_%d", sign), ";weightSum", 3000, 0, 150 );
 
+    averageCosHF[sign] = fs->make<TH1D>(Form("averageCosHF_%d", sign), ";averageCosHF", 2000, -1.0, 1.0);
+    averageSinHF[sign] = fs->make<TH1D>(Form("averageSinHF_%d", sign), ";averageSinHF", 2000, -1.0, 1.0);
   }
 
 //TRK:
