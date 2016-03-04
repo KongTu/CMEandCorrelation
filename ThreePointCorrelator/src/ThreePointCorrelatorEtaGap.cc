@@ -221,7 +221,6 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       double offlineDCA_;
 
       bool useCentrality_;
-      bool useBothSide_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
@@ -251,7 +250,6 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
   
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
-  useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");

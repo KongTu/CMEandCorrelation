@@ -200,9 +200,9 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
 
       //two and single particle sum to correct the acceptance effect
       //HF:
-      TH1D* HFcosSum;
-      TH1D* HFsinSum;
-      TH1D* weightSum; 
+      TH1D* HFcosSum[2];
+      TH1D* HFsinSum[2];
+      TH1D* weightSum[2]; 
 
       TH1D* TRKcosPlusSum;
       TH1D* TRKsinPlusSum;
@@ -442,10 +442,6 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
 
         if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
-          
-          HFcosSum->Fill( w*cos( 2*caloPhi ) );
-          HFsinSum->Fill( w*sin( 2*caloPhi ) );
-          weightSum->Fill( w );
 
           HFqVcos = HFqVcos + w*cos( 2*caloPhi );
           HFqVsin = HFqVsin + w*sin( 2*caloPhi );
@@ -455,6 +451,10 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
 
+          HFcosSum[1]->Fill( w*cos( 2*caloPhi ) );
+          HFsinSum[1]->Fill( w*sin( 2*caloPhi ) );
+          weightSum[1]->Fill( w );
+
           HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
           HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
          
@@ -463,6 +463,10 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         }
         if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
+
+          HFcosSum[0]->Fill( w*cos( 2*caloPhi ) );
+          HFsinSum[0]->Fill( w*sin( 2*caloPhi ) );
+          weightSum[0]->Fill( w );
           
           HFqVcosPlus = HFqVcosPlus + w*cos( 2*caloPhi );
           HFqVsinPlus = HFqVsinPlus + w*sin( 2*caloPhi );
@@ -500,11 +504,6 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
   double W2 = ETTminus*ETTplus;
   evtWeight->Fill( W2 );
   evtWeightedQp3->Fill( W2*QaQb );
-
-  averageCosPlus->Fill( HFqVcosPlus );
-  averageSinPlus->Fill( HFqVsinPlus );
-  averageCosMinus->Fill( HFqVcosMinus );
-  averageSinMinus->Fill( HFqVsinMinus );
 
 //3 point correlator
 
@@ -590,16 +589,14 @@ ThreePointCorrelatorNtrk::beginJob()
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 10000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 10000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 10000,-1,1);
+  
+  for(int sign = 0; sign < 2; sign++){
 
-  averageCosPlus = fs->make<TH1D>("averageCosPlus",";averageCosPlus", 200,-1,1);
-  averageSinPlus = fs->make<TH1D>("averageSinPlus",";averageSinPlus", 200,-1,1);
-  averageCosMinus = fs->make<TH1D>("averageCosMinus",";averageCosMinus", 200,-1,1);
-  averageSinMinus = fs->make<TH1D>("averageSinMinus",";averageSinMinus", 200,-1,1);
+    HFsinSum[sign] = fs->make<TH1D>(Form("HFsinSum_%d", sign), ";HFsinSum", 2000, -1.0, 1.0 );
+    HFcosSum[sign] = fs->make<TH1D>(Form("HFcosSum_%d", sign), ";HFcosSum", 2000, -1.0, 1.0 );
+    weightSum[sign] = fs->make<TH1D>(Form("weightSum_%d", sign), ";weightSum", 3000, 0, 150 );
 
-  HFsinSum = fs->make<TH1D>("HFsinSum", ";HFsinSum", 2000, -1.0, 1.0 );
-  HFcosSum = fs->make<TH1D>("HFcosSum", ";HFcosSum", 2000, -1.0, 1.0 );
-  weightSum = fs->make<TH1D>("weightSum", ";weightSum", 3000, 0, 300 );
-
+  }
 //TRK:
     for(int type = 0; type < 3; type++ ){
      
