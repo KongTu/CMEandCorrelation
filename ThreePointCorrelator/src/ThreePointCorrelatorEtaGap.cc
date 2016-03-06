@@ -40,6 +40,7 @@
 #include <TVector3.h>
 #include <TRandom.h>
 #include <TNtuple.h>
+#include <TGraph.h>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
