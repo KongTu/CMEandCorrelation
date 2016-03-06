@@ -190,13 +190,16 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* c2_cb;
       
       //culmulants: 
-      TH2D* QvsdEtaPlusPlus[3];
-      TH2D* QvsdEtaMinusMinus[3];
-      TH2D* QvsdEtaPlusMinus[3];
-      TH2D* QvsdEtaMinusPlus[3];
+      // TH2D* QvsdEtaPlusPlus[3];
+      // TH2D* QvsdEtaMinusMinus[3];
+      // TH2D* QvsdEtaPlusMinus[3];
+      // TH2D* QvsdEtaMinusPlus[3];
 
-      //test:
-      TGraph* testTgraph;
+      //test :
+      TGraph* QvsdEtaPlusPlus[3];
+      TGraph* QvsdEtaMinusMinus[3];
+      TGraph* QvsdEtaPlusMinus[3];
+      TGraph* QvsdEtaMinusPlus[3];
 
       //two and single particle sum
       //HF:
@@ -533,9 +536,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   }
 
   int c = 0;
-  int cc = 0;
-  double tempsum = 0.;
-
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
 
@@ -570,26 +570,15 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
         double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], tempHFcos, Qsin[ieta][1], Qsin[jeta][0], tempHFsin );
 
-        if( type == 2 ){
-          testTgraph->SetPoint(c, deltaEta, totalQplusplus);
-          if( deltaEta == 0.1 ){
-            tempsum += totalQplusplus;
-            cc++;
-
-          }
-          c++;
-        }
-        
-        QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
-        QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
-        QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
-        QvsdEtaMinusPlus[type]->Fill(deltaEta, totalQminusplus);
+        QvsdEtaPlusPlus[type]->SetPoint(c, deltaEta, totalQplusplus);
+        QvsdEtaMinusMinus[type]->SetPoint(c, deltaEta, totalQminusminus);
+        QvsdEtaPlusMinus[type]->SetPoint(c, deltaEta, totalQplusminus);
+        QvsdEtaMinusPlus[type]->SetPoint(c, deltaEta, totalQminusplus);
+        c++;
 
       }
     }
   }
-
-  cout << "sum: " << tempsum/cc << endl;
 
 }
 
@@ -602,8 +591,6 @@ ThreePointCorrelatorEtaGap::beginJob()
   edm::Service<TFileService> fs;
     
   TH3D::SetDefaultSumw2();
-
-  testTgraph = fs->make<TGraph>(1000);
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
@@ -643,10 +630,10 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   for(int type = 0; type < 3; type++){
     
-    QvsdEtaPlusPlus[type] = fs->make<TH2D>(Form("QvsdEtaPlusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 500000,-1.0,1.0 );
-    QvsdEtaMinusMinus[type] = fs->make<TH2D>(Form("QvsdEtaMinusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 500000,-1.0,1.0 );
-    QvsdEtaPlusMinus[type] = fs->make<TH2D>(Form("QvsdEtaPlusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 500000,-1.0,1.0 );
-    QvsdEtaMinusPlus[type] = fs->make<TH2D>(Form("QvsdEtaMinusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 500000,-1.0,1.0 );
+    QvsdEtaPlusPlus[type] = fs->make<TGraph>( 1000 );
+    QvsdEtaMinusMinus[type] = fs->make<TGraph>( 1000 );
+    QvsdEtaPlusMinus[type] = fs->make<TGraph>( 1000 );
+    QvsdEtaMinusPlus[type] = fs->make<TGraph>( 1000 );
   
   }
 
