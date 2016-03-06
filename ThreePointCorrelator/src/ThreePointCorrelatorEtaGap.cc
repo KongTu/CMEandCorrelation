@@ -630,10 +630,10 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   for(int type = 0; type < 3; type++){
     
-    QvsdEtaPlusPlus[type] = fs->make<TGraph>( 1000 );
-    QvsdEtaMinusMinus[type] = fs->make<TGraph>( 1000 );
-    QvsdEtaPlusMinus[type] = fs->make<TGraph>( 1000 );
-    QvsdEtaMinusPlus[type] = fs->make<TGraph>( 1000 );
+    QvsdEtaPlusPlus[type] = fs->make<TGraph>( "Name", 1000 );
+    QvsdEtaMinusMinus[type] = fs->make<TGraph>( "Name", 1000 );
+    QvsdEtaPlusMinus[type] = fs->make<TGraph>( "Name", 1000 );
+    QvsdEtaMinusPlus[type] = fs->make<TGraph>( "Name", 1000 );
   
   }
 
