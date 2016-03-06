@@ -572,7 +572,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if( type == 2 ){
           testTgraph->SetPoint(c, deltaEta, totalQplusplus);
           if( deltaEta == 0.1 ){
-            tempsum += totalQplusplus
+            tempsum += totalQplusplus;
           }
           c++;
         }
