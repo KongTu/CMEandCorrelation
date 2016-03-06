@@ -583,8 +583,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   }
 
 
-  testTgraph = (TGraph*) TGraph( x, y);
-
+  testTgraph = (TGraph*) new TGraph( x, y);
 
 }
 
