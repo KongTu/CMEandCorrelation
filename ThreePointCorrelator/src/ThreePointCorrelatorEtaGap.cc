@@ -532,8 +532,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
-  vector<double> x;
-  vector<double> y;
+  vector<double*> x;
+  vector<double*> y;
 
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
