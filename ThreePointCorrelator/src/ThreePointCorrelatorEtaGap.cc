@@ -533,6 +533,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   }
 
   int c = 0;
+  double tempsum = 0.;
 
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
@@ -570,6 +571,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         if( type == 2 ){
           testTgraph->SetPoint(c, deltaEta, totalQplusplus);
+          if( deltaEta == 0.1 ){
+            tempsum += totalQplusplus
+          }
           c++;
         }
         
@@ -581,6 +585,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       }
     }
   }
+
+  cout << "sum: " << tempsum << endl;
 
 }
 
