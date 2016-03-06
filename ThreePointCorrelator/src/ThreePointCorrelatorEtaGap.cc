@@ -532,8 +532,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
-  vector<double*> x;
-  vector<double*> y;
+  int c = 0;
 
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
@@ -569,9 +568,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
         double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], tempHFcos, Qsin[ieta][1], Qsin[jeta][0], tempHFsin );
 
-        if( type == 2 ){
-            x.push_back( deltaEta ); y.push_back( totalQplusplus );
-        }
+        testTgraph->SetPoint(c, deltaEta, totalQplusplus);
+        c++;
 
         QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
@@ -581,9 +579,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       }
     }
   }
-
-
-  testTgraph = (TGraph*) new TGraph( x, y);
 
 }
 
@@ -597,7 +592,7 @@ ThreePointCorrelatorEtaGap::beginJob()
     
   TH3D::SetDefaultSumw2();
 
-  testTgraph = fs->make<TGraph>("testTgraph",";X");
+  testTgraph = fs->make<TGraph>(1000);
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
