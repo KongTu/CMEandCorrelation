@@ -568,9 +568,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
         double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], tempHFcos, Qsin[ieta][1], Qsin[jeta][0], tempHFsin );
 
-        testTgraph->SetPoint(c, deltaEta, totalQplusplus);
-        c++;
-
+        if( type == 2 ){
+          testTgraph->SetPoint(c, deltaEta, totalQplusplus);
+          c++;
+        }
+        
         QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
         QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
