@@ -666,7 +666,7 @@ ThreePointCorrelatorEtaGap::endJob()
   double pmSum[48];
   int count[48];
 
-  const int sizeOfPerEvent = 0;
+  int sizeOfPerEvent = 0;
   vector< vector<double>> tempPerEvent;
 
   for( int type = 0; type < 3; type++ ){
