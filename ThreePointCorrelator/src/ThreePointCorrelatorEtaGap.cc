@@ -190,16 +190,9 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* c2_cb;
       
       //culmulants: 
-      // TH2D* QvsdEtaPlusPlus[3];
-      // TH2D* QvsdEtaMinusMinus[3];
-      // TH2D* QvsdEtaPlusMinus[3];
-      // TH2D* QvsdEtaMinusPlus[3];
-
-      //test :
-      TGraph* QvsdEtaPlusPlus[3];
-      TGraph* QvsdEtaMinusMinus[3];
-      TGraph* QvsdEtaPlusMinus[3];
-      TGraph* QvsdEtaMinusPlus[3];
+      TH2D* QvsdEtaPlusPlus[3];
+      TH2D* QvsdEtaMinusMinus[3];
+      TH2D* QvsdEtaPlusMinus[3];
 
       //two and single particle sum
       //HF:
@@ -237,6 +230,9 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
+
+      std::vector<double> perEta;
+      std::vector< std::vector<double>> perEventPP, perEventMM, perEventPM;
 
 };
 
@@ -568,14 +564,27 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double totalQplusplus = get3Real(Qcos[ieta][0],Qcos[jeta][0], tempHFcos, Qsin[ieta][0], Qsin[jeta][0], tempHFsin );
         double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], tempHFcos, Qsin[ieta][1], Qsin[jeta][1], tempHFsin );
         double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
-        double totalQminusplus = get3Real(Qcos[ieta][1],Qcos[jeta][0], tempHFcos, Qsin[ieta][1], Qsin[jeta][0], tempHFsin );
 
-        QvsdEtaPlusPlus[type]->SetPoint(c, deltaEta, totalQplusplus);
-        QvsdEtaMinusMinus[type]->SetPoint(c, deltaEta, totalQminusminus);
-        QvsdEtaPlusMinus[type]->SetPoint(c, deltaEta, totalQplusminus);
-        QvsdEtaMinusPlus[type]->SetPoint(c, deltaEta, totalQminusplus);
-        c++;
+        perEta.push_back( deltaEta );
+        perEta.push_back( totalQplusplus );
+        perEta.push_back( totalQminusminus );
+        perEta.push_back( totalQplusminus ); 
 
+        if( type == 0 ){
+          perEventPP.push_back( perEta );
+          perEta.clear();
+        }
+        else if( type == 1 ){
+          perEventMM.push_back( perEta );
+          perEta.clear();
+        }
+        else if( type == 2 ){
+          perEventPM.push_back( perEta );
+          perEta.clear();
+        }
+        else{
+          return;
+        }
       }
     }
   }
@@ -630,11 +639,10 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   for(int type = 0; type < 3; type++){
     
-    QvsdEtaPlusPlus[type] = fs->make<TGraph>( 1000 );
-    QvsdEtaMinusMinus[type] = fs->make<TGraph>( 1000 );
-    QvsdEtaPlusMinus[type] = fs->make<TGraph>( 1000 );
-    QvsdEtaMinusPlus[type] = fs->make<TGraph>( 1000 );
-  
+    QvsdEtaPlusPlus[type] = fs->make<TH2D>(Form("QvsdEtaPlusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.005,0.005 );
+    QvsdEtaMinusMinus[type] = fs->make<TH2D>(Form("QvsdEtaMinusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.005,0.005 );
+    QvsdEtaPlusMinus[type] = fs->make<TH2D>(Form("QvsdEtaPlusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-0.005,0.005 );
+
   }
 
   for(int eta = 0; eta < NbinsEta; eta++){
@@ -652,6 +660,88 @@ ThreePointCorrelatorEtaGap::beginJob()
 void 
 ThreePointCorrelatorEtaGap::endJob() 
 {
+  using namespace std;
+  
+  double ppSum[48];
+  double mmSum[48];
+  double pmSum[48];
+  int count[48];
+
+  const int sizeOfPerEvent;
+  vector< vector<double>> tempPerEvent;
+
+  for( int type = 0; type < 3; type++ ){
+
+    for(int j = 0; j < 48; j++){
+
+      ppSum[j] = 0.0;
+      mmSum[j] = 0.0;
+      pmSum[j] = 0.0;
+      count[j] = 0;
+    }
+
+    if( type == 0 ){
+      sizeOfPerEvent = perEventPP.size();
+      tempPerEvent = perEventPP;
+    }
+    else if( type == 1 ){
+      sizeOfPerEvent = perEventMM.size();
+      tempPerEvent = perEventMM;
+
+    }
+    else if( type == 2 ){
+      sizeOfPerEvent = perEventPM.size();
+      tempPerEvent = perEventPM;
+
+    }
+    else{
+      return;
+    }
+
+    for( int num = 0; num < sizeOfPerEvent; num++ ){
+
+      double dEta = tempPerEvent[num][0];
+      double pp = tempPerEvent[num][1];
+      double mm = tempPerEvent[num][2];
+      double pm = tempPerEvent[num][3];
+
+      for(unsigned i = 0; i < dEtaBins_.size(); i++ ){
+          
+          if( dEta == dEtaBins_[i]){     
+            ppSum[i] += pp;
+            mmSum[i] += mm;
+            pmSum[i] += pm;
+            count[i]++;
+          }
+      }
+    }
+
+    for(unsigned i = 0; i < dEtaBins_.size(); i++){
+
+      if( count[i] == 0 ){
+
+        ppSum[i] = 0.0;
+        mmSum[i] = 0.0;
+        pmSum[i] = 0.0;
+
+      }
+      else{
+        ppSum[i] = ppSum[i]/count[i];
+        mmSum[i] = mmSum[i]/count[i];
+        pmSum[i] = pmSum[i]/count[i];
+      }
+
+      QvsdEtaPlusPlus[type]->Fill( dEtaBins_[i], ppSum[i] );
+      QvsdEtaMinusMinus[type]->Fill( dEtaBins_[i], mmSum[i] );
+      QvsdEtaPlusMinus[type]->Fill( dEtaBins_[i], pmSum[i] );
+
+    }
+  }
+
+
+
+
+
 }
 
 // ------------ method called when starting to processes a run  ------------
