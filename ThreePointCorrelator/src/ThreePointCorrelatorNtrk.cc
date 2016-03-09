@@ -644,7 +644,7 @@ ThreePointCorrelatorNtrk::endJob()
   double ppSum[50];
   double mmSum[50];
   double pmSum[50];
-  int counts[50];
+  int count[50];
 
   int sizeOfPerEvent = 0;
   vector< vector<double>> tempPerEvent;
@@ -711,9 +711,9 @@ ThreePointCorrelatorNtrk::endJob()
 
       double nTrkBinCenter = (ntrkBins_[i] + ntrkBins_[i+1])/2.0;
 
-      QvsdEtaPlusPlus[type]->Fill( nTrkBinCenter, ppSum[i] );
-      QvsdEtaMinusMinus[type]->Fill( nTrkBinCenter, mmSum[i] );
-      QvsdEtaPlusMinus[type]->Fill( nTrkBinCenter, pmSum[i] );
+      QvsNtrkPlusPlus[type]->Fill( nTrkBinCenter, ppSum[i] );
+      QvsNtrkMinusMinus[type]->Fill( nTrkBinCenter, mmSum[i] );
+      QvsNtrkPlusMinus[type]->Fill( nTrkBinCenter, pmSum[i] );
 
     }
   }
