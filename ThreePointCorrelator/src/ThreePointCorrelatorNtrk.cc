@@ -677,7 +677,7 @@ ThreePointCorrelatorNtrk::endJob()
       return;
     }
 
-    for( int num = 0; num < sizeOfPerEvent; num++ ){
+    for( unsigned num = 0; num < sizeOfPerEvent; num++ ){
 
       double numOfTracks = tempPerEvent[num][0];
       double pp = tempPerEvent[num][1];
