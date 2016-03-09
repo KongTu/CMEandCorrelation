@@ -531,7 +531,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
-  int c = 0;
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
 
@@ -667,7 +666,7 @@ ThreePointCorrelatorEtaGap::endJob()
   double pmSum[48];
   int count[48];
 
-  const int sizeOfPerEvent;
+  const int sizeOfPerEvent = 0;
   vector< vector<double>> tempPerEvent;
 
   for( int type = 0; type < 3; type++ ){
