@@ -677,14 +677,14 @@ ThreePointCorrelatorNtrk::endJob()
       return;
     }
 
-    for( unsigned num = 0; num < sizeOfPerEvent; num++ ){
+    for( int num = 0; num < sizeOfPerEvent; num++ ){
 
       double numOfTracks = tempPerEvent[num][0];
       double pp = tempPerEvent[num][1];
       double mm = tempPerEvent[num][2];
       double pm = tempPerEvent[num][3];
 
-      for(int i = 0; i < nNtrkBins; i++ ){
+      for(unsigned i = 0; i < ntrkBins_.size() - 1; i++ ){
           if( numOfTracks > ntrkBins_[i] && numOfTracks < ntrkBins_[i+1] ){     
             ppSum[i] += pp;
             mmSum[i] += mm;
@@ -694,7 +694,7 @@ ThreePointCorrelatorNtrk::endJob()
       }
     }
 
-    for(int i = 0; i < nNtrkBins; i++){
+    for(unsigned i = 0; i < ntrkBins_.size() - 1; i++){
 
       if( count[i] == 0 ){
 
