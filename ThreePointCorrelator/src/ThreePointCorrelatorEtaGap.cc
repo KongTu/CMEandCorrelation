@@ -730,9 +730,13 @@ ThreePointCorrelatorEtaGap::endJob()
         pmSum[i] = pmSum[i]/count[i];
       }
 
-      QvsdEtaPlusPlus[type]->Fill( dEtaBins_[i], ppSum[i] );
-      QvsdEtaMinusMinus[type]->Fill( dEtaBins_[i], mmSum[i] );
-      QvsdEtaPlusMinus[type]->Fill( dEtaBins_[i], pmSum[i] );
+      for( int dup = 0; dup < count[i]; dup++ ){
+        
+        QvsdEtaPlusPlus[type]->Fill( dEtaBins_[i], ppSum[i] );
+        QvsdEtaMinusMinus[type]->Fill( dEtaBins_[i], mmSum[i] );
+        QvsdEtaPlusMinus[type]->Fill( dEtaBins_[i], pmSum[i] );
+      }
+
 
     }
   }
