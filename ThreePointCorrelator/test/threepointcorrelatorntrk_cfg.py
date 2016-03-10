@@ -7,8 +7,8 @@ process = cms.Process("Demo")
 import HLTrigger.HLTfilters.hltHighLevel_cfi
 process.hltHM = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
 process.hltHM.HLTPaths = ['HLT_PAPixelTracks_Multiplicity100_v*'
-                          #'HLT_PAPixelTracks_Multiplicity130_v*',
-                          #'HLT_PAPixelTracks_Multiplicity160_v*'
+                          'HLT_PAPixelTracks_Multiplicity130_v*',
+                          'HLT_PAPixelTracks_Multiplicity160_v*'
                           #'HLT_PAPixelTracks_Multiplicity190_v*'
                           #'HLT_PAPixelTracks_Multiplicity220_v*'
 ]
@@ -45,9 +45,10 @@ process.ana = cms.EDAnalyzer('ThreePointCorrelatorNtrk',
 						  offlineDCA = cms.untracked.double(3.0),
 						  offlineptErr = cms.untracked.double(0.1),
 					          useCentrality = cms.untracked.bool(False),
-						  useBothSide = cms.untracked.bool(False),
 						  Nmin = cms.untracked.int32(0),
 						  Nmax = cms.untracked.int32(100000),
+						  vzLow = cms.untracked.double(-15.0),
+                                                  vzHigh = cms.untracked.double(+15.0),
 						  etaLowHF = cms.untracked.double(4.4),
 						  etaHighHF = cms.untracked.double(5.0),
 						  ntrkBins = cms.untracked.vdouble(0.0, 20.0, 40.0, 60.0, 80.0, 100.0, 120.0, 150.0, 185.0, 220.0, 260.0, 300.0)
