@@ -533,6 +533,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
+  int count = 0;
+  int count1 = 0;
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
 
@@ -540,10 +542,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       
       double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
       testDeta->Fill(deltaEta);
+      if( deltaEta == 0.2 ) count++;
 
       cout << "deltaEta: " << deltaEta << endl;
     
-      for(int type = 0; type < 3; type++){
+      for(int type = 0; type < 1; type++){
 
         double tempHFcos = 0.0;
         double tempHFsin = 0.0;
@@ -568,14 +571,15 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], tempHFcos, Qsin[ieta][1], Qsin[jeta][1], tempHFsin );
         double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
 
-        //QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
+        if( deltaEta == 0.2 ) count1++;
+
+        QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
         QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
         if( type == 0 && deltaEta == 0.2 ){
 
-
           testVector.push_back( totalQplusplus );
-          QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
+          //QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         }
 
         // perEta.push_back( deltaEta );
@@ -601,6 +605,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       }
     }
   }
+
+
+  cout << "count: " << count << endl;
+  cout << "count1: " << count1 << endl;
 
 }
 
