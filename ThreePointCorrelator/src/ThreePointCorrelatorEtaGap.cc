@@ -566,11 +566,14 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], tempHFcos, Qsin[ieta][1], Qsin[jeta][1], tempHFsin );
         double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
 
-        QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
+        //QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
         QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
 
-        if( type == 0 && deltaEta == 0.2 ) testVector.push_back( totalQplusplus );
+        if( type == 0 && deltaEta == 0.2 ){
+          testVector.push_back( totalQplusplus );
+          QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
+        }
 
         // perEta.push_back( deltaEta );
         // perEta.push_back( totalQplusplus );
@@ -615,7 +618,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   const int temp = dEtaBins_.size();
   const int NbinsEta = etaBins_.size() - 1;
 
-  double dEtaBinsArray[100];
+  double dEtaBinsArray[48];
   for(int eta = 0; eta < temp; eta++){
 
     dEtaBinsArray[eta] = dEtaBins_[eta];
