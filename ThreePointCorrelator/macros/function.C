@@ -29,36 +29,53 @@
 void function(){
 
 	cout << "loading function!" << endl;
+
 }
 
-//define eta bins:
+//eta bins and dEta bins
 double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2,-1.1,-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4};
-int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
+const int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
 
-//define all the 2D and 1D histograms:
+double dEtaBins[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
+const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
 
-TH2D* corrVsEtaPlusPlus = new TH2D("corrVsEtaPlusPlus", "corrVsEtaPlusPlus", Nbins, 0, 4.8, 100000, -0.00001, 0.00001);
-TH2D* corrVsEtaMinusMinus = new TH2D("corrVsEtaMinusMinus", "corrVsEtaMinusMinus", Nbins, 0, 4.8, 100000, -0.00001, 0.00001);
-TH2D* corrVsEtaPlusMinus = new TH2D("corrVsEtaPlusMinus", "corrVsEtaPlusMinus", Nbins, 0, 4.8, 100000, -0.00001, 0.00001);
+double ntrkbins[] = {0.0, 20.0, 40.0, 60.0, 80.0, 100.0, 120.0, 150.0, 185.0, 220.0, 260.0, 300.0};
+const int Nntrkbins = sizeof(ntrkbins) / sizeof(ntrkbins[0]) - 1;
 
-TH1D* Qplusplus1D[48];
-TH1D* Qminusminus1D[48];
-TH1D* Qplusminus1D[48];
-TH1D* Qminusplus1D[48];
+//base hist for plotting:
+TH1D* hist = makeHistDifferentBins("hist","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>/v_{2,3}", NdEtaBins, dEtaBins, kBlack);
+TH1D* hist2 = makeHistDifferentBins("hist2","","N^{offline}_{trk}", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>/v_{2,3}", Nntrkbins, ntrkbins, kBlack);
 
-TH1D* corrVsEtaPlusPlus1D[48];
-TH1D* corrVsEtaMinusMinus1D[48];
-TH1D* corrVsEtaPlusMinus1D[48];
+TH1D* show1[3];
+TH1D* show2[3];
+TH1D* show3[3];
 
-TH1D* hist = makeHist("hist","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>/v_{2,3}", 48,0,4.8, kBlack);
-TH1D* hist1 = makeHist("hist1","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kBlack);
-TH1D* hist2 = makeHist("hist2","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kRed);
-TH1D* hist3 = makeHist("hist3","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kBlue);
-TH1D* hist4 = makeHist("hist4","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>", 48,0,4.8, kGreen-3);
+TH1D* ntrk1[3];
+TH1D* ntrk2[3];
+TH1D* ntrk3[3];
 
-TH1D* corrHistPlusPlus = makeHist("corrHistPlusPlus","","#Delta#eta", "correction factor", 48,0,4.8, kBlack);
-TH1D* corrHistMinusMinus = makeHist("corrHistMinusMinus","","#Delta#eta", "correction factor", 48,0,4.8, kRed);
-TH1D* corrHistPlusMinus = makeHist("corrHistPlusMinus","","#Delta#eta", "correction factor", 48,0,4.8, kGreen-3);
+TH1D* corrHistPlusPlus[3]; 
+TH1D* corrHistMinusMinus[3]; 
+TH1D* corrHistPlusMinus[3]; 
+
+TH2D* corrVsEtaPlusPlus[3];
+TH2D* corrVsEtaMinusMinus[3];
+TH2D* corrVsEtaPlusMinus[3];
+
+TH1D* corrVsEtaPlusPlus1D[3][48];
+TH1D* corrVsEtaMinusMinus1D[3][48];
+TH1D* corrVsEtaPlusMinus1D[3][48];
+
+TH1D* Qplusplus1D[3][48];
+TH1D* Qminusminus1D[3][48];
+TH1D* Qplusminus1D[3][48];
+TH1D* Qminusplus1D[3][48];
+
+TH1D* Qplusplus1Dntrk[3][48];
+TH1D* Qminusminus1Dntrk[3][48];
+TH1D* Qplusminus1Dntrk[3][48];
+TH1D* Qminusplus1Dntrk[3][48];
+
 
 
 //****** member functions **********//
@@ -93,6 +110,23 @@ double getNormalizedSum( TH1D* hist ){
 	}
 
 	double sum = integral2/( hist->GetEntries() );
+	return sum;
+
+}
+
+double getNormalizedSumOnly( TH1D* hist ){
+
+	double integral2 = 0.;
+	for(int i = 0; i < hist->GetNbinsX(); i++ ){
+
+		double temp = hist->GetBinContent(i+1);
+		double center = hist->GetBinCenter(i+1);
+		if(temp != 0 ){
+			integral2 = integral2 + temp*center;
+		}
+	}
+
+	double sum = integral2;
 	return sum;
 
 }

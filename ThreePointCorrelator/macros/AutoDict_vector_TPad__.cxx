@@ -1,4 +1,4 @@
-#include "allWeNeed.h"
+#include "RiceStyle.h"
 class TPad;
 #ifdef __CINT__ 
 #pragma link C++ nestedclasses;

@@ -28,13 +28,13 @@
 
 void RiceStyle(){
 
-cout << "Welcome to Rice Heavy Ion group!! " << endl;
+std::cout << "Welcome to Rice Heavy Ion group!! " << std::endl;
 
 }
 
 //make Canvas
 
-TCanvas* makeCanvas(const char* name, const char *title, bool doLogx == false, bool doLogy == true ){
+TCanvas* makeCanvas(const char* name, const char *title, bool doLogx = false, bool doLogy = false ){
 	
 	// Start with a canvas
 	TCanvas *canvas = new TCanvas(name,title, 1, 1 ,600 ,600 );
@@ -115,7 +115,7 @@ void initSubPad(TPad* pad, int i)
   //printf("Pad: %p, index: %d\n",pad,i);
 
   pad->cd(i);
-  TPad *tmpPad = pad->GetPad(i);
+  TPad *tmpPad = (TPad*) pad->GetPad(i);
   tmpPad->SetLeftMargin  (0.20);
   tmpPad->SetTopMargin   (0.06);
   tmpPad->SetRightMargin (0.08);
@@ -240,7 +240,7 @@ vector<TPad*> makeMultiPad(const int num){//we only have 4,6,8 options for now
 		pad[7]->SetBottomMargin(0.30);
 	}
 
-	for( i = 0; i < num; i++){
+	for( int i = 0; i < num; i++){
 
 		temp.push_back( pad[i] );
 	}
@@ -251,6 +251,39 @@ vector<TPad*> makeMultiPad(const int num){//we only have 4,6,8 options for now
 TH1D* makeHist(const char*name, const char*title, const char*xtit, const char*ytit, const int nBins, const double lower, const double higher, EColor color = kBlack ){
 
 	TH1D* temp = new TH1D(name, title, nBins, lower, higher);
+	
+	temp->SetMarkerSize(1.0);
+	temp->SetMarkerStyle(20);
+	temp->SetMarkerColor(color);
+	temp->SetLineColor(color);
+	temp->SetStats(kFALSE);
+
+	temp->GetXaxis()->SetTitle( xtit );
+	temp->GetXaxis()->SetTitleSize(0.05);
+	temp->GetXaxis()->SetTitleFont(42);
+	temp->GetXaxis()->SetTitleOffset(1.25);
+	temp->GetXaxis()->SetLabelSize(0.05);
+	temp->GetXaxis()->SetLabelOffset(0.01);
+	temp->GetXaxis()->SetLabelFont(42);
+	temp->GetXaxis()->SetLabelColor(kBlack);
+	temp->GetXaxis()->CenterTitle();
+
+	temp->GetYaxis()->SetTitle( ytit );
+	temp->GetYaxis()->SetTitleSize(0.05);
+	temp->GetYaxis()->SetTitleFont(42);
+	temp->GetYaxis()->SetTitleOffset(1.4);
+	temp->GetYaxis()->SetLabelSize(0.05);
+	temp->GetYaxis()->SetLabelOffset(0.01);
+	temp->GetYaxis()->SetLabelFont(42);
+	temp->GetYaxis()->SetLabelColor(kBlack);
+	temp->GetYaxis()->CenterTitle();
+
+	return temp;
+}
+
+TH1D* makeHistDifferentBins(const char*name, const char*title, const char*xtit, const char*ytit, const int nBins, double bins[], EColor color = kBlack ){
+
+	TH1D* temp = new TH1D(name, title, nBins, bins);
 	
 	temp->SetMarkerSize(1.0);
 	temp->SetMarkerStyle(20);
@@ -358,32 +391,6 @@ void fixedFontHist(TH2D * h, Float_t xoffset=0.9, Float_t yoffset=2.7)
   h->GetYaxis()->CenterTitle();
 }
 
-vector<TH1D*> loadingHistogram( TFile * file, TString hName, int Nbins ){
-
-	vector<TH1D *> spectra;
-  	stringstream HistName;
-
-  	for (int mult = 0; mult < Nbins; mult++){
-
-	    HistName.str("");
-
-	    HistName << hName;
-	    HistName << mult;
-
-	    TH1D* temp = (TH1D*)file->Get( HistName.str().c_str() );
-	    temp->SetMarkerSize(1.3);
-		temp->SetMarkerStyle(20);
-		temp->SetStats(kFALSE);
-		temp->SetTitle("");
-		temp->SetXTitle("X");
-		temp->SetYTitle("Y");
-	    
-	    spectra.push_back( temp );
-  	}
-
-  	return spectra;
-
-}
 
 TLegend* makeLegend(){
 
@@ -394,7 +401,7 @@ TLegend* makeLegend(){
 
 }
 
-TGraphAsymmErrors* makeEfficiency(TH1D* hist1, TH1D* hist2, const char*Draw == "cp", EColor color = kBlack  ){
+TGraphAsymmErrors* makeEfficiency(TH1D* hist1, TH1D* hist2, const char*Draw = "cp", EColor color = kBlack  ){
 
 	TGraphAsymmErrors* temp = new TGraphAsymmErrors();
 	temp->Divide( hist1, hist2, Draw );

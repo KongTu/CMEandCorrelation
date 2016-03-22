@@ -1,4 +1,4 @@
-#include "RiceStyle.h"
+#include "inputHistogram.h"
 class TH1D;
 #ifdef __CINT__ 
 #pragma link C++ nestedclasses;
