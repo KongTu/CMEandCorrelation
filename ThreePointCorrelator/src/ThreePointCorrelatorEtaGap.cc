@@ -544,7 +544,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       testDeta->Fill(deltaEta);
       if( deltaEta >= 0.2 && deltaEta < 0.3 ) {
         count++;
-        cout << "deltaEta = " << deltaEta << endl;
+        cout << "deltaEta = 0.2:  " << deltaEta << endl;
+      }
+      if( deltaEta >= 0.3 && deltaEta < 0.4 ) {
+        count1++;
+        cout << "deltaEta = 0.3:  " << deltaEta << endl;
       }
     
       for(int type = 0; type < 1; type++){
@@ -572,12 +576,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], tempHFcos, Qsin[ieta][1], Qsin[jeta][1], tempHFsin );
         double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
 
-        if( deltaEta == 0.2 ) count1++;
-
         QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
         QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
-        if( type == 0 && deltaEta == 0.2 ){
+        if( type == 0 && deltaEta == 0.3 ){
 
           testVector.push_back( totalQplusplus );
           //QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
@@ -696,7 +698,7 @@ ThreePointCorrelatorEtaGap::endJob()
   sum = sum/size;
 
   cout << "the true value: " << sum << endl;
-  cout << "there are " << testVector.size() << " bins with deltaEta = 0.2 " << endl;
+  cout << "there are " << testVector.size() << " bins with deltaEta = 0.3 " << endl;
   
   // double ppSum[48];
   // double mmSum[48];
