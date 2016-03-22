@@ -542,7 +542,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       
       double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
       testDeta->Fill(deltaEta);
-      if( deltaEta == 0.2 ) count++;
+      if( deltaEta >= 0.2 && deltaEta < 0.3 ) count++;
 
       cout << "deltaEta: " << deltaEta << endl;
     
