@@ -569,6 +569,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         perEta.push_back( totalQminusminus );
         perEta.push_back( totalQplusminus ); 
 
+        if( fabs(totalQplusplus) > 0.05 ){
+
+          cout << "totalQplusplus: " << totalQplusplus << endl;
+
+        }
+
         if( type == 0 ){
           perEventPP.push_back( perEta );
           perEta.clear();
