@@ -575,7 +575,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
         QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
-        if( type == 0 && deltaEta == 0.2 ){
+        if( type == 0 && deltaEta >= 0.199 && deltaEta < 0.299 ){
 
           testVector.push_back( totalQplusplus );
           //QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
