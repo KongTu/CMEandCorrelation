@@ -624,22 +624,15 @@ ThreePointCorrelatorEtaGap::beginJob()
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
-  //const int bins = dEtaBins_.size() - 1;
-  //const int temp = dEtaBins_.size();
+  const int bins = dEtaBins_.size() - 1;
+  const int temp = dEtaBins_.size();
   const int NbinsEta = etaBins_.size() - 1;
 
-  // double dEtaBinsArray[48];
-  // for(int eta = 0; eta < temp; eta++){
+  double dEtaBinsArray[48];
+  for(int eta = 0; eta < temp; eta++){
 
-  //   dEtaBinsArray[eta] = dEtaBins_[eta];
-
-  // }
-  double dEtaBinsArray[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
-  for(int i = 0; i < 30; i++){
-
-    dEtaBinsArray[i] = dEtaBinsArray[i] - 0.0001;
+    dEtaBinsArray[eta] = dEtaBins_[eta] - 0.0001;
   }
-  int bins = 29;
 //HF:
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,5000);
   evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
