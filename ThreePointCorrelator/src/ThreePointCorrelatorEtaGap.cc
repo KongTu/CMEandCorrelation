@@ -534,7 +534,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   }
 
   int count = 0;
-  int count1 = 0;
+  // count1 = 0;
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
 
@@ -545,10 +545,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       if( deltaEta >= 0.2 && deltaEta < 0.3 ) {
         count++;
         cout << "deltaEta = 0.2:  " << deltaEta << endl;
-      }
-      if( deltaEta >= 0.3 && deltaEta < 0.4 ) {
-        count1++;
-        cout << "deltaEta = 0.3:  " << deltaEta << endl;
       }
     
       for(int type = 0; type < 1; type++){
@@ -579,7 +575,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
         QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
-        if( type == 0 && deltaEta == 0.3 ){
+        if( type == 0 && deltaEta == 0.2 ){
 
           testVector.push_back( totalQplusplus );
           //QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
@@ -611,7 +607,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 
   cout << "count: " << count << endl;
-  cout << "count1: " << count1 << endl;
+  //cout << "count1: " << count1 << endl;
 
 }
 
@@ -639,6 +635,10 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   // }
   double dEtaBinsArray[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
+  for(int i = 0; i < 30; i++){
+
+    dEtaBinsArray[i] = dEtaBinsArray[i] - 0.0001;
+  }
   int bins = 29;
 //HF:
   evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,5000);
