@@ -231,11 +231,6 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
 
-      std::vector<double> perEta;
-      std::vector< std::vector<double>> perEventPP, perEventMM, perEventPM;
-
-      std::vector<double> testVector;
-
 };
 
 //
@@ -533,8 +528,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
-  int count = 0;
-  // count1 = 0;
   for(int ieta = 0; ieta < binSize_; ieta++){
     for(int jeta = 0; jeta < binSize_; jeta++){
 
@@ -542,12 +535,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       
       double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
       testDeta->Fill(deltaEta);
-      if( deltaEta >= 0.2 && deltaEta < 0.3 ) {
-        count++;
-        cout << "deltaEta = 0.2:  " << deltaEta << endl;
-      }
     
-      for(int type = 0; type < 1; type++){
+      for(int type = 0; type < 3; type++){
 
         double tempHFcos = 0.0;
         double tempHFsin = 0.0;
@@ -575,40 +564,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
         QvsdEtaPlusMinus[type]->Fill(deltaEta, totalQplusminus);
-        if( type == 0 && deltaEta >= 0.199 && deltaEta < 0.299 ){
 
-          testVector.push_back( totalQplusplus );
-          //QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
-        }
-
-        // perEta.push_back( deltaEta );
-        // perEta.push_back( totalQplusplus );
-        // perEta.push_back( totalQminusminus );
-        // perEta.push_back( totalQplusminus ); 
-
-        // if( type == 0 ){
-        //   perEventPP.push_back( perEta );
-        //   perEta.clear();
-        // }
-        // else if( type == 1 ){
-        //   perEventMM.push_back( perEta );
-        //   perEta.clear();
-        // }
-        // else if( type == 2 ){
-        //   perEventPM.push_back( perEta );
-        //   perEta.clear();
-        // }
-        // else{
-        //   return;
-        // }
       }
     }
   }
-
-
-  cout << "count: " << count << endl;
-  //cout << "count1: " << count1 << endl;
-
 }
 
 
@@ -679,104 +638,6 @@ ThreePointCorrelatorEtaGap::beginJob()
 void 
 ThreePointCorrelatorEtaGap::endJob() 
 {
-  using namespace std;
-
-  double sum = 0.;
-  int size = testVector.size();
-  for(int i = 0; i < size; i++){
-
-    sum += testVector[i];
-  }
-
-  sum = sum/size;
-
-  cout << "the true value: " << sum << endl;
-  cout << "there are " << testVector.size() << " bins with deltaEta = 0.3 " << endl;
-  
-  // double ppSum[48];
-  // double mmSum[48];
-  // double pmSum[48];
-  // int count[48];
-
-  // int sizeOfPerEvent = 0;
-  // vector< vector<double>> tempPerEvent;
-
-  // for( int type = 0; type < 3; type++ ){
-
-  //   for(int j = 0; j < 48; j++){
-
-  //     ppSum[j] = 0.0;
-  //     mmSum[j] = 0.0;
-  //     pmSum[j] = 0.0;
-  //     count[j] = 0;
-  //   }
-
-  //   if( type == 0 ){
-  //     sizeOfPerEvent = perEventPP.size();
-  //     tempPerEvent = perEventPP;
-  //   }
-  //   else if( type == 1 ){
-  //     sizeOfPerEvent = perEventMM.size();
-  //     tempPerEvent = perEventMM;
-
-  //   }
-  //   else if( type == 2 ){
-  //     sizeOfPerEvent = perEventPM.size();
-  //     tempPerEvent = perEventPM;
-
-  //   }
-  //   else{
-  //     return;
-  //   }
-
-  //   for( int num = 0; num < sizeOfPerEvent; num++ ){
-
-  //     double dEta = tempPerEvent[num][0];
-  //     double pp = tempPerEvent[num][1];
-  //     double mm = tempPerEvent[num][2];
-  //     double pm = tempPerEvent[num][3];
-
-  //     for(unsigned i = 0; i < dEtaBins_.size(); i++ ){
-          
-  //         if( dEta == dEtaBins_[i]){     
-  //           ppSum[i] += pp;
-  //           mmSum[i] += mm;
-  //           pmSum[i] += pm;
-  //           count[i]++;
-  //         }
-  //     }
-  //   }
-
-  //   for(unsigned i = 0; i < dEtaBins_.size(); i++){
-
-  //     if( count[i] == 0 ){
-
-  //       ppSum[i] = 0.0;
-  //       mmSum[i] = 0.0;
-  //       pmSum[i] = 0.0;
-
-  //     }
-  //     else{
-  //       ppSum[i] = ppSum[i]/count[i];
-  //       mmSum[i] = mmSum[i]/count[i];
-  //       pmSum[i] = pmSum[i]/count[i];
-  //     }
-
-  //     for( int dup = 0; dup < count[i]; dup++ ){
-        
-  //       QvsdEtaPlusPlus[type]->Fill( dEtaBins_[i], ppSum[i] );
-  //       QvsdEtaMinusMinus[type]->Fill( dEtaBins_[i], mmSum[i] );
-  //       QvsdEtaPlusMinus[type]->Fill( dEtaBins_[i], pmSum[i] );
-  //     }
-
-
-  //   }
-  // }
-
-
-
-
-
 }
 
 // ------------ method called when starting to processes a run  ------------
