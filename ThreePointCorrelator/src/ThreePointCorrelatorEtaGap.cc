@@ -670,7 +670,7 @@ ThreePointCorrelatorEtaGap::endJob()
   using namespace std;
 
   double sum = 0.;
-  int size = testVector.size();
+  const int size = testVector.size();
   for(int i = 0; i < testVector.size(); i++){
 
     sum += testVector[i];
