@@ -617,9 +617,9 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   for(int type = 0; type < 3; type++){
     
-    QvsdEtaPlusPlus[type] = fs->make<TH2D>(Form("QvsdEtaPlusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0,1.0 );
-    QvsdEtaMinusMinus[type] = fs->make<TH2D>(Form("QvsdEtaMinusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0,1.0 );
-    QvsdEtaPlusMinus[type] = fs->make<TH2D>(Form("QvsdEtaPlusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0,1.0 );
+    QvsdEtaPlusPlus[type] = fs->make<TH2D>(Form("QvsdEtaPlusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 200000,-1.0,1.0 );
+    QvsdEtaMinusMinus[type] = fs->make<TH2D>(Form("QvsdEtaMinusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 200000,-1.0,1.0 );
+    QvsdEtaPlusMinus[type] = fs->make<TH2D>(Form("QvsdEtaPlusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 200000,-1.0,1.0 );
 
   }
 
