@@ -182,6 +182,8 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
+      TH1D* trkPhi;
+      TH1D* hfPhi;
 
       TH1D* evtWeightedQp3;
       TH1D* evtWeight;
@@ -227,6 +229,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
       bool useCentrality_;
       bool reverseBeam_;
+      bool messAcceptance_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
@@ -257,6 +260,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
+  messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
@@ -376,8 +380,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-        if ( fabs(trk.eta()) > 2.4 || trk.pt() < 0.4  ) continue;
+        if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
+        if( messAcceptance_ ) {if( trk.phi() < 0.0 ) continue;}
         nTracks++;  
+
+        trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
         QcosTRK = QcosTRK + cos( 2*trk.phi() );
         QsinTRK = QsinTRK + sin( 2*trk.phi() );
@@ -437,6 +444,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         double energy = hit.emEnergy() + hit.hadEnergy();
+        if( messAcceptance_ ){ if(caloPhi < 0.0) continue;}
+
+        hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
         if( reverseBeam_ ) caloEta = -hit.eta();
 
@@ -582,6 +592,8 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
+  trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
+  hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
   const int bins = dEtaBins_.size() - 1;
   const int temp = dEtaBins_.size();
