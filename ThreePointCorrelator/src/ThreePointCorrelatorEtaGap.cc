@@ -756,17 +756,12 @@ ThreePointCorrelatorEtaGap::beginJob()
     averageSinHF[sign] = fs->make<TH1D>(Form("averageSinHF_%d", sign), ";averageSinHF", 2000, -1.0, 1.0);
   }
 
-//Acceptance correction 2D histograms!
-
   for(int type = 0; type < 3; type++){
-    
+
     QvsdEtaPlusPlus[type] = fs->make<TH2D>(Form("QvsdEtaPlusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005 );
     QvsdEtaMinusMinus[type] = fs->make<TH2D>(Form("QvsdEtaMinusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005 );
     QvsdEtaPlusMinus[type] = fs->make<TH2D>(Form("QvsdEtaPlusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005 );
-  }
-
-
-  for(int type = 0; type < 3; type++){
+    
     for(int sign = 0; sign < 3; sign++){
 
       NaNcvsdEta[type][sign] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d", type, sign), ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 250000,0,250000);
