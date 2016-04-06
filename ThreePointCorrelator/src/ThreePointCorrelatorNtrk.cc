@@ -533,49 +533,35 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
       return;
     }
 
-    perNtrk.push_back( nTracks );
+    for(int sign = 0; sign < 2; sign++){
 
-      for(int sign = 0; sign < 2; sign++){
+      double realPart_like = Qcos[sign]*Qcos[sign] - Qsin[sign]*Qsin[sign];
+      double imagPart_like = 2*Qcos[sign]*Qsin[sign];
 
-        double realPart_like = Qcos[sign]*Qcos[sign] - Qsin[sign]*Qsin[sign];
-        double imagPart_like = 2*Qcos[sign]*Qsin[sign];
+      realPart_like = realPart_like - Q2cos[sign];
+      imagPart_like = imagPart_like - Q2sin[sign];
 
-        realPart_like = realPart_like - Q2cos[sign];
-        imagPart_like = imagPart_like - Q2sin[sign];
+      realPart_like = realPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
+      imagPart_like = imagPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
 
-        realPart_like = realPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
-        imagPart_like = imagPart_like/(Qcounts[sign]*(Qcounts[sign] - 1));
+      double fQ = get2RealduP(realPart_like, tempHFcos, imagPart_like, tempHFsin);
 
-        double fQ = get2RealduP(realPart_like, tempHFcos, imagPart_like, tempHFsin);
-        perNtrk.push_back( fQ );
-        
-      }
+      if( sign == 0 ) QvsNtrkPlusPlus[type]->Fill(nTracks, fQ);
+      else if (sign == 1 ) QvsNtrkMinusMinus[type]->Fill(nTracks, fQ);
+      
+    }
 
-      //un-like sign correlator:
-      double realPart_unlike = Qcos[0]*Qcos[1] - Qsin[0]*Qsin[1];
-      double imagPart_unlike = Qcos[0]*Qsin[1] + Qcos[1]*Qsin[0];
+    //un-like sign correlator:
+    double realPart_unlike = Qcos[0]*Qcos[1] - Qsin[0]*Qsin[1];
+    double imagPart_unlike = Qcos[0]*Qsin[1] + Qcos[1]*Qsin[0];
 
-      realPart_unlike = realPart_unlike/(Qcounts[0]*Qcounts[1]);
-      imagPart_unlike = imagPart_unlike/(Qcounts[0]*Qcounts[1]);
+    realPart_unlike = realPart_unlike/(Qcounts[0]*Qcounts[1]);
+    imagPart_unlike = imagPart_unlike/(Qcounts[0]*Qcounts[1]);
 
-      double fQ_unlike = get2RealduP(realPart_unlike, tempHFcos, imagPart_unlike, tempHFsin);
-      perNtrk.push_back( fQ_unlike );
+    double fQ_unlike = get2RealduP(realPart_unlike, tempHFcos, imagPart_unlike, tempHFsin);
 
-      if( type == 0 ){
-        perEventPP.push_back( perNtrk );
-        perNtrk.clear();
-      }
-      else if( type == 1 ){
-        perEventMM.push_back( perNtrk );
-        perNtrk.clear();
-      }
-      else if( type == 2 ){
-        perEventPM.push_back( perNtrk );
-        perNtrk.clear();
-      }
-      else{
-        return;
-      }
+    QvsNtrkPlusMinus[type]->Fill(nTracks, fQ_unlike);
+
   }
 
 
@@ -601,8 +587,8 @@ ThreePointCorrelatorNtrk::beginJob()
 
 //HF:
 
-  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,5000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
+  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000,0,5000);
+  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 10000,-50,50);
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 10000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 10000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 10000,-1,1);
@@ -617,9 +603,9 @@ ThreePointCorrelatorNtrk::beginJob()
 //TRK:
     for(int type = 0; type < 3; type++ ){
      
-      QvsNtrkPlusPlus[type] = fs->make<TH2D>(Form("QvsNtrkPlusPlus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkMinusMinus[type] = fs->make<TH2D>(Form("QvsNtrkMinusMinus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
-      QvsNtrkPlusMinus[type] = fs->make<TH2D>(Form("QvsNtrkPlusMinus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-0.1,0.1 );
+      QvsNtrkPlusPlus[type] = fs->make<TH2D>(Form("QvsNtrkPlusPlus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-1.0-0.00005,1.0-0.00005 );
+      QvsNtrkMinusMinus[type] = fs->make<TH2D>(Form("QvsNtrkMinusMinus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-1.0-0.00005,1.0-0.00005 );
+      QvsNtrkPlusMinus[type] = fs->make<TH2D>(Form("QvsNtrkPlusMinus_%d", type), ";N^{offline}_{trk};Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", nNtrkBins, ntrkBinsFill, 20000,-1.0-0.00005,1.0-0.00005 );
 
     }
 
@@ -639,87 +625,6 @@ ThreePointCorrelatorNtrk::beginJob()
 void 
 ThreePointCorrelatorNtrk::endJob() 
 {
-  using namespace std;
-
-  double ppSum[50];
-  double mmSum[50];
-  double pmSum[50];
-  int count[50];
-
-  int sizeOfPerEvent = 0;
-  vector< vector<double>> tempPerEvent;
-
-  for( int type = 0; type < 3; type++ ){
-
-    for(int j = 0; j < 50; j++){
-
-      ppSum[j] = 0.0;
-      mmSum[j] = 0.0;
-      pmSum[j] = 0.0;
-      count[j] = 0;
-    }
-
-    if( type == 0 ){
-      sizeOfPerEvent = perEventPP.size();
-      tempPerEvent = perEventPP;
-    }
-    else if( type == 1 ){
-      sizeOfPerEvent = perEventMM.size();
-      tempPerEvent = perEventMM;
-
-    }
-    else if( type == 2 ){
-      sizeOfPerEvent = perEventPM.size();
-      tempPerEvent = perEventPM;
-
-    }
-    else{
-      return;
-    }
-
-    for( int num = 0; num < sizeOfPerEvent; num++ ){
-
-      double numOfTracks = tempPerEvent[num][0];
-      double pp = tempPerEvent[num][1];
-      double mm = tempPerEvent[num][2];
-      double pm = tempPerEvent[num][3];
-
-      for(unsigned i = 0; i < ntrkBins_.size() - 1; i++ ){
-          if( numOfTracks > ntrkBins_[i] && numOfTracks < ntrkBins_[i+1] ){     
-            ppSum[i] += pp;
-            mmSum[i] += mm;
-            pmSum[i] += pm;
-            count[i]++;
-          }
-      }
-    }
-
-    for(unsigned i = 0; i < ntrkBins_.size() - 1; i++){
-
-      if( count[i] == 0 ){
-
-        ppSum[i] = 0.0;
-        mmSum[i] = 0.0;
-        pmSum[i] = 0.0;
-
-      }
-      else{
-        ppSum[i] = ppSum[i]/count[i];
-        mmSum[i] = mmSum[i]/count[i];
-        pmSum[i] = pmSum[i]/count[i];
-      }
-
-      double nTrkBinCenter = (ntrkBins_[i] + ntrkBins_[i+1])/2.0;
-
-      QvsNtrkPlusPlus[type]->Fill( nTrkBinCenter, ppSum[i] );
-      QvsNtrkMinusMinus[type]->Fill( nTrkBinCenter, mmSum[i] );
-      QvsNtrkPlusMinus[type]->Fill( nTrkBinCenter, pmSum[i] );
-
-    }
-  }
-
-
-
 }
 
 // ------------ method called when starting to processes a run  ------------
