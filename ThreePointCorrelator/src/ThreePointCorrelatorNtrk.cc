@@ -230,9 +230,6 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
 
       std::vector<double> ntrkBins_;
 
-      std::vector<double> perNtrk;
-      std::vector< std::vector<double>> perEventPP, perEventMM, perEventPM;
-
 };
 
 //
