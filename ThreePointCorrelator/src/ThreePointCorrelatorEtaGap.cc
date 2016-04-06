@@ -730,7 +730,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   const int bins = dEtaBins_.size() - 1;
   const int temp = dEtaBins_.size();
-  const int NbinsEta = etaBins_.size() - 1;
+  //const int NbinsEta = etaBins_.size() - 1;
 
   double dEtaBinsArray[48];
   for(int eta = 0; eta < temp; eta++){
@@ -766,6 +766,13 @@ ThreePointCorrelatorEtaGap::beginJob()
   }
 
 
+  for(int type = 0; type < 3; type++){
+    for(int sign = 0; sign < 3; sign++){
+
+      NaNcvsdEta[type][sign] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d", type, sign), ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 250000,0,250000);
+    }
+  }
+
   for(int sign = 0; sign < 3; sign++){
 
       NaNbvsdEta[sign] = fs->make<TH2D>(Form("NaNbvsdEta_%d", sign), ";#Delta#eta;N_{a}N_{b}", bins, dEtaBinsArray, 250000,0,250000);
@@ -778,9 +785,8 @@ ThreePointCorrelatorEtaGap::beginJob()
 
         for(int type = 0; type < 3; type++){
     
-          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 250000,0,250000);
-          QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 250000,0,250000);
-          NaNcvsdEta[type][sign][real] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 250000,0,250000);
+          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005);
+          QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005);
 
       }
     }
