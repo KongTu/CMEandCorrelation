@@ -185,31 +185,42 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* trkPhi;
       TH1D* hfPhi;
 
-      TH1D* evtWeightedQp3;
-      TH1D* evtWeight;
+
+//v2
       TH1D* c2_ab;
       TH1D* c2_ac;
       TH1D* c2_cb;
-      
+
+      TH1D* averageCosHF[2];//calculate the correction on v2
+      TH1D* averageSinHF[2];
+//end v2
+
       //culmulants: 
       TH2D* QvsdEtaPlusPlus[3];
       TH2D* QvsdEtaMinusMinus[3];
       TH2D* QvsdEtaPlusMinus[3];
 
-      //two and single particle sum
-      //HF:
+      //double particle product, corresponds to the first 3 terms, <QaQb><Qc>, <QaQc><Qb>, and <QbQc>
+      //like/unlike sign, real/imaginary
+      TH2D* QaQbvsdEta[3][2];
+      TH2D* NaNbvsdEta[3];//count is the same for real and imaginary
+
+      //type, like/unlike sign, real/imaginary
+      TH2D* QaQcvsdEta[3][3][2];
+      TH2D* QbvsdEta[3][3][2];
+      TH2D* NaNcvsdEta[3][3];
+
+
+      //like/unlike sign, real/imaginary corresponds to <Qa><Qb>
+      TH2D* QaSinglevsdEta[3][2];
+      TH2D* QbSinglevsdEta[3][2];
+
+      //single particle sum, corresponds to the last term in correction, <Qc>
       TH1D* HFcosSum[2];
       TH1D* HFsinSum[2];
       TH1D* weightSum[2];
 
-      TH1D* averageCosHF[2];
-      TH1D* averageSinHF[2];
-
-      TH1D* TRKcosPlusSum[48];
-      TH1D* TRKsinPlusSum[48];
-      TH1D* TRKcosMinusSum[48];
-      TH1D* TRKsinMinusSum[48];
-
+      
       TH2D* EvsEta;
       TH2D* ETvsEta;
 
@@ -501,9 +512,131 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }
   }
 
-//weight by ET() and renormalize by ETT in order to have dimensionless 
+  for(int ieta = 0; ieta < binSize_; ieta++){
+    for(int jeta = 0; jeta < binSize_; jeta++){
+    
+      if( ieta == jeta ) continue;
 
-  if( HFplusCounts == 0 || HFminusCounts == 0 ) return;
+      double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
+
+      //QaQb (tracker)
+      double pp_real = Qcos[ieta][0]*Qcos[jeta][0] - Qsin[ieta][0]*Qsin[jeta][0];
+      double pp_imag = Qcos[ieta][0]*Qsin[jeta][0] + Qsin[ieta][0]*Qcos[jeta][0];
+
+      double mm_real = Qcos[ieta][1]*Qcos[jeta][1] - Qsin[ieta][1]*Qsin[jeta][1];
+      double mm_imag = Qcos[ieta][1]*Qsin[jeta][1] + Qsin[ieta][1]*Qcos[jeta][1];
+
+      double pm_real = Qcos[ieta][0]*Qcos[jeta][1] - Qsin[ieta][0]*Qsin[jeta][1];
+      double pm_imag = Qcos[ieta][0]*Qsin[jeta][1] + Qsin[ieta][0]*Qcos[jeta][1];
+
+      double pp_count = Qcounts[ieta][0]*Qcounts[jeta][0];
+      double mm_count = Qcounts[ieta][1]*Qcounts[jeta][1];
+      double pm_count = Qcounts[ieta][0]*Qcounts[jeta][1];
+
+      QaQbvsdEta[0][0]->Fill( deltaEta, pp_real );
+      QaQbvsdEta[0][1]->Fill( deltaEta, pp_imag );
+
+      QaQbvsdEta[1][0]->Fill( deltaEta, mm_real );
+      QaQbvsdEta[1][1]->Fill( deltaEta, mm_imag );
+
+      QaQbvsdEta[2][0]->Fill( deltaEta, pm_real );
+      QaQbvsdEta[2][1]->Fill( deltaEta, pm_imag );
+
+      NaNbvsdEta[0]->Fill( pp_count );
+      NaNbvsdEta[1]->Fill( mm_count );
+      NaNbvsdEta[2]->Fill( pm_count );
+
+
+      //QaQc (tracker + HF+) and QbQc = QaQc
+      for(int type = 0; type < 3; type++){
+
+        double tempCosHF = 0.;
+        double tempSinHF = 0.;
+        double tempETT = 0.;
+
+        if( type == 0 ){
+
+          tempCosHF = HFqVcosPlus;
+          tempSinHF = HFqVsinPlus;
+          tempETT = ETTplus;
+        }
+        else if( type == 1 ){
+          
+          tempCosHF = HFqVcosMinus;
+          tempSinHF = HFqVsinMinus;
+          tempETT = ETTminus;
+
+        }
+        else if( type == 2 ){
+          
+          tempCosHF = HFqVcos;
+          tempSinHF = HFqVsin;
+          tempETT = ETT;
+
+        }
+
+        double pHF_real = Qcos[ieta][0]*tempCosHF + Qsin[ieta][0]*tempSinHF;
+        double pHF_imag = -Qcos[ieta][0]*tempSinHF + Qsin[ieta][0]*tempCosHF;
+
+        QaQcvsdEta[type][0][0]->Fill( deltaEta, pHF_real);
+        QaQcvsdEta[type][0][1]->Fill( deltaEta, pHF_imag);
+
+        QbvsdEta[type][0][0]->Fill( deltaEta, Qcos[jeta][0] );
+        QbvsdEta[type][0][1]->Fill( deltaEta, Qsin[jeta][0] );
+
+        NaNcvsdEta[type][0]->Fill( deltaEta, Qcounts[ieta][0]* tempETT );
+
+        double mHF_real = Qcos[ieta][1]*tempCosHF + Qsin[ieta][1]*tempSinHF;
+        double mHF_imag = -Qcos[ieta][1]*tempSinHF + Qsin[ieta][1]*tempCosHF;
+        
+        QaQcvsdEta[type][1][0]->Fill( deltaEta, mHF_real);
+        QaQcvsdEta[type][1][1]->Fill( deltaEta, mHF_imag);
+
+        QbvsdEta[type][1][0]->Fill( deltaEta, Qcos[jeta][1] );
+        QbvsdEta[type][1][1]->Fill( deltaEta, Qsin[jeta][1] );
+
+        NaNcvsdEta[type][1]->Fill( deltaEta, Qcounts[ieta][1]* tempETT );
+
+        double pmHF_real = Qcos[ieta][0]*tempCosHF + Qsin[ieta][0]*tempSinHF;//this two terms are the same as pHF_real, just for format consistency
+        double pmHF_imag = -Qcos[ieta][0]*tempSinHF + Qsin[ieta][0]*tempCosHF;
+        
+        QaQcvsdEta[type][2][0]->Fill( deltaEta, pmHF_real);
+        QaQcvsdEta[type][2][1]->Fill( deltaEta, pmHF_imag);
+
+        QbvsdEta[type][2][0]->Fill( deltaEta, Qcos[jeta][1] );
+        QbvsdEta[type][2][1]->Fill( deltaEta, Qsin[jeta][1] );
+
+        NaNcvsdEta[type][2]->Fill( deltaEta, Qcounts[ieta][0]* tempETT );// the same as the first one
+
+
+      }
+
+      //<Qa><Qb>:
+
+      //plusplus:
+      QaSinglevsdEta[0][0]->Fill( deltaEta, Qcos[ieta][0] );//plus
+      QaSinglevsdEta[0][1]->Fill( deltaEta, Qsin[ieta][0] );
+
+      QbSinglevsdEta[0][0]->Fill( deltaEta, Qcos[jeta][0] );//plus
+      QbSinglevsdEta[0][1]->Fill( deltaEta, Qsin[jeta][0] );
+
+      //minusminus
+      QaSinglevsdEta[1][0]->Fill( deltaEta, Qcos[ieta][1] );//minus
+      QaSinglevsdEta[1][1]->Fill( deltaEta, Qsin[ieta][1] );
+
+      QbSinglevsdEta[1][0]->Fill( deltaEta, Qcos[jeta][1] );//minus
+      QbSinglevsdEta[1][1]->Fill( deltaEta, Qsin[jeta][1] );
+
+      //plusminus
+      QaSinglevsdEta[2][0]->Fill( deltaEta, Qcos[ieta][0] );//plus
+      QaSinglevsdEta[2][1]->Fill( deltaEta, Qsin[ieta][0] );
+
+      QbSinglevsdEta[2][0]->Fill( deltaEta, Qcos[jeta][1] );//minus
+      QbSinglevsdEta[2][1]->Fill( deltaEta, Qsin[jeta][1] );
+
+    }
+  }
+
 
 //self normalize the Qvectors from HF:
   HFqVcosPlus = HFqVcosPlus/ETTplus;
@@ -531,10 +664,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   c2_ac->Fill( QaQc );
   c2_cb->Fill( QcQb  );
   c2_ab->Fill( QaQb );
-
-  double W2 = ETTminus*ETTplus;
-  evtWeight->Fill( W2 );
-  evtWeightedQp3->Fill( W2*QaQb );
 
 //3 point correlator
 //self normalize the Qvectors;
@@ -588,9 +717,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       }
     }
   }
+
+
 }
-
-
 // ------------ method called once each job just before starting event loop  ------------
 void 
 ThreePointCorrelatorEtaGap::beginJob()
@@ -615,8 +744,6 @@ ThreePointCorrelatorEtaGap::beginJob()
     dEtaBinsArray[eta] = dEtaBins_[eta] - 0.0001;
   }
 //HF:
-  evtWeight = fs->make<TH1D>("evtWeight",";evtWeight", 10000000,0,5000);
-  evtWeightedQp3 = fs->make<TH1D>("evtWeightedQp3",";evtWeightedQp3", 1000000,-50,50);
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 10000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 10000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 10000,-1,1);
@@ -635,23 +762,34 @@ ThreePointCorrelatorEtaGap::beginJob()
     averageSinHF[sign] = fs->make<TH1D>(Form("averageSinHF_%d", sign), ";averageSinHF", 2000, -1.0, 1.0);
   }
 
-//TRK:
+//Acceptance correction 2D histograms!
 
   for(int type = 0; type < 3; type++){
     
     QvsdEtaPlusPlus[type] = fs->make<TH2D>(Form("QvsdEtaPlusPlus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,+}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005 );
     QvsdEtaMinusMinus[type] = fs->make<TH2D>(Form("QvsdEtaMinusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,-}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005 );
     QvsdEtaPlusMinus[type] = fs->make<TH2D>(Form("QvsdEtaPlusMinus_%d", type),";#Delta#eta;Q_{#phi_{1,+}}Q_{#phi_{2,-}}Q^{*}_{2#phi_{3}}", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005 );
-
   }
 
-  for(int eta = 0; eta < NbinsEta; eta++){
 
-    TRKcosPlusSum[eta] = fs->make<TH1D>(Form("TRKcosPlusSum_%d", eta), Form(";TRKcosPlusSum_%d", eta), 20000, -1.0, 1.0 );
-    TRKsinPlusSum[eta] = fs->make<TH1D>(Form("TRKsinPlusSum_%d", eta), Form(";TRKsinPlusSum_%d", eta), 20000, -1.0, 1.0 );
-    TRKcosMinusSum[eta] = fs->make<TH1D>(Form("TRKcosMinusSum_%d", eta), Form(";TRKcosMinusSum_%d", eta), 20000, -1.0, 1.0 );
-    TRKsinMinusSum[eta] = fs->make<TH1D>(Form("TRKsinMinusSum_%d", eta), Form(";TRKsinMinusSum_%d", eta), 20000, -1.0, 1.0 );
+  for(int sign = 0; sign < 3; sign++){
 
+      NaNbvsdEta[sign] = fs->make<TH2D>(Form("NaNbvsdEta_%d", sign), ";#Delta#eta;N_{a}N_{b}", bins, dEtaBinsArray, 250000,0,250000);
+
+      for(int real = 0; real < 2; real++){
+
+          QaQbvsdEta[sign][real] = fs->make<TH2D>(Form("QaQbvsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}Q_{b}>", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005);
+          QaSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QaSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}>", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005);
+          QbSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QbSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 20000,-1.0-0.00005,1.0-0.00005);
+
+        for(int type = 0; type < 3; type++){
+    
+          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real) ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 250000,0,250000);
+          QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real) ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 250000,0,250000);
+          NaNcvsdEta[type][sign][real] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d_%d", type, sign, real) ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 250000,0,250000);
+
+      }
+    }
   }
 
 }
