@@ -412,17 +412,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
              if(trk.charge() == 1){
 
-                TRKcosPlusSum[eta]->Fill( cos( trk.phi() ) );
-                TRKsinPlusSum[eta]->Fill( sin( trk.phi() ) );
-
                 Qcos[eta][0] = Qcos[eta][0] + cos( trk.phi() );
                 Qsin[eta][0] = Qsin[eta][0] + sin( trk.phi() );
                 Qcounts[eta][0]++;
              }
              if(trk.charge() == -1){
-                
-                TRKcosMinusSum[eta]->Fill( cos( trk.phi() ) );
-                TRKsinMinusSum[eta]->Fill( sin( trk.phi() ) );
                 
                 Qcos[eta][1] = Qcos[eta][1] + cos( trk.phi() );
                 Qsin[eta][1] = Qsin[eta][1] + sin( trk.phi() );
@@ -784,9 +778,9 @@ ThreePointCorrelatorEtaGap::beginJob()
 
         for(int type = 0; type < 3; type++){
     
-          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real) ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 250000,0,250000);
-          QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real) ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 250000,0,250000);
-          NaNcvsdEta[type][sign][real] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d_%d", type, sign, real) ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 250000,0,250000);
+          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 250000,0,250000);
+          QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 250000,0,250000);
+          NaNcvsdEta[type][sign][real] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 250000,0,250000);
 
       }
     }
