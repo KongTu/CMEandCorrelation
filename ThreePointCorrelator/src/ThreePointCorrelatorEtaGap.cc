@@ -774,13 +774,13 @@ ThreePointCorrelatorEtaGap::beginJob()
 
       for(int real = 0; real < 2; real++){
 
-          QaQbvsdEta[sign][real] = fs->make<TH2D>(Form("QaQbvsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}Q_{b}>", bins, dEtaBinsArray, 20000,-10.0-0.0005,10.0-0.0005);
+          QaQbvsdEta[sign][real] = fs->make<TH2D>(Form("QaQbvsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}Q_{b}>", bins, dEtaBinsArray, 40000,-20.0-0.0005,20.0-0.0005);
           QaSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QaSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}>", bins, dEtaBinsArray, 20000,-10.0-0.0005,10.0-0.0005);
           QbSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QbSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 20000,-10.0-0.0005,10.0-0.0005);
 
         for(int type = 0; type < 3; type++){
     
-          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 20000,-10.0-0.0005,10.0-0.0005);
+          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 40000,-20.0-0.0005,20.0-0.0005);
           QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 20000,-10.0-0.0005,10.0-0.0005);
 
       }
