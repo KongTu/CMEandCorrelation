@@ -764,13 +764,13 @@ ThreePointCorrelatorEtaGap::beginJob()
     
     for(int sign = 0; sign < 3; sign++){
 
-      NaNcvsdEta[type][sign] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d", type, sign), ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 250000,0,250000);
+      NaNcvsdEta[type][sign] = fs->make<TH2D>(Form("NaNcvsdEta_%d_%d", type, sign), ";#Delta#eta;N_{a}N_{c}", bins, dEtaBinsArray, 50000,0,50000);
     }
   }
 
   for(int sign = 0; sign < 3; sign++){
 
-      NaNbvsdEta[sign] = fs->make<TH2D>(Form("NaNbvsdEta_%d", sign), ";#Delta#eta;N_{a}N_{b}", bins, dEtaBinsArray, 250000,0,250000);
+      NaNbvsdEta[sign] = fs->make<TH2D>(Form("NaNbvsdEta_%d", sign), ";#Delta#eta;N_{a}N_{b}", bins, dEtaBinsArray, 50000,0,50000);
 
       for(int real = 0; real < 2; real++){
 
