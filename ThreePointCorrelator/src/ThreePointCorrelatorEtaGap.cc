@@ -536,6 +536,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       QaQbvsdEta[2][0]->Fill( deltaEta, pm_real );
       QaQbvsdEta[2][1]->Fill( deltaEta, pm_imag );
 
+      cout << "pp_count: " << pp_count << endl;
+
       NaNbvsdEta[0]->Fill( pp_count );
       NaNbvsdEta[1]->Fill( mm_count );
       NaNbvsdEta[2]->Fill( pm_count );
@@ -774,14 +776,14 @@ ThreePointCorrelatorEtaGap::beginJob()
 
       for(int real = 0; real < 2; real++){
 
-          QaQbvsdEta[sign][real] = fs->make<TH2D>(Form("QaQbvsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}Q_{b}>", bins, dEtaBinsArray, 40000,-2.0-0.00005,2.0-0.00005);
-          QaSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QaSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}>", bins, dEtaBinsArray, 40000,-2.0-0.00005,2.0-0.00005);
-          QbSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QbSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 40000,-2.0-0.00005,2.0-0.00005);
+          QaQbvsdEta[sign][real] = fs->make<TH2D>(Form("QaQbvsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}Q_{b}>", bins, dEtaBinsArray, 40000,-5.0-0.00005,5.0-0.00005);
+          QaSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QaSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{a}>", bins, dEtaBinsArray, 40000,-5.0-0.00005,5.0-0.00005);
+          QbSinglevsdEta[sign][real] = fs->make<TH2D>(Form("QbSinglevsdEta_%d_%d", sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 40000,-5.0-0.00005,5.0-0.00005);
 
         for(int type = 0; type < 3; type++){
     
-          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 40000,-2.0-0.00005,2.0-0.00005);
-          QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 40000,-2.0-0.00005,2.0-0.00005);
+          QaQcvsdEta[type][sign][real] = fs->make<TH2D>(Form("QaQcvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{a}Q_{c}>", bins, dEtaBinsArray, 40000,-5.0-0.00005,5.0-0.00005);
+          QbvsdEta[type][sign][real] = fs->make<TH2D>(Form("QbvsdEta_%d_%d_%d", type, sign, real), ";#Delta#eta;<Q_{b}>", bins, dEtaBinsArray, 40000,-5.0-0.00005,5.0-0.00005);
 
       }
     }
