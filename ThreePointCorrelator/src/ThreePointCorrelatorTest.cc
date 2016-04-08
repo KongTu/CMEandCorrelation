@@ -455,6 +455,18 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
   }
 
+double XY_real = get2Real(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]);
+double XY_imag = get2Imag(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]); 
+
+int XY_count = 
+
+double XZ_real = get2Real(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
+double XZ_imag = get2Imag(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
+
+double YZ_real = get2Real(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
+double YZ_imag = get2Imag(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
+
+
 
 //self normalize the Qvectors from HF:
   HFqVcos = HFqVcos/ETT;
@@ -476,6 +488,10 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   double totalQplusplus = get3Real(Qcos[0][0],Qcos[1][0], HFqVcos, Qsin[0][0], Qsin[1][0], HFqVsin );
   double totalQminusminus = get3Real(Qcos[0][1],Qcos[1][1], HFqVcos, Qsin[0][1], Qsin[1][1], HFqVsin );
   double totalQplusminus = get3Real(Qcos[0][0],Qcos[1][1], HFqVcos, Qsin[0][0], Qsin[1][1], HFqVsin );
+
+
+
+
 
   QvsdEta[0]->Fill( totalQplusplus );
   QvsdEta[1]->Fill( totalQminusminus );
