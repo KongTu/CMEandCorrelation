@@ -406,10 +406,10 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
   for(int i = 0; i < 1000; i++){
 
-     x[i]= fRand(-3.14,3.14);
+     x[i]= fRand(-1.5,3.14);
      trkPhi->Fill(x[i]);
-     y[i]= fRand(-3.14,3.14);
-     z[i]= fRand(-3.14,3.14);
+     y[i]= fRand(-1.5,3.14);
+     z[i]= fRand(-1.5,3.14);
   }
 
   for(int i = 0; i < 1000; i++){
