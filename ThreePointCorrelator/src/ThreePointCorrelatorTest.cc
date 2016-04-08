@@ -592,9 +592,9 @@ ThreePointCorrelatorTest::beginJob()
   
   for(int real = 0; real < 2; real++){
 
-    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -100, 100);
-    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -100, 100);
-    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -100, 100);
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -400, 400);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -400, 400);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -400, 400);
 
     X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 200000, -40, 40);
     Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 200000, -40, 40);
