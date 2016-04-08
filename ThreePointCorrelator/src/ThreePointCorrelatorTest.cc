@@ -376,13 +376,13 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
   }
 
-  const int binSize_ = etaBins_.size() - 1 ;
+  //const int binSize_ = etaBins_.size() - 1 ;
 
 // initialize Qcos and Qsin
-  double Qcos[binSize_][2];
-  double Qsin[binSize_][2];
-  int Qcounts[binSize_][2];
-  for(int eta = 0; eta < binSize_; eta++){
+  double Qcos[2][2];
+  double Qsin[2][2];
+  int Qcounts[2][2];
+  for(int eta = 0; eta < 2; eta++){
     for(int sign = 0; sign < 2; sign++){
 
       Qcounts[eta][sign] = 0;
@@ -412,31 +412,43 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
           if( ( trk.phi() < (0.0 + holesize_) && trk.phi() > (0.0 - holesize_) )    ||
               ( trk.phi() < (2.09 + holesize_) && trk.phi() > (2.09 - holesize_) )  ||
               ( trk.phi() < (-2.09 + holesize_) && trk.phi() > (-2.09 - holesize_) )     ) continue;
+       
         }
         nTracks++;  
 
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
-        for(int eta = 0; eta < binSize_; eta++){
-          if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
+        if( trk.eta() > -2.4 && trk.eta() < 0.0 ){
 
              if(trk.charge() == 1){
 
-                Qcos[eta][0] = Qcos[eta][0] + cos( trk.phi() );
-                Qsin[eta][0] = Qsin[eta][0] + sin( trk.phi() );
-                Qcounts[eta][0]++;
+                Qcos[0][0] += cos( trk.phi() );
+                Qsin[0][0] += sin( trk.phi() );
+                Qcounts[0][0]++;
              }
              if(trk.charge() == -1){
                 
-                Qcos[eta][1] = Qcos[eta][1] + cos( trk.phi() );
-                Qsin[eta][1] = Qsin[eta][1] + sin( trk.phi() );
-                Qcounts[eta][1]++;
+                Qcos[0][1] += cos( trk.phi() );
+                Qsin[0][1] += sin( trk.phi() );
+                Qcounts[0][1]++;
              }
-          }
-        }     
-  } 
+        }
+        else if( trk.eta() > 0.0 && trk.eta() < 2.4 ){
 
-  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
+             if(trk.charge() == 1){
+
+                Qcos[1][0] += cos( trk.phi() );
+                Qsin[1][0] += sin( trk.phi() );
+                Qcounts[1][0]++;
+             }
+             if(trk.charge() == -1){
+                
+                Qcos[1][1] += cos( trk.phi() );
+                Qsin[1][1] += sin( trk.phi() );
+                Qcounts[1][1]++;
+             }
+        }
+  } 
   
   Ntrk->Fill(nTracks);
 
@@ -464,60 +476,60 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
 
-          HFqVcos = HFqVcos + cos( -2*caloPhi );
-          HFqVsin = HFqVsin + sin( -2*caloPhi );
+          HFqVcos += cos( -2*caloPhi );
+          HFqVsin += sin( -2*caloPhi );
           HFcounts++;
           ETT += w;
         }
   }
 
-double XY_real = get2Real(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]);
-double XY_imag = get2Imag(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]); 
+  double XY_real = get2Real(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]);
+  double XY_imag = get2Imag(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]); 
 
-double XZ_real = get2Real(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
-double XZ_imag = get2Imag(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
+  double XZ_real = get2Real(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
+  double XZ_imag = get2Imag(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
 
-double YZ_real = get2Real(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
-double YZ_imag = get2Imag(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
+  double YZ_real = get2Real(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
+  double YZ_imag = get2Imag(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
 
-int XY_count = Qcounts[0][0]*Qcounts[1][0];
-int XZ_count = Qcounts[0][0]*HFcounts;
-int YZ_count = Qcounts[1][0]*HFcounts;
+  int XY_count = Qcounts[0][0]*Qcounts[1][0];
+  int XZ_count = Qcounts[0][0]*HFcounts;
+  int YZ_count = Qcounts[1][0]*HFcounts;
 
-double X_real = Qcos[0][0];
-double Y_real = Qcos[1][0];
-double Z_real = HFqVcos;
+  double X_real = Qcos[0][0];
+  double Y_real = Qcos[1][0];
+  double Z_real = HFqVcos;
 
-double X_imag = Qsin[0][0];
-double Y_imag = Qsin[1][0];
-double Z_imag = HFqVsin;
+  double X_imag = Qsin[0][0];
+  double Y_imag = Qsin[1][0];
+  double Z_imag = HFqVsin;
 
-int X_count = Qcounts[0][0];
-int Y_count = Qcounts[1][0];
-int Z_count = HFcounts;
-
-
-XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
-XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
-YZ[0]->Fill( YZ_real ); YZ[1]->Fill( YZ_imag );
-
-XYcount->Fill( XY_count ); XZcount->Fill( XZ_count ); YZcount->Fill( YZ_count ); 
- 
-X[0]->Fill( X_real ); X[1]->Fill( X_imag );
-Y[0]->Fill( Y_real ); Y[1]->Fill( Y_imag );
-Z[0]->Fill( Z_real ); Z[1]->Fill( Z_imag );
-
-Xcount->Fill( X_count ); Ycount->Fill( Y_count ); Zcount->Fill( Z_count );
+  int X_count = Qcounts[0][0];
+  int Y_count = Qcounts[1][0];
+  int Z_count = HFcounts;
 
 
-//self normalize the Qvectors from HF:
-HFqVcos = HFqVcos/HFcounts;
-HFqVsin = HFqVsin/HFcounts;
+  XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
+  XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
+  YZ[0]->Fill( YZ_real ); YZ[1]->Fill( YZ_imag );
+
+  XYcount->Fill( XY_count ); XZcount->Fill( XZ_count ); YZcount->Fill( YZ_count ); 
+   
+  X[0]->Fill( X_real ); X[1]->Fill( X_imag );
+  Y[0]->Fill( Y_real ); Y[1]->Fill( Y_imag );
+  Z[0]->Fill( Z_real ); Z[1]->Fill( Z_imag );
+
+  Xcount->Fill( X_count ); Ycount->Fill( Y_count ); Zcount->Fill( Z_count );
+
+
+  //self normalize the Qvectors from HF:
+  HFqVcos = HFqVcos/HFcounts;
+  HFqVsin = HFqVsin/HFcounts;
 
 
 //3 point correlator
 //self normalize the Qvectors;
- for(int eta = 0; eta < binSize_; eta++){
+ for(int eta = 0; eta < 2; eta++){
     for(int sign = 0; sign < 2; sign++){
 
       if( Qcounts[eta][sign] == 0 ) continue;
