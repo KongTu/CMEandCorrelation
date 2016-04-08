@@ -184,6 +184,7 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
       TH1D* Ntrk;
       TH1D* trkPhi;
       TH1D* hfPhi;
+      TH1D* cbinHist;
 //v2
       TH1D* c2_ab;
       TH1D* c2_ac;
@@ -437,7 +438,6 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
-        double energy = hit.emEnergy() + hit.hadEnergy();
         if( messAcceptance_ ){ 
           if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
               ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
