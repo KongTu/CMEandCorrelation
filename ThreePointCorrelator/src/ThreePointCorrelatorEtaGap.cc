@@ -300,7 +300,7 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 //
 // member functions
 //
-double get3RealDupDup(double R1, double R2, double R3, double I1, double I2, double I3){
+double get3RealDup(double R1, double R2, double R3, double I1, double I2, double I3){
 
   double t1 = R1*R2*R3;
   double t2 = R1*I2*I3;
