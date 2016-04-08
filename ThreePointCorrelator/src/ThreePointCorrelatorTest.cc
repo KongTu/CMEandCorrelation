@@ -448,7 +448,6 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
-        double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         if( messAcceptance_ ){ 
           if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
               ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
@@ -511,7 +510,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 //self normalize the Qvectors;
   for(int eta = 0; eta < 2; eta++){
 
-    if( Qcounts[eta][sign] == 0 ) continue;
+    if( Qcounts[eta] == 0 ) continue;
 
     Qcos[eta] = Qcos[eta]/Qcounts[eta];
     Qsin[eta] = Qsin[eta]/Qcounts[eta];
