@@ -407,6 +407,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   for(int i = 0; i < 1000; i++){
 
      x[i]= fRand(-3.14,3.14);
+     trkPhi->Fill(x[i]);
      y[i]= fRand(-3.14,3.14);
      z[i]= fRand(-3.14,3.14);
   }
@@ -508,6 +509,8 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
   XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
   YZ[0]->Fill( YZ_real ); YZ[1]->Fill( YZ_imag );
+
+  cout << "XYcount: " << XY_count << endl;
 
   XYcount->Fill( XY_count ); XZcount->Fill( XZ_count ); YZcount->Fill( YZ_count ); 
    
