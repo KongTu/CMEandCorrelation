@@ -505,10 +505,6 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   int Y_count = Qcounts[1];
   int Z_count = HFcounts;
 
-  cout << "XY_real: " << XY_real << endl;
-
-  cout << "YZ_real: " << YZ_real << endl;
-  
   XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
   XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
   YZ[0]->Fill( YZ_real ); YZ[1]->Fill( YZ_imag );
@@ -564,13 +560,13 @@ ThreePointCorrelatorTest::beginJob()
   
   for(int real = 0; real < 2; real++){
 
-    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 400000, -2000.0-0.005, 2000.0-0.005);
-    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 400000, -2000.0-0.005, 2000.0-0.005);
-    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 400000, -2000.0-0.005, 2000.0-0.005);
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -100000-0.5, 100000-0.5);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -100000-0.5, 100000-0.5);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -100000-0.5, 100000-0.5);
 
-    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 400000, -2000.0-0.005, 2000.0-0.005);
-    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 400000, -2000.0-0.005, 2000.0-0.005);
-    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 400000, -2000.0-0.005, 2000.0-0.005);
+    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 200000, -100000-0.5, 100000-0.5);
+    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 200000, -100000-0.5, 100000-0.5);
+    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 200000, -100000-0.5, 100000-0.5);
 
   }
 
