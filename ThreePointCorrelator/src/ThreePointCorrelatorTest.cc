@@ -464,8 +464,8 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
 
-          HFqVcos = HFqVcos + w*cos( -2*caloPhi );
-          HFqVsin = HFqVsin + w*sin( -2*caloPhi );
+          HFqVcos = HFqVcos + cos( -2*caloPhi );
+          HFqVsin = HFqVsin + sin( -2*caloPhi );
           HFcounts++;
           ETT += w;
         }
@@ -481,8 +481,8 @@ double YZ_real = get2Real(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
 double YZ_imag = get2Imag(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
 
 int XY_count = Qcounts[0][0]*Qcounts[1][0];
-int XZ_count = Qcounts[0][0]*ETT;
-int YZ_count = Qcounts[1][0]*ETT;
+int XZ_count = Qcounts[0][0]*HFcounts;
+int YZ_count = Qcounts[1][0]*HFcounts;
 
 double X_real = Qcos[0][0];
 double Y_real = Qcos[1][0];
@@ -494,7 +494,7 @@ double Z_imag = HFqVsin;
 
 int X_count = Qcounts[0][0];
 int Y_count = Qcounts[1][0];
-int Z_count = ETT;
+int Z_count = HFcounts;
 
 
 XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
@@ -511,8 +511,8 @@ Xcount->Fill( X_count ); Ycount->Fill( Y_count ); Zcount->Fill( Z_count );
 
 
 //self normalize the Qvectors from HF:
-  HFqVcos = HFqVcos/ETT;
-  HFqVsin = HFqVsin/ETT;
+HFqVcos = HFqVcos/HFcounts;
+HFqVsin = HFqVsin/HFcounts;
 
 
 //3 point correlator
