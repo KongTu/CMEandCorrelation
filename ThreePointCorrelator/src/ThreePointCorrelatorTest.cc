@@ -417,17 +417,17 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         if( trk.eta() > -2.4 && trk.eta() < 0.0 ){
              if(trk.charge() == 1){
-                Qcos[0][0] += cos( trk.phi() );
-                Qsin[0][0] += sin( trk.phi() );
-                Qcounts[0][0]++;
+                Qcos[0] += cos( trk.phi() );
+                Qsin[0] += sin( trk.phi() );
+                Qcounts[0]++;
              }
         }
         else if( trk.eta() > 0.0 && trk.eta() < 2.4 ){
              if(trk.charge() == 1){
 
-                Qcos[1][0] += cos( trk.phi() );
-                Qsin[1][0] += sin( trk.phi() );
-                Qcounts[1][0]++;
+                Qcos[1] += cos( trk.phi() );
+                Qsin[1] += sin( trk.phi() );
+                Qcounts[1]++;
              }
         }
         else {continue;}
