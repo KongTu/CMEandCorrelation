@@ -449,17 +449,17 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         nTracks++;  
 
-        double trkPhi = fRand(-1.5,3.14);
+        double trkphi = fRand(-1.5,3.14);
 
-        trkPhi->Fill( trkPhi );//make sure if messAcceptance is on or off
+        trkPhi->Fill( trkphi );//make sure if messAcceptance is on or off
 
         if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
 
              
              if(trk.charge() == 1){
-                Qcos[0] += cos( trkPhi );
-                Qsin[0] += sin( trkPhi );
+                Qcos[0] += cos( trkphi );
+                Qsin[0] += sin( trkphi );
                 Qcounts[0]++;
              }
         }
@@ -467,8 +467,8 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
              
              if(trk.charge() == 1){
 
-                Qcos[1] += cos( trkPhi );
-                Qsin[1] += sin( trkPhi );
+                Qcos[1] += cos( trkphi );
+                Qsin[1] += sin( trkphi );
                 Qcounts[1]++;
              }
         }
