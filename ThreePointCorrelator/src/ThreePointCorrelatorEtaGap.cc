@@ -300,7 +300,40 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 //
 // member functions
 //
-    
+double get3RealDupDup(double R1, double R2, double R3, double I1, double I2, double I3){
+
+  double t1 = R1*R2*R3;
+  double t2 = R1*I2*I3;
+  double t3 = R2*I1*I3;
+  double t4 = I1*I2*R3;
+
+  return t1-t2-t3-t4;
+
+}
+double get3ImagDup(double R1, double R2, double R3, double I1, double I2, double I3){
+
+  double t1 = R1*R2*I3;
+  double t2 = R1*R3*I2;
+  double t3 = R2*R3*I1;
+  double t4 = I1*I2*I3;
+
+  return t1+t2+t3-t4;
+
+}
+double get2RealDup(double R1, double R2, double I1, double I2){
+
+  double t1 = R1*R2;
+  double t2 = I1*I2;
+
+  return t1-t2;
+}
+double get2ImagDup(double R1, double R2, double I1, double I2){
+
+  double t1 = R1*I2;
+  double t2 = R2*I1;
+
+  return t1+t2;
+}    
 // ------------ method called for each event  ------------
 void
 ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -629,9 +662,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   HFqVcos = HFqVcos/ETT;
   HFqVsin = HFqVsin/ETT;
 
-  double QaQc = get2Real(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
-  double QaQb = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
-  double QcQb = get2Real(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
+  double QaQc = get2RealDup(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
+  double QaQb = get2RealDup(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
+  double QcQb = get2RealDup(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
 
   c2_ac->Fill( QaQc );
   c2_cb->Fill( QcQb  );
@@ -678,9 +711,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           return;
         }
 
-        double totalQplusplus = get3Real(Qcos[ieta][0],Qcos[jeta][0], tempHFcos, Qsin[ieta][0], Qsin[jeta][0], tempHFsin );
-        double totalQminusminus = get3Real(Qcos[ieta][1],Qcos[jeta][1], tempHFcos, Qsin[ieta][1], Qsin[jeta][1], tempHFsin );
-        double totalQplusminus = get3Real(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
+        double totalQplusplus = get3RealDup(Qcos[ieta][0],Qcos[jeta][0], tempHFcos, Qsin[ieta][0], Qsin[jeta][0], tempHFsin );
+        double totalQminusminus = get3RealDup(Qcos[ieta][1],Qcos[jeta][1], tempHFcos, Qsin[ieta][1], Qsin[jeta][1], tempHFsin );
+        double totalQplusminus = get3RealDup(Qcos[ieta][0],Qcos[jeta][1], tempHFcos, Qsin[ieta][0], Qsin[jeta][1], tempHFsin );
 
         QvsdEtaPlusPlus[type]->Fill(deltaEta, totalQplusplus);
         QvsdEtaMinusMinus[type]->Fill(deltaEta, totalQminusminus);
