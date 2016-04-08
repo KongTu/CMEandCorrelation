@@ -451,26 +451,22 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         if( messAcceptance_ ) {
           if( trk.phi() < -1.5 ) continue;
         }
-        nTracks++;  
+        nTracks++; 
 
-        double trkphi1 = fRand(-1.5,3.14);
-        double trkphi2 = fRand(-1.5,3.14);
-        double trkphi3 = fRand(-1.5,3.14);
-
-        trkPhi->Fill( trkphi1 );//make sure if messAcceptance is on or off
+        trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
         if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
-                Qcos[0] += cos( trkphi1 );
-                Qsin[0] += sin( trkphi1 );
+                Qcos[0] += cos( trk.phi() );
+                Qsin[0] += sin( trk.phi() );
                 Qcounts[0]++;
 
-                Qcos[1] += cos( trkphi2 );
-                Qsin[1] += sin( trkphi2 );
+                Qcos[1] += cos( trk.phi() );
+                Qsin[1] += sin( trk.phi() );
                 Qcounts[1]++;
 
-                HFqVcos += cos( -2*trkphi3 );
-                HFqVsin += sin( -2*trkphi3 );
+                HFqVcos += cos( -2*trk.phi() );
+                HFqVsin += sin( -2*trk.phi() );
                 HFcounts++;
 
         }
