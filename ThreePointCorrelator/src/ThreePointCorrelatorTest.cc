@@ -472,7 +472,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
                 HFqVcos += cos( -2*trkphi3 );
                 HFqVsin += sin( -2*trkphi3 );
                 HFcounts++;
-                
+
         }
         // else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
              
@@ -604,19 +604,19 @@ ThreePointCorrelatorTest::beginJob()
   
   for(int real = 0; real < 2; real++){
 
-    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -1000000-0.5, 1000000-0.5);
-    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -1000000-0.5, 1000000-0.5);
-    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -1000000-0.5, 1000000-0.5);
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -400, 400);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -400, 400);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -400, 400);
 
-    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 200000, -1000000-0.5, 1000000-0.5);
-    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 200000, -1000000-0.5, 1000000-0.5);
-    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 200000, -1000000-0.5, 1000000-0.5);
+    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 200000, -400, 400);
+    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 200000, -400, 400);
+    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 200000, -400, 400);
 
   }
 
-  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 10000, 0,10000);
-  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 10000, 0,10000);
-  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 10000, 0,10000);
+  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 10000, 0,1000);
+  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 10000, 0,1000);
+  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 10000, 0,1000);
 
   Xcount = fs->make<TH1D>("Xcount", ";Xcount", 2000, 0,2000);
   Ycount = fs->make<TH1D>("Ycount", ";Ycount", 2000, 0,2000);
