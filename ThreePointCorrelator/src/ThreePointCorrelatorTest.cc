@@ -560,8 +560,9 @@ ThreePointCorrelatorTest::beginJob()
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
   for(int sign = 0; sign < 3; sign++){
-
-    QvsdEta[sign] = fs->make<TH1D>(Form("QvsdEta_%d", sign),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 400000,-2.0-0.000005,2.0-0.000050 );
+    for(int real = 0; real < 2; real++ ){
+        QvsdEta[sign][real] = fs->make<TH1D>(Form("QvsdEta_%d_%d", sign, real),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 400000,-2.0-0.000005,2.0-0.000050 );
+    }
   }
 
   for(int real = 0; real < 2; real++){
