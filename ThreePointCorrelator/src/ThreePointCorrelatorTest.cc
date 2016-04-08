@@ -573,9 +573,9 @@ ThreePointCorrelatorTest::beginJob()
 
   }
 
-  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 2000, 0,2000);
-  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 2000, 0,2000);
-  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 2000, 0,2000);
+  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 1, 1000000,1000001);
+  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 1, 1000000,1000001);
+  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 1, 1000000,1000001);
 
   Xcount = fs->make<TH1D>("Xcount", ";Xcount", 2000, 0,2000);
   Ycount = fs->make<TH1D>("Ycount", ";Ycount", 2000, 0,2000);
