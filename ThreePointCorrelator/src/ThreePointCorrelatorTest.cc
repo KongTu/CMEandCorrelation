@@ -587,14 +587,14 @@ ThreePointCorrelatorTest::beginJob()
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
   for(int real = 0; real < 2; real++ ){
-      QvsdEta[real] = fs->make<TH1D>(Form("QvsdEta_%d",real),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 400000,-2.0-0.000005,2.0-0.000050 );
+      QvsdEta[real] = fs->make<TH1D>(Form("QvsdEta_%d",real),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 4000,-2.0-0.000005,2.0-0.000050 );
   }
   
   for(int real = 0; real < 2; real++){
 
-    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -400, 400);
-    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -400, 400);
-    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -400, 400);
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -100, 100);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -100, 100);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -100, 100);
 
     X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 200000, -40, 40);
     Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 200000, -40, 40);
