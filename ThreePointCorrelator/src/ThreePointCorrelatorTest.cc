@@ -453,37 +453,47 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         nTracks++;  
 
-        double trkphi = fRand(-1.5,3.14);
+        double trkphi1 = fRand(-1.5,3.14);
+        double trkphi2 = fRand(-1.5,3.14);
+        double trkphi3 = fRand(-1.5,3.14);
 
-        trkPhi->Fill( trkphi );//make sure if messAcceptance is on or off
+        trkPhi->Fill( trkphi1 );//make sure if messAcceptance is on or off
 
         if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
              if(trk.charge() == 1){
-                Qcos[0] += cos( trkphi );
-                Qsin[0] += sin( trkphi );
+                Qcos[0] += cos( trkphi1 );
+                Qsin[0] += sin( trkphi1 );
                 Qcounts[0]++;
-             }
-        }
-        else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
-             
-             if(trk.charge() == 1){
 
-                Qcos[1] += cos( trkphi );
-                Qsin[1] += sin( trkphi );
+                Qcos[1] += cos( trkphi2 );
+                Qsin[1] += sin( trkphi2 );
                 Qcounts[1]++;
+
+                HFqVcos += cos( -2*trkphi3 );
+                HFqVsin += sin( -2*trkphi3 );
+                HFcounts++;
              }
         }
-        else if( trk.eta() > -1.0 && trk.eta() < 1.0 ){
+        // else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
+             
+        //      if(trk.charge() == 1){
 
-             if(trk.charge() == 1 ){
+        //         Qcos[1] += cos( trkphi );
+        //         Qsin[1] += sin( trkphi );
+        //         Qcounts[1]++;
+        //      }
+        // }
+        // else if( trk.eta() > -1.0 && trk.eta() < 1.0 ){
 
-              HFqVcos += cos( -2*trkphi );
-              HFqVsin += sin( -2*trkphi );
-              HFcounts++;
-             }
+        //      if(trk.charge() == 1 ){
 
-        }
+        //       HFqVcos += cos( -2*trkphi );
+        //       HFqVsin += sin( -2*trkphi );
+        //       HFcounts++;
+        //      }
+
+        // }
         else {continue;}
   }
 
