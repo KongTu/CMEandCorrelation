@@ -557,23 +557,23 @@ ThreePointCorrelatorTest::beginJob()
 
   for(int real = 0; real < 2; real++){
 
-    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 40000, -20.0-0.0005, 20.0-0.0005);
-    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 40000, -20.0-0.0005, 20.0-0.0005);
-    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 40000, -20.0-0.0005, 20.0-0.0005);
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 40000, -200.0-0.005, 200.0-0.005);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 40000, -200.0-0.005, 200.0-0.005);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 40000, -200.0-0.005, 200.0-0.005);
 
-    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 40000, -20.0-0.0005, 20.0-0.0005);
-    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 40000, -20.0-0.0005, 20.0-0.0005);
-    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 40000, -20.0-0.0005, 20.0-0.0005);
+    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 40000, -200.0-0.005, 200.0-0.005);
+    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 40000, -200.0-0.005, 200.0-0.005);
+    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 40000, -200.0-0.005, 200.0-0.005);
 
   }
 
-  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 1000, 0,1000);
-  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 1000, 0,1000);
-  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 1000, 0,1000);
+  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 2000, 0,2000);
+  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 2000, 0,2000);
+  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 2000, 0,2000);
 
-  Xcount = fs->make<TH1D>("Xcount", ";Xcount", 1000, 0,1000);
-  Ycount = fs->make<TH1D>("Ycount", ";Ycount", 1000, 0,1000);
-  Zcount = fs->make<TH1D>("Zcount", ";Zcount", 1000, 0,1000);
+  Xcount = fs->make<TH1D>("Xcount", ";Xcount", 2000, 0,2000);
+  Ycount = fs->make<TH1D>("Ycount", ";Ycount", 2000, 0,2000);
+  Zcount = fs->make<TH1D>("Zcount", ";Zcount", 2000, 0,2000);
 
 
 }
