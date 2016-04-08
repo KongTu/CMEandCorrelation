@@ -195,7 +195,7 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
 //end v2
 
       //culmulants: 
-      TH1D* QvsdEta[3][2];
+      TH1D* QvsdEta[2];
 
 
       TH1D* XY[2];
@@ -476,7 +476,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
-        if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
+        if( fabs(caloEta) > 4.4 && fabs(caloEta) < 5.0 ){
 
           HFqVcos += cos( -2*caloPhi );
           HFqVsin += sin( -2*caloPhi );
@@ -541,22 +541,12 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
     }
   }
 
-  double real_totalQplusplus = get3Real(Qcos[0][0],Qcos[1][0], HFqVcos, Qsin[0][0], Qsin[1][0], HFqVsin );
-  double real_totalQminusminus = get3Real(Qcos[0][1],Qcos[1][1], HFqVcos, Qsin[0][1], Qsin[1][1], HFqVsin );
-  double real_totalQplusminus = get3Real(Qcos[0][0],Qcos[1][1], HFqVcos, Qsin[0][0], Qsin[1][1], HFqVsin );
-  
+  double real_totalQplusplus = get3Real(Qcos[0][0],Qcos[1][0], HFqVcos, Qsin[0][0], Qsin[1][0], HFqVsin ); 
   double imag_totalQplusplus = get3Imag(Qcos[0][0],Qcos[1][0], HFqVcos, Qsin[0][0], Qsin[1][0], HFqVsin );
-  double imag_totalQminusminus = get3Imag(Qcos[0][1],Qcos[1][1], HFqVcos, Qsin[0][1], Qsin[1][1], HFqVsin );
-  double imag_totalQplusminus = get3Imag(Qcos[0][0],Qcos[1][1], HFqVcos, Qsin[0][0], Qsin[1][1], HFqVsin );
 
+  QvsdEta[0]->Fill( real_totalQplusplus );
+  QvsdEta[1]->Fill( imag_totalQplusplus );
 
-  QvsdEta[0][0]->Fill( real_totalQplusplus );
-  QvsdEta[1][0]->Fill( real_totalQminusminus );
-  QvsdEta[2][0]->Fill( real_totalQplusminus );
-
-  QvsdEta[0][1]->Fill( imag_totalQplusplus );
-  QvsdEta[1][1]->Fill( imag_totalQminusminus );
-  QvsdEta[2][1]->Fill( imag_totalQplusminus );
  
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -573,12 +563,10 @@ ThreePointCorrelatorTest::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
-  for(int sign = 0; sign < 3; sign++){
-    for(int real = 0; real < 2; real++ ){
-        QvsdEta[sign][real] = fs->make<TH1D>(Form("QvsdEta_%d_%d", sign, real),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 400000,-2.0-0.000005,2.0-0.000050 );
-    }
+  for(int real = 0; real < 2; real++ ){
+      QvsdEta[real] = fs->make<TH1D>(Form("QvsdEta_%d",real),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 400000,-2.0-0.000005,2.0-0.000050 );
   }
-
+  
   for(int real = 0; real < 2; real++){
 
     XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 400000, -200.0-0.0005, 200.0-0.0005);
