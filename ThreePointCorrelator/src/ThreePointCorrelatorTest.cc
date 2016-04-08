@@ -427,6 +427,10 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
   // }
 
+  double HFqVcos = 0.;
+  double HFqVsin = 0.;
+  int HFcounts = 0;
+
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
 
@@ -455,8 +459,6 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
-
-             
              if(trk.charge() == 1){
                 Qcos[0] += cos( trkphi );
                 Qsin[0] += sin( trkphi );
@@ -472,34 +474,42 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
                 Qcounts[1]++;
              }
         }
+        else if( trk.eta() > -1.0 && trk.eta() < 1.0 ){
+
+             if(trk.charge() == 1 ){
+
+              HFqVcos += cos( -2*trkphi );
+              HFqVsin += sin( -2*trkphi );
+              HFcounts++;
+             }
+
+        }
         else {continue;}
   }
 
-  double HFqVcos = 0.;
-  double HFqVsin = 0.;
-  int HFcounts = 0;
 
-    for(unsigned i = 0; i < towers->size(); ++i){
 
-        const CaloTower & hit= (*towers)[i];
+  //   for(unsigned i = 0; i < towers->size(); ++i){
 
-        double caloEta = hit.eta();
-        double caloPhi = hit.phi();
-        if( messAcceptance_ ){ 
-          if( caloPhi < -1.5 ) continue;
-        }
+  //       const CaloTower & hit= (*towers)[i];
 
-        caloPhi = fRand(-1.5,3.14);
+  //       double caloEta = hit.eta();
+  //       double caloPhi = hit.phi();
+  //       if( messAcceptance_ ){ 
+  //         if( caloPhi < -1.5 ) continue;
+  //       }
 
-        hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
+  //       caloPhi = fRand(-1.5,3.14);
 
-        if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
+  //       hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
-          HFqVcos += cos( -2*caloPhi );
-          HFqVsin += sin( -2*caloPhi );          
-          HFcounts++;
-        }
-  }
+  //       if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
+
+  //         HFqVcos += cos( -2*caloPhi );
+  //         HFqVsin += sin( -2*caloPhi );          
+  //         HFcounts++;
+  //       }
+  // }
 
   if( nTracks <= Nmin_ || nTracks > Nmax_ ) return;
   
