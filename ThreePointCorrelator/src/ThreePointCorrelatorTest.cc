@@ -473,7 +473,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         else {continue;}
   }
-   
+
   double HFqVcos = 0.;
   double HFqVsin = 0.;
   int HFcounts = 0;
@@ -594,9 +594,9 @@ ThreePointCorrelatorTest::beginJob()
 
   }
 
-  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 1, 1000000,1000001);
-  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 1, 1000000,1000001);
-  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 1, 1000000,1000001);
+  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 10000, 0,10000);
+  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 10000, 0,10000);
+  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 10000, 0,10000);
 
   Xcount = fs->make<TH1D>("Xcount", ";Xcount", 2000, 0,2000);
   Ycount = fs->make<TH1D>("Ycount", ";Ycount", 2000, 0,2000);
