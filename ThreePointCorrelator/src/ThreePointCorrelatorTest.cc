@@ -449,6 +449,8 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
              }
         }
   } 
+
+  if( nTracks <= Nmin_ || nTracks > Nmax_ ) return;
   
   Ntrk->Fill(nTracks);
 
