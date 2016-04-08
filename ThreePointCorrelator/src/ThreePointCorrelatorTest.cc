@@ -197,6 +197,23 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
       //culmulants: 
       TH1D* QvsdEta[3];
 
+
+      TH1D* XY[2];
+      TH1D* XZ[2];
+      TH1D* YZ[2];
+
+      TH1D* XYcount;
+      TH1D* XZcount;
+      TH1D* YZcount;
+
+      TH1D* X[2];
+      TH1D* Y[2];
+      TH1D* Z[2];
+
+      TH1D* Xcount;
+      TH1D* Ycount;
+      TH1D* Zcount;
+
       //double particle product, corresponds to the first 3 terms, <QaQb><Qc>, <QaQc><Qb>, and <QbQc>
       //like/unlike sign, real/imaginary
       TH2D* QaQbvsdEta[3][2];
@@ -206,7 +223,6 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
       TH2D* QaQcvsdEta[3][3][2];
       TH2D* QbvsdEta[3][3][2];
       TH2D* NaNcvsdEta[3][3];
-
 
       //like/unlike sign, real/imaginary corresponds to <Qa><Qb>
       TH2D* QaSinglevsdEta[3][2];
@@ -458,14 +474,40 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 double XY_real = get2Real(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]);
 double XY_imag = get2Imag(Qcos[0][0], Qcos[1][0], Qsin[0][0], Qsin[1][0]); 
 
-int XY_count = 
-
 double XZ_real = get2Real(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
 double XZ_imag = get2Imag(Qcos[0][0], HFqVcos, Qsin[0][0], HFqVsin);
 
 double YZ_real = get2Real(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
 double YZ_imag = get2Imag(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
 
+int XY_count = Qcounts[0][0]*Qcounts[1][0];
+int XZ_count = Qcounts[0][0]*ETT;
+int YZ_count = Qcounts[1][0]*ETT;
+
+double X_real = Qcos[0][0];
+double Y_real = Qcos[1][0];
+double Z_real = HFqVcos;
+
+double X_imag = Qsin[0][0];
+double Y_imag = Qsin[1][0];
+double z_imag = HFqVsin;
+
+int X_count = Qcounts[0][0];
+int Y_count = Qcounts[1][0];
+int Z_count = ETT;
+
+
+XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
+XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
+YZ[0]->Fill( YZ_real ); YZ[1]->Fill( YZ_imag );
+
+XYcount->Fill( XY_count ); XZcount->Fill( XZ_count ); YZcount->Fill( YZ_count ); 
+ 
+X[0]->Fill( X_real ); X[1]->Fill( X_imag );
+Y[0]->Fill( Y_real ); Y[1]->Fill( Y_imag );
+Z[0]->Fill( Z_real ); Z[1]->Fill( Z_imag );
+
+Xcount->Fill( X_count ); Ycount->Fill( Y_count ); Zcount->Fill( Z_count );
 
 
 //self normalize the Qvectors from HF:
@@ -488,10 +530,6 @@ double YZ_imag = get2Imag(Qcos[1][0], HFqVcos, Qsin[1][0], HFqVsin);
   double totalQplusplus = get3Real(Qcos[0][0],Qcos[1][0], HFqVcos, Qsin[0][0], Qsin[1][0], HFqVsin );
   double totalQminusminus = get3Real(Qcos[0][1],Qcos[1][1], HFqVcos, Qsin[0][1], Qsin[1][1], HFqVsin );
   double totalQplusminus = get3Real(Qcos[0][0],Qcos[1][1], HFqVcos, Qsin[0][0], Qsin[1][1], HFqVsin );
-
-
-
-
 
   QvsdEta[0]->Fill( totalQplusplus );
   QvsdEta[1]->Fill( totalQminusminus );
@@ -516,6 +554,26 @@ ThreePointCorrelatorTest::beginJob()
 
     QvsdEta[sign] = fs->make<TH1D>(Form("QvsdEta_%d", sign),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 40000,-2.0-0.00005,2.0-0.00005 );
   }
+
+  for(int real = 0; real < 2; real++){
+
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 40000, -20.0-0.0005, 20.0-0.0005);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 40000, -20.0-0.0005, 20.0-0.0005);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 40000, -20.0-0.0005, 20.0-0.0005);
+
+    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 40000, -20.0-0.0005, 20.0-0.0005);
+    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 40000, -20.0-0.0005, 20.0-0.0005);
+    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 40000, -20.0-0.0005, 20.0-0.0005);
+
+  }
+
+  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 1000, 0,1000);
+  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 1000, 0,1000);
+  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 1000, 0,1000);
+
+  Xcount = fs->make<TH1D>("Xcount", ";Xcount", 1000, 0,1000);
+  Ycount = fs->make<TH1D>("Ycount", ";Ycount", 1000, 0,1000);
+  Zcount = fs->make<TH1D>("Zcount", ";Zcount", 1000, 0,1000);
 
 
 }
