@@ -505,7 +505,10 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   int Y_count = Qcounts[1];
   int Z_count = HFcounts;
 
+  cout << "XY_real: " << XY_real << endl;
 
+  cout << "YZ_real: " << YZ_real << endl;
+  
   XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
   XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
   YZ[0]->Fill( YZ_real ); YZ[1]->Fill( YZ_imag );
