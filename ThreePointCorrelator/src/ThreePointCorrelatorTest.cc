@@ -480,7 +480,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
               HFcounts++;
              }
 
-        // }
+        }
         else {continue;}
   }
 
