@@ -490,7 +490,7 @@ double Z_real = HFqVcos;
 
 double X_imag = Qsin[0][0];
 double Y_imag = Qsin[1][0];
-double z_imag = HFqVsin;
+double Z_imag = HFqVsin;
 
 int X_count = Qcounts[0][0];
 int Y_count = Qcounts[1][0];
