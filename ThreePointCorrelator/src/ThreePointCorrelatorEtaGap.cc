@@ -300,28 +300,6 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 //
 // member functions
 //
-
-//cos(p1+p2-p3)
-double get3Real(double cos1, double cos2, double cos3, double sin1, double sin2, double sin3){
-
-  double t1 = cos1*cos2*cos3;
-  double t2 = cos1*sin2*sin3;
-  double t3 = cos2*sin1*sin3;
-  double t4 = sin1*sin2*cos3;
-
-  return t1+t2+t3-t4;
-
-}
-
-//cos(p1-p2)
-double get2Real(double cos1, double cos2, double sin1, double sin2){
-
-  double t1 = cos1*cos2;
-  double t2 = sin1*sin2;
-
-  return t1+t2;
-}
-
     
 // ------------ method called for each event  ------------
 void
