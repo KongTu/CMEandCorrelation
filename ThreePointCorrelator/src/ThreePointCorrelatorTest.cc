@@ -604,13 +604,13 @@ ThreePointCorrelatorTest::beginJob()
   
   for(int real = 0; real < 2; real++){
 
-    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -400, 400);
-    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -400, 400);
-    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -400, 400);
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 2000000, -100, 100);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 2000000, -100, 100);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 2000000, -100, 100);
 
-    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 200000, -400, 400);
-    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 200000, -400, 400);
-    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 200000, -400, 400);
+    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 2000000, -40, 40);
+    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 2000000, -40, 40);
+    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 2000000, -40, 40);
 
   }
 
