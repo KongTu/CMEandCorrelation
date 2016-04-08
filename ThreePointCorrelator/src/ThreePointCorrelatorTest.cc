@@ -449,13 +449,17 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         nTracks++;  
 
-        trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
+        double trkPhi = fRand(-1.5,3.14);
+
+        trkPhi->Fill( trkPhi );//make sure if messAcceptance is on or off
 
         if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
+
+
              
              if(trk.charge() == 1){
-                Qcos[0] += cos( trk.phi() );
-                Qsin[0] += sin( trk.phi() );
+                Qcos[0] += cos( trkPhi );
+                Qsin[0] += sin( trkPhi );
                 Qcounts[0]++;
              }
         }
@@ -463,8 +467,8 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
              
              if(trk.charge() == 1){
 
-                Qcos[1] += cos( trk.phi() );
-                Qsin[1] += sin( trk.phi() );
+                Qcos[1] += cos( trkPhi );
+                Qsin[1] += sin( trkPhi );
                 Qcounts[1]++;
              }
         }
@@ -484,6 +488,8 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         if( messAcceptance_ ){ 
           if( caloPhi < -1.5 ) continue;
         }
+
+        caloPhi = fRand(-1.5,3.14);
 
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
