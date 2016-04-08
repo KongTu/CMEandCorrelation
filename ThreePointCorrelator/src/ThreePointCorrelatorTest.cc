@@ -457,6 +457,10 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         double trkphi2 = fRand(-1.5,3.14);
         double trkphi3 = fRand(-1.5,3.14);
 
+        cout << "trk1: " << trkphi1 << endl;
+        cout << "trk2: " << trkphi2 << endl;
+        cout << "trk3: " << trkphi3 << endl;
+
         trkPhi->Fill( trkphi1 );//make sure if messAcceptance is on or off
 
         if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
