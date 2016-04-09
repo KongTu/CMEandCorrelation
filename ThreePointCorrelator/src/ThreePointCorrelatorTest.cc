@@ -396,40 +396,40 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
       Qsin[eta] = 0.;
   }
 
-
-
-  double x[1000];
-  double y[1000];
-  double z[1000];
   double HFqVcos = 0.;
   double HFqVsin = 0.;
   int HFcounts = 0;
-  for(int i = 0; i < 100; i++){
 
-    x[i]= fRand(-1.5,3.14);
-    Qcos[0] += cos(x[i]);
-    Qsin[0] += sin(x[i]);
-    Qcounts[0]++;
-    trkPhi->Fill(x[i]);
-  }
+  // double x[1000];
+  // double y[1000];
+  // double z[1000];
 
-  for(int i = 0; i < 200; i++){
+  // for(int i = 0; i < 100; i++){
 
-    y[i]= fRand(-1.5,3.14);
-    Qcos[1] += cos(y[i]);
-    Qsin[1] += sin(y[i]);
-    Qcounts[1]++;
+  //   x[i]= fRand(-1.5,3.14);
+  //   Qcos[0] += cos(x[i]);
+  //   Qsin[0] += sin(x[i]);
+  //   Qcounts[0]++;
+  //   trkPhi->Fill(x[i]);
+  // }
+
+  // for(int i = 0; i < 200; i++){
+
+  //   y[i]= fRand(-1.5,3.14);
+  //   Qcos[1] += cos(y[i]);
+  //   Qsin[1] += sin(y[i]);
+  //   Qcounts[1]++;
 
 
-  }
-  for(int i = 0; i < 50; i++){
+  // }
+  // for(int i = 0; i < 50; i++){
 
-    z[i]= fRand(-1.5,3.14);
-    HFqVcos += cos( -2*z[i] );
-    HFqVsin += sin( -2*z[i] );
-    HFcounts++;
+  //   z[i]= fRand(-1.5,3.14);
+  //   HFqVcos += cos( -2*z[i] );
+  //   HFqVsin += sin( -2*z[i] );
+  //   HFcounts++;
 
-  }
+  // }
 
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -453,60 +453,51 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         nTracks++; 
 
-        // trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
+        double trk1 = fRand(-1.5,3.14);
+        double trk2 = fRand(-1.5,3.14);
 
-        // if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
+        trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
 
-        //         Qcos[0] += cos( trk.phi() );
-        //         Qsin[0] += sin( trk.phi() );
-        //         Qcounts[0]++;
+        if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
-        // }
-        // else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
+                Qcos[0] += cos( trk1 );
+                Qsin[0] += sin( trk1 );
+                Qcounts[0]++;
+
+        }
+        else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
              
-        //      if(trk.charge() == 1){
+             if(trk.charge() == 1){
 
-        //         Qcos[1] += cos( trk.phi() );
-        //         Qsin[1] += sin( trk.phi() );
-        //         Qcounts[1]++;
-        //      }
-        // }
-        // else if( trk.eta() > -1.0 && trk.eta() < 1.0 ){
-
-        //      if(trk.charge() == 1 ){
-
-        //       HFqVcos += cos( -2*trk.phi() );
-        //       HFqVsin += sin( -2*trk.phi() );
-        //       HFcounts++;
-        //      }
-
-        // }
-        // else {continue;}
+                Qcos[1] += cos( trk2 );
+                Qsin[1] += sin( trk2 );
+                Qcounts[1]++;
+             }
+        }
+        else {continue;}
   }
 
+    for(unsigned i = 0; i < towers->size(); ++i){
 
+        const CaloTower & hit= (*towers)[i];
 
-  //   for(unsigned i = 0; i < towers->size(); ++i){
+        double caloEta = hit.eta();
+        double caloPhi = hit.phi();
+        if( messAcceptance_ ){ 
+          if( caloPhi < -1.5 ) continue;
+        }
 
-  //       const CaloTower & hit= (*towers)[i];
+        caloPhi = fRand(-1.5,3.14);
 
-  //       double caloEta = hit.eta();
-  //       double caloPhi = hit.phi();
-  //       if( messAcceptance_ ){ 
-  //         if( caloPhi < -1.5 ) continue;
-  //       }
+        hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
-  //       caloPhi = fRand(-1.5,3.14);
+        if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
 
-  //       hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
-
-  //       if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
-
-  //         HFqVcos += cos( -2*caloPhi );
-  //         HFqVsin += sin( -2*caloPhi );          
-  //         HFcounts++;
-  //       }
-  // }
+          HFqVcos += cos( -2*caloPhi );
+          HFqVsin += sin( -2*caloPhi );          
+          HFcounts++;
+        }
+  }
 
   if( nTracks <= Nmin_ || nTracks > Nmax_ ) return;
   
@@ -587,24 +578,24 @@ ThreePointCorrelatorTest::beginJob()
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
   for(int real = 0; real < 2; real++ ){
-      QvsdEta[real] = fs->make<TH1D>(Form("QvsdEta_%d",real),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 4000,-2.0-0.000005,2.0-0.000050 );
+      QvsdEta[real] = fs->make<TH1D>(Form("QvsdEta_%d",real),";Q_{#phi_{1}}Q_{#phi_{2}}Q^{*}_{2#phi_{3}}", 400000,-2.0-0.00005,2.0-0.00005 );
   }
   
   for(int real = 0; real < 2; real++){
 
-    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 2000000, -100000, 100000);
-    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 2000000, -100000, 100000);
-    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 2000000, -100000, 100000);
+    XY[real] = fs->make<TH1D>(Form("XY_%d", real), ";XY", 200000, -100, 100);
+    XZ[real] = fs->make<TH1D>(Form("XZ_%d", real), ";XZ", 200000, -100, 100);
+    YZ[real] = fs->make<TH1D>(Form("YZ_%d", real), ";YZ", 200000, -100, 100);
 
-    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 2000000, -100, 100);
-    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 2000000, -100, 100);
-    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 2000000, -100, 100);
+    X[real] = fs->make<TH1D>(Form("X_%d", real), ";X", 200000, -40, 40);
+    Y[real] = fs->make<TH1D>(Form("Y_%d", real), ";Y", 200000, -40, 40);
+    Z[real] = fs->make<TH1D>(Form("Z_%d", real), ";Z", 200000, -40, 40);
 
   }
 
-  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 100000, 0,100000);
-  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 100000, 0,100000);
-  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 100000, 0,100000);
+  XYcount = fs->make<TH1D>("XYcount", ";XYcount", 10000, 0,10000);
+  XZcount = fs->make<TH1D>("XZcount", ";XZcount", 10000, 0,10000);
+  YZcount = fs->make<TH1D>("YZcount", ";YZcount", 10000, 0,10000);
 
   Xcount = fs->make<TH1D>("Xcount", ";Xcount", 2000, 0,2000);
   Ycount = fs->make<TH1D>("Ycount", ";Ycount", 2000, 0,2000);
