@@ -223,23 +223,11 @@ private:
   double simTrackPtMin_;
   bool fiducialCut_; 
   edm::InputTag trackSrc_;
-  std::string mvaSrc_;
-  edm::InputTag particleSrc_;
-  edm::InputTag tpFakeSrc_;
-  edm::InputTag tpEffSrc_;
-  edm::InputTag pfCandSrc_;
-  edm::InputTag DeDxSrc_;
-  edm::InputTag associatorMap_;
+  edm::InputTag towerSrc_;
 
-  vector<string> vertexSrc_;
-  edm::InputTag simVertexSrc_;
 
-  const TrackerGeometry* geo_;
-  edm::Service<TFileService> fs;
-  edm::ESHandle < ParticleDataTable > pdt;
-  edm::Handle<TrackingParticleCollection> trackingParticles;
+  string vertexSrc_;
 
-  edm::InputTag beamSpotProducer_;
 
   // Root object
   TTree* trackTree_;
@@ -257,8 +245,9 @@ TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig)
   doTrack_             = iConfig.getUntrackedParameter<bool>  ("doTrack",true);
   useCentrality_       = iConfig.getUntrackedParameter<bool>  ("doCentrality",false);
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
+  towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
   particleSrc_ = iConfig.getParameter<edm::InputTag>("particleSrc");
-  vertexSrc_ = iConfig.getParameter<vector<string> >("vertexSrc");
+  vertexSrc_ = iConfig.getParameter<string>("vertexSrc");
 
 }
 
@@ -330,7 +319,7 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
   for(unsigned it = 0; it < tracks->size(); it++){
 
-      const reco::Track & trk = (*tracks)[it];
+      //const reco::Track & trk = (*tracks)[it];
 
       // math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
 
@@ -348,7 +337,7 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
    for(unsigned i = 0; i < towers->size(); ++i){
 
-        const CaloTower & hit= (*towers)[i];
+        //const CaloTower & hit= (*towers)[i];
 
         // double caloEta = hit.eta();
         // double caloPhi = hit.phi();
