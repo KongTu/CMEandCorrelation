@@ -420,36 +420,36 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   double HFqVsin = 0.;
   int HFcounts = 0;
 
-  // double x[1000];
-  // double y[1000];
-  // double z[1000];
+  double x[1000];
+  double y[1000];
+  double z[1000];
 
-  // for(int i = 0; i < 100; i++){
+  for(int i = 0; i < 100; i++){
 
-  //   x[i]= fRand(-1.5,3.14);
-  //   Qcos[0] += cos(x[i]);
-  //   Qsin[0] += sin(x[i]);
-  //   Qcounts[0]++;
-  //   trkPhi->Fill(x[i]);
-  // }
+    x[i]= fRand(-1.5,3.14);
+    Qcos[0] += cos(x[i]);
+    Qsin[0] += sin(x[i]);
+    Qcounts[0]++;
+    trkPhi->Fill(x[i]);
+  }
 
-  // for(int i = 0; i < 200; i++){
+  for(int i = 0; i < 200; i++){
 
-  //   y[i]= fRand(-1.5,3.14);
-  //   Qcos[1] += cos(y[i]);
-  //   Qsin[1] += sin(y[i]);
-  //   Qcounts[1]++;
+    y[i]= fRand(-1.5,3.14);
+    Qcos[1] += cos(y[i]);
+    Qsin[1] += sin(y[i]);
+    Qcounts[1]++;
 
 
-  // }
-  // for(int i = 0; i < 50; i++){
+  }
+  for(int i = 0; i < 50; i++){
 
-  //   z[i]= fRand(-1.5,3.14);
-  //   HFqVcos += cos( -2*z[i] );
-  //   HFqVsin += sin( -2*z[i] );
-  //   HFcounts++;
+    z[i]= fRand(-1.5,3.14);
+    HFqVcos += cos( -2*z[i] );
+    HFqVsin += sin( -2*z[i] );
+    HFcounts++;
 
-  // }
+  }
 
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -473,51 +473,51 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         nTracks++; 
 
-        double trk1 = fRand(-1.5,3.14);
-        double trk2 = fRand(-1.5,3.14);
+        // double trk1 = fRand(-1.5,3.14);
+        // double trk2 = fRand(-1.5,3.14);
 
-        trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
+        // trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
 
-        if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
+        // if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
-                Qcos[0] += cos( trk1 );
-                Qsin[0] += sin( trk1 );
-                Qcounts[0]++;
+        //         Qcos[0] += cos( trk1 );
+        //         Qsin[0] += sin( trk1 );
+        //         Qcounts[0]++;
 
-        }
-        else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
+        // }
+        // else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
              
-             if(trk.charge() == 1){
+        //      if(trk.charge() == 1){
 
-                Qcos[1] += cos( trk2 );
-                Qsin[1] += sin( trk2 );
-                Qcounts[1]++;
-             }
-        }
-        else {continue;}
+        //         Qcos[1] += cos( trk2 );
+        //         Qsin[1] += sin( trk2 );
+        //         Qcounts[1]++;
+        //      }
+        // }
+        // else {continue;}
   }
 
-    for(unsigned i = 0; i < towers->size(); ++i){
+  //   for(unsigned i = 0; i < towers->size(); ++i){
 
-        const CaloTower & hit= (*towers)[i];
+  //       const CaloTower & hit= (*towers)[i];
 
-        double caloEta = hit.eta();
-        double caloPhi = hit.phi();
-        if( messAcceptance_ ){ 
-          if( caloPhi < -1.5 ) continue;
-        }
+  //       double caloEta = hit.eta();
+  //       double caloPhi = hit.phi();
+  //       if( messAcceptance_ ){ 
+  //         if( caloPhi < -1.5 ) continue;
+  //       }
 
-        caloPhi = fRand(-1.5,3.14);
+  //       caloPhi = fRand(-1.5,3.14);
 
-        hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
+  //       hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
-        if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
+  //       if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
 
-          HFqVcos += cos( -2*caloPhi );
-          HFqVsin += sin( -2*caloPhi );          
-          HFcounts++;
-        }
-  }
+  //         HFqVcos += cos( -2*caloPhi );
+  //         HFqVsin += sin( -2*caloPhi );          
+  //         HFcounts++;
+  //       }
+  // }
 
   if( nTracks <= Nmin_ || nTracks > Nmax_ ) return;
   
