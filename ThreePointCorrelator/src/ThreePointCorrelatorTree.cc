@@ -109,6 +109,7 @@ struct TrackEvent{
 
   int nTrk;
   int nVtx;
+  int nParticle;
 
 };
 
