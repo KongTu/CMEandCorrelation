@@ -246,7 +246,6 @@ TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig)
   useCentrality_       = iConfig.getUntrackedParameter<bool>  ("doCentrality",false);
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
-  particleSrc_ = iConfig.getParameter<edm::InputTag>("particleSrc");
   vertexSrc_ = iConfig.getParameter<string>("vertexSrc");
 
 }
