@@ -98,7 +98,6 @@ using namespace reco;
 #define MAXQUAL 5
 #define MAXMATCH 5
 
-}
 struct TrackEvent{
 
   // event information
