@@ -290,11 +290,11 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
   
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
-  double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
-  double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
-  const reco::Vertex & vtx = (*vertices)[0];
-  bestvz = vtx.z(); bestvx = vtx.x(); bestvy = vtx.y();
-  bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
+  // double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
+  // double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
+  // const reco::Vertex & vtx = (*vertices)[0];
+  // bestvz = vtx.z(); bestvx = vtx.x(); bestvy = vtx.y();
+  // bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
 
   Handle<CaloTowerCollection> towers;
   iEvent.getByLabel(towerSrc_, towers);
@@ -343,7 +343,8 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
 // ------------ method called once each job just before starting event loop  ------------
 void
 TrackAnalyzer::beginJob()
-{
+{  
+  edm::Service<TFileService> fs;
 
   trackTree_ = fs->make<TTree>("trackTree","v1");
 
