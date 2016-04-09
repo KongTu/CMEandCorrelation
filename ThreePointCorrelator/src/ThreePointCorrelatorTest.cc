@@ -201,6 +201,11 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
       std::vector<double> QvsdEta_real;
       std::vector<double> QvsdEta_imag;
 
+      double XY_real; double XZ_real; double YZ_real; double X_real; double Y_real; double Z_real;
+      double XY_imag; double XZ_imag; double YZ_imag; double X_imag; double Y_imag; double Z_imag;
+      double XY_count; double XZ_count; double YZ_count; double X_count; double Y_count; double Z_count;
+
+
       TH1D* XY[2];
       TH1D* XZ[2];
       TH1D* YZ[2];
@@ -585,12 +590,6 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 void 
 ThreePointCorrelatorTest::beginJob()
 {
-
-
-  double XY_real = 0.; double XZ_real = 0.; double YZ_real = 0.; double X_real = 0.; double Y_real = 0.; double Z_real = 0.;
-  double XY_imag = 0.; double XZ_imag = 0.; double YZ_imag = 0.; double X_imag = 0.; double Y_imag = 0.; double Z_imag = 0.;
-  double XY_count = 0.; double XZ_count = 0.; double YZ_count = 0.; double X_count = 0.; double Y_count = 0.; double Z_count = 0.;
-
 
   edm::Service<TFileService> fs;
     
