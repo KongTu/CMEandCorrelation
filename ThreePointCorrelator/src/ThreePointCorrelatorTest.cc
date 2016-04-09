@@ -630,6 +630,7 @@ ThreePointCorrelatorTest::beginJob()
 void 
 ThreePointCorrelatorTest::endJob() 
 {
+  using namespace std;
 
   double eventAverage_real = getAverage( QvsdEta_real );
   double eventAverage_imag = getAverage( QvsdEta_imag );
