@@ -263,11 +263,6 @@ TrackAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // Get tracker geometry
   //  cout <<"StartFill"<<endl;
 
-  edm::ESHandle<TrackerGeometry> tGeo;
-  iSetup.get<TrackerDigiGeometryRecord>().get(tGeo);
-  geo_ = tGeo.product();
-  iSetup.getData(pdt);
-
   //  cout <<"Got data"<<endl;
   pev_.nEv = (int)iEvent.id().event();
   pev_.nRun = (int)iEvent.id().run();
