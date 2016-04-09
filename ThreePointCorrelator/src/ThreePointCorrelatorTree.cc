@@ -71,9 +71,6 @@
 // #include "SimTracker/TrackAssociation/interface/TrackAssociatorByChi2.h"
 #include "DataFormats/TrackReco/interface/DeDxData.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-
-#include "HeavyIonsAnalysis/TrackAnalysis/interface/TrkAnalyzerUtils.h"
-
 // Particle Flow
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlock.h"
