@@ -468,8 +468,10 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
-        if( messAcceptance_ ) {
-          if( trk.phi() < -1.5 ) continue;
+        if( messAcceptance_ ){ 
+          if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
+              ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
+              ( caloPhi < (-2.09 + holesize_) && caloPhi > (-2.09 - holesize_) )     ) continue;
         }
         nTracks++; 
 
