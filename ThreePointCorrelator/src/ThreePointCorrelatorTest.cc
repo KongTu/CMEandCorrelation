@@ -198,6 +198,8 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
       //culmulants: 
       TH1D* QvsdEta[2];
 
+      vector<double> QvsdEta_real;
+      vector<double> QvsdEta_imag;
 
       TH1D* XY[2];
       TH1D* XZ[2];
@@ -251,6 +253,7 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
+
 
 };
 
@@ -307,6 +310,17 @@ ThreePointCorrelatorTest::~ThreePointCorrelatorTest()
 //
 // member functions
 //
+double getAverage( vector<double> v ){
+
+  int size = v.size();
+  double sum = 0.;
+  for(int i = 0; i < size; i ++){
+
+    sum = sum + v[i];
+  }
+
+  return sum/size;
+}
 
 double fRand(double fMin, double fMax)
 {
@@ -503,30 +517,30 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   
   Ntrk->Fill(nTracks);
 
-  double XY_real = get2Real(Qcos[0], Qcos[1], Qsin[0], Qsin[1]);
-  double XY_imag = get2Imag(Qcos[0], Qcos[1], Qsin[0], Qsin[1]); 
+  XY_real += get2Real(Qcos[0], Qcos[1], Qsin[0], Qsin[1]);
+  XY_imag += get2Imag(Qcos[0], Qcos[1], Qsin[0], Qsin[1]); 
 
-  double XZ_real = get2Real(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
-  double XZ_imag = get2Imag(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
+  XZ_real += get2Real(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
+  XZ_imag += get2Imag(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
 
-  double YZ_real = get2Real(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
-  double YZ_imag = get2Imag(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
+  YZ_real += get2Real(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
+  YZ_imag += get2Imag(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
 
-  int XY_count = Qcounts[0]*Qcounts[1];
-  int XZ_count = Qcounts[0]*HFcounts;
-  int YZ_count = Qcounts[1]*HFcounts;
+  XY_count += Qcounts[0]*Qcounts[1];
+  XZ_count += Qcounts[0]*HFcounts;
+  YZ_count += Qcounts[1]*HFcounts;
 
-  double X_real = Qcos[0];
-  double Y_real = Qcos[1];
-  double Z_real = HFqVcos;
+  X_real += Qcos[0];
+  Y_real += Qcos[1];
+  Z_real += HFqVcos;
 
-  double X_imag = Qsin[0];
-  double Y_imag = Qsin[1];
-  double Z_imag = HFqVsin;
+  X_imag += Qsin[0];
+  Y_imag += Qsin[1];
+  Z_imag += HFqVsin;
 
-  int X_count = Qcounts[0];
-  int Y_count = Qcounts[1];
-  int Z_count = HFcounts;
+  X_count += Qcounts[0];
+  Y_count += Qcounts[1];
+  Z_count += HFcounts;
 
   XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
   XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
@@ -561,12 +575,21 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   QvsdEta[0]->Fill( real_totalQplusplus );
   QvsdEta[1]->Fill( imag_totalQplusplus );
 
+  QvsdEta_real.push_back( real_totalQplusplus );
+  QvsdEta_imag.push_back( imag_totalQplusplus );
+
  
 }
 // ------------ method called once each job just before starting event loop  ------------
 void 
 ThreePointCorrelatorTest::beginJob()
 {
+
+
+  double XY_real = 0.; double XZ_real = 0.; double YZ_real = 0.; double X_real = 0.; double Y_real = 0.; double Z_real = 0.;
+  double XY_imag = 0.; double XZ_imag = 0.; double YZ_imag = 0.; double X_imag = 0.; double Y_imag = 0.; double Z_imag = 0.;
+  double XY_count = 0.; double XZ_count = 0.; double YZ_count = 0.; double X_count = 0.; double Y_count = 0.; double Z_count = 0.;
+
 
   edm::Service<TFileService> fs;
     
@@ -607,6 +630,31 @@ ThreePointCorrelatorTest::beginJob()
 void 
 ThreePointCorrelatorTest::endJob() 
 {
+
+  double eventAverage_real = getAverage( QvsdEta_real );
+  double eventAverage_imag = getAverage( QvsdEta_imag );
+
+  double term1_real = get2Real(XY_real/XY_count, Z_real/Z_count, XY_imag/XY_count, Z_imag/Z_count);
+  double term2_real = get2Real(XZ_real/XZ_count, Y_real/Y_count, XZ_imag/XZ_count, Y_imag/Y_count);
+  double term3_real = get2Real(YZ_real/YZ_count, X_real/X_count, YZ_imag/YZ_count, X_imag/X_count);
+  double term4_real = get3Real(X_real/X_count, Y_real/Y_count, Z_real/Z_count, X_imag/X_count, Y_imag/Y_count, Z_imag/Z_count);
+  double all_real = term1_real+term2_real+term3_real-2*term4_real;
+
+  double term1_imag = get2Imag(XY_real/XY_count, Z_real/Z_count, XY_imag/XY_count, Z_imag/Z_count);
+  double term2_imag = get2Imag(XZ_real/XZ_count, Y_real/Y_count, XZ_imag/XZ_count, Y_imag/Y_count);
+  double term3_imag = get2Imag(YZ_real/YZ_count, X_real/X_count, YZ_imag/YZ_count, X_imag/X_count);
+  double term4_imag = get3Imag(X_real/X_count, Y_real/Y_count, Z_real/Z_count, X_imag/X_count, Y_imag/Y_count, Z_imag/Z_count);
+  double all_imag = term1_imag+term2_imag+term3_imag-2*term4_imag;
+
+  cout << "before correction real: " << eventAverage_real << endl;
+  cout << "after correction real: " << eventAverage_real - all_real << endl;
+  cout << "all_real: " << all_real << endl;
+
+  cout << "before correction imag: " << eventAverage_imag << endl;
+  cout << "after correction imag: " << eventAverage_imag - all_imag << endl;
+  cout << "all_imag: " << all_imag << endl;
+
+
 }
 
 // ------------ method called when starting to processes a run  ------------
