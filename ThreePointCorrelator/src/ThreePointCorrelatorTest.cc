@@ -470,8 +470,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
         if( messAcceptance_ ) {
           if( ( trk.phi() < (0.0 + holesize_) && trk.phi() > (0.0 - holesize_) )    ||
-              ( trk.phi() < (2.09 + holesize_) && trk.phi() > (2.09 - holesize_) )  ||
-              ( trk.phi() < (-2.09 + holesize_) && trk.phi() > (-2.09 - holesize_) )     ) continue;
+              ( trk.phi() < (2.09 + holesize_) && trk.phi() > (2.09 - holesize_) ) ) continue;
         }
         nTracks++; 
 
@@ -505,8 +504,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         double caloPhi = hit.phi();
         if( messAcceptance_ ){ 
           if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
-              ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
-              ( caloPhi < (-2.09 + holesize_) && caloPhi > (-2.09 - holesize_) )     ) continue;
+              ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) ) ) continue;
         }
 
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
@@ -523,30 +521,30 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   
   Ntrk->Fill(nTracks);
 
-  XY_real += get2Real(Qcos[0], Qcos[1], Qsin[0], Qsin[1]);
-  XY_imag += get2Imag(Qcos[0], Qcos[1], Qsin[0], Qsin[1]); 
+  XY_real = get2Real(Qcos[0], Qcos[1], Qsin[0], Qsin[1]);
+  XY_imag = get2Imag(Qcos[0], Qcos[1], Qsin[0], Qsin[1]); 
 
-  XZ_real += get2Real(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
-  XZ_imag += get2Imag(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
+  XZ_real = get2Real(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
+  XZ_imag = get2Imag(Qcos[0], HFqVcos, Qsin[0], HFqVsin);
 
-  YZ_real += get2Real(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
-  YZ_imag += get2Imag(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
+  YZ_real = get2Real(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
+  YZ_imag = get2Imag(Qcos[1], HFqVcos, Qsin[1], HFqVsin);
 
-  XY_count += Qcounts[0]*Qcounts[1];
-  XZ_count += Qcounts[0]*HFcounts;
-  YZ_count += Qcounts[1]*HFcounts;
+  XY_count = Qcounts[0]*Qcounts[1];
+  XZ_count = Qcounts[0]*HFcounts;
+  YZ_count = Qcounts[1]*HFcounts;
 
-  X_real += Qcos[0];
-  Y_real += Qcos[1];
-  Z_real += HFqVcos;
+  X_real = Qcos[0];
+  Y_real = Qcos[1];
+  Z_real = HFqVcos;
 
-  X_imag += Qsin[0];
-  Y_imag += Qsin[1];
-  Z_imag += HFqVsin;
+  X_imag = Qsin[0];
+  Y_imag = Qsin[1];
+  Z_imag = HFqVsin;
 
-  X_count += Qcounts[0];
-  Y_count += Qcounts[1];
-  Z_count += HFcounts;
+  X_count = Qcounts[0];
+  Y_count = Qcounts[1];
+  Z_count = HFcounts;
 
   XY[0]->Fill( XY_real ); XY[1]->Fill( XY_imag );
   XZ[0]->Fill( XZ_real ); XZ[1]->Fill( XZ_imag );
