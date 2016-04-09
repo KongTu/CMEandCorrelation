@@ -468,10 +468,10 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
-        if( messAcceptance_ ){ 
-          if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
-              ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
-              ( caloPhi < (-2.09 + holesize_) && caloPhi > (-2.09 - holesize_) )     ) continue;
+        if( messAcceptance_ ) {
+          if( ( trk.phi() < (0.0 + holesize_) && trk.phi() > (0.0 - holesize_) )    ||
+              ( trk.phi() < (2.09 + holesize_) && trk.phi() > (2.09 - holesize_) )  ||
+              ( trk.phi() < (-2.09 + holesize_) && trk.phi() > (-2.09 - holesize_) )     ) continue;
         }
         nTracks++; 
 
@@ -504,7 +504,9 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
         if( messAcceptance_ ){ 
-          if( caloPhi < -1.5 ) continue;
+          if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
+              ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
+              ( caloPhi < (-2.09 + holesize_) && caloPhi > (-2.09 - holesize_) )     ) continue;
         }
 
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
