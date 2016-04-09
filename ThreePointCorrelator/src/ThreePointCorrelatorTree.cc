@@ -107,6 +107,9 @@ struct TrackEvent{
   int nBX;
   int N; // multiplicity variable
 
+  int nTrk;
+  int nVtx;
+
 };
 
 class TrackAnalyzer : public edm::EDAnalyzer {
@@ -222,7 +225,6 @@ TrackAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   if (doTrack_) fillTracks(iEvent, iSetup);
   //cout <<"Tracks filled!"<<endl;
   //cout <<"SimTracks filled!"<<endl;
-  pev_.nTrkTimesnVtx=pev_.nTrk*pev_.nVtx;
   trackTree_->Fill();
   //cout <<"Tree filled!"<<endl;
 
