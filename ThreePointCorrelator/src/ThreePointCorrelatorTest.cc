@@ -198,8 +198,8 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
       //culmulants: 
       TH1D* QvsdEta[2];
 
-      vector<double> QvsdEta_real;
-      vector<double> QvsdEta_imag;
+      std::vector<double> QvsdEta_real;
+      std::vector<double> QvsdEta_imag;
 
       TH1D* XY[2];
       TH1D* XZ[2];
@@ -310,7 +310,8 @@ ThreePointCorrelatorTest::~ThreePointCorrelatorTest()
 //
 // member functions
 //
-double getAverage( vector<double> v ){
+
+double getAverage( std::vector<double> v ){
 
   int size = v.size();
   double sum = 0.;
