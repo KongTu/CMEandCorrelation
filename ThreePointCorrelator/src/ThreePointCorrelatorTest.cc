@@ -469,14 +469,13 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
         nTracks++;
-        double trk1 = fRand(-3.14,3.14);
-        if( messAcceptance_ ) {
-          if( ( trk1 < (0.0 + holesize_) && trk1 > (0.0 - holesize_) )    ||
-              ( trk1 < (2.09 + holesize_) && trk1 > (2.09 - holesize_) )  ||
-              ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
-        }
-
-
+        double trk1 = fRand(-0.5,3.14);
+        double trk2 = fRand(-0.5,3.14);
+        // if( messAcceptance_ ) {
+        //   if( ( trk1 < (0.0 + holesize_) && trk1 > (0.0 - holesize_) )    ||
+        //       ( trk1 < (2.09 + holesize_) && trk1 > (2.09 - holesize_) )  ||
+        //       ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
+        // }
         trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
         if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
@@ -488,8 +487,8 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
            if( trk.charge() == 1 ){
-              Qcos[1] += cos( trk1 );
-              Qsin[1] += sin( trk1 );
+              Qcos[1] += cos( trk2 );
+              Qsin[1] += sin( trk2 );
               Qcounts[1]++;   
            }
         }
