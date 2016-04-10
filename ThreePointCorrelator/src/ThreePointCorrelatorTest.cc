@@ -483,15 +483,19 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
             Qcos[0] += cos( trk1 );
             Qsin[0] += sin( trk1 );
             Qcounts[0]++;
+
+            Qcos[1] += cos( trk2 );
+              Qsin[1] += sin( trk2 );
+              Qcounts[1]++; 
           //}
         }
-        else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
-           //if( trk.charge() == 1 ){
-              Qcos[1] += cos( trk2 );
-              Qsin[1] += sin( trk2 );
-              Qcounts[1]++;   
-           //}
-        }
+        // else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
+        //    //if( trk.charge() == 1 ){
+        //       Qcos[1] += cos( trk2 );
+        //       Qsin[1] += sin( trk2 );
+        //       Qcounts[1]++;   
+        //    //}
+        // }
         else {continue;}
   }
 
