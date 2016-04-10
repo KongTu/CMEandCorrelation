@@ -510,11 +510,11 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
-        //if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
+        if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
           HFqVcos += cos( -2*caloPhi );
           HFqVsin += sin( -2*caloPhi );          
           HFcounts++;
-        //}
+        }
   }
   
   Ntrk->Fill(nTracks);
