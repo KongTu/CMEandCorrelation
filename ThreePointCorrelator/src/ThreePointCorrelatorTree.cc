@@ -366,9 +366,8 @@ TrackAnalyzer::beginJob()
   trackTree_->Branch("trkPhi", &pev_.trkPhi,"trkPhi[nTrk]/D");
   trackTree_->Branch("trkPt", &pev_.trkPt,"trkPt[nTrk]/D");
   trackTree_->Branch("trkPtError", &pev_.trkPtError,"trkPtError[nTrk]/D");
-  trackTree_->Branch("trDCAz", &pev_.trDCAz,"trDCAz[nTrk]/D");
-  trackTree_->Branch("trDCAxy", &pev_.trDCAxy,"trDCAxy[nTrk]/D");
-
+  trackTree_->Branch("trkDCAz", &pev_.trkDCAz,"trkDCAz[nTrk]/D");
+  trackTree_->Branch("trkDCAxy", &pev_.trkDCAxy,"trkDCAxy[nTrk]/D");
 
 }
 
