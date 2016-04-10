@@ -185,6 +185,7 @@ struct TrackEvent{
   double vtxZ;
   double trkEta[MAXTRACKS];
   double trkPhi[MAXTRACKS];
+  int    trkCharge[MAXTRACKS];
   double trkPt[MAXTRACKS];
   double trkPtError[MAXTRACKS];
   double trkDCAxy[MAXTRACKS];
@@ -303,6 +304,7 @@ ThreePointCorrelatorTree::fillTracks(const edm::Event& iEvent, const edm::EventS
 
       pev_.trkEta[pev_.nTrk] = trk.eta();
       pev_.trkPhi[pev_.nTrk] = trk.phi();
+      pev_.trkCharge[pev_.nTrk] = trk.charge();
       pev_.trkPt[pev_.nTrk] = trk.pt();
       pev_.trkDCAz[pev_.nTrk] = fabs(dzvtx/dzerror);
       pev_.trkDCAxy[pev_.nTrk] = fabs(dxyvtx/dxyerror);
@@ -352,6 +354,7 @@ ThreePointCorrelatorTree::beginJob()
   trackTree_->Branch("vtxZ", &pev_.vtxZ,"vtxZ/D");
   trackTree_->Branch("trkEta", &pev_.trkEta,"trkEta[nTrk]/D");
   trackTree_->Branch("trkPhi", &pev_.trkPhi,"trkPhi[nTrk]/D");
+  trackTree_->Branch("trkCharge", &pev_.trkCharge,"trkCharge[nTrk]/I");
   trackTree_->Branch("trkPt", &pev_.trkPt,"trkPt[nTrk]/D");
   trackTree_->Branch("trkPtError", &pev_.trkPtError,"trkPtError[nTrk]/D");
   trackTree_->Branch("trkDCAz", &pev_.trkDCAz,"trkDCAz[nTrk]/D");
