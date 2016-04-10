@@ -179,8 +179,7 @@ struct TrackEvent{
   int N; // multiplicity variable
 
   int nTrk;
-  int nVtx;
-  int nParticle;
+  int nTower;
   int cbin;
 
   double vtxZ;
@@ -190,6 +189,11 @@ struct TrackEvent{
   double trkPtError[MAXTRACKS];
   double trkDCAxy[MAXTRACKS];
   double trkDCAz[MAXTRACKS];
+
+  double towEta[MAXTRACKS];
+  double towPhi[MAXTRACKS];
+  double towEt[MAXTRACKS];
+  double towEnergy[MAXTRACKS]
 
 };
 
@@ -273,10 +277,6 @@ TrackAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   pev_.nRun = (int)iEvent.id().run();
   pev_.nLumi = (int)iEvent.luminosityBlock();
   pev_.nBX = (int)iEvent.bunchCrossing();
-  pev_.N = 0;
-  pev_.nParticle = 0;
-  pev_.nTrk = 0;
-
 
   fillTracks(iEvent, iSetup);
   trackTree_->Fill();
@@ -313,6 +313,7 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
   }
 
+  pev_.nTrk = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
 
       const reco::Track & trk = (*tracks)[it];
@@ -332,16 +333,26 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
       pev_.trkDCAxy[pev_.nTrk] = fabs(dxyvtx/dxyerror);
       pev_.trkPtError[pev_.nTrk] = fabs(trk.ptError())/trk.pt();
 
+      pev_.nTrk++;//this is not Ntrkoffline, it needs to give a cut
+
   } 
 
+   pev_.nTower = 0;
    for(unsigned i = 0; i < towers->size(); ++i){
 
-        //const CaloTower & hit= (*towers)[i];
+        const CaloTower & hit= (*towers)[i];
 
-        // double caloEta = hit.eta();
-        // double caloPhi = hit.phi();
-        // double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
-        // double energy = hit.emEnergy() + hit.hadEnergy();
+        double caloEta = hit.eta();
+        double caloPhi = hit.phi();
+        double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+        double energy = hit.emEnergy() + hit.hadEnergy();
+
+        pev_.towEta[pev_.nTower] = caloEta;
+        pev_.towPhi[pev_.nTower] = caloPhi;
+        pev_.towEt[pev_.nTower] = w;
+        pev_.towEnergy[pev_.nTower] = energy;
+
+        pev_.nTower++;
   }
 
 }
@@ -361,6 +372,8 @@ TrackAnalyzer::beginJob()
   trackTree_->Branch("N",&pev_.N,"N/I");
   trackTree_->Branch("cbin", &pev_.cbin,"cbin/I");
 
+  trackTree_->Branch("nTower", &pev_.nTower,"nTower/I");
+  trackTree_->Branch("nTrk", &pev_.nTrk,"nTrk/I");
   trackTree_->Branch("vtxZ", &pev_.vtxZ,"vtxZ/D");
   trackTree_->Branch("trkEta", &pev_.trkEta,"trkEta[nTrk]/D");
   trackTree_->Branch("trkPhi", &pev_.trkPhi,"trkPhi[nTrk]/D");
