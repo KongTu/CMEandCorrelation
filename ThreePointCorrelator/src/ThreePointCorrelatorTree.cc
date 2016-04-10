@@ -181,6 +181,15 @@ struct TrackEvent{
   int nTrk;
   int nVtx;
   int nParticle;
+  int cbin;
+
+  double vtxZ;
+  double trkEta[MAXTRACKS];
+  double trkPhi[MAXTRACKS];
+  double trkPt[MAXTRACKS];
+  double trkPtError[MAXTRACKS];
+  double trkDCAxy[MAXTRACKS];
+  double trkDCAz[MAXTRACKS];
 
 };
 
@@ -259,28 +268,18 @@ TrackAnalyzer::~TrackAnalyzer()
 void
 TrackAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  // Get tracker geometry
-  //  cout <<"StartFill"<<endl;
 
-  //  cout <<"Got data"<<endl;
   pev_.nEv = (int)iEvent.id().event();
   pev_.nRun = (int)iEvent.id().run();
   pev_.nLumi = (int)iEvent.luminosityBlock();
   pev_.nBX = (int)iEvent.bunchCrossing();
   pev_.N = 0;
-
-  // pev_.nv = 0;
   pev_.nParticle = 0;
   pev_.nTrk = 0;
 
-  //cout <<"Fill Vtx"<<endl;
 
-  //cout <<"Fill Tracks"<<endl;
-  if (doTrack_) fillTracks(iEvent, iSetup);
-  //cout <<"Tracks filled!"<<endl;
-  //cout <<"SimTracks filled!"<<endl;
+  fillTracks(iEvent, iSetup);
   trackTree_->Fill();
-  //cout <<"Tree filled!"<<endl;
 
 }
 
@@ -290,11 +289,13 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
   
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
-  // double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
-  // double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
-  // const reco::Vertex & vtx = (*vertices)[0];
-  // bestvz = vtx.z(); bestvx = vtx.x(); bestvy = vtx.y();
-  // bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
+  double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
+  double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
+  const reco::Vertex & vtx = (*vertices)[0];
+  bestvz = vtx.z(); bestvx = vtx.x(); bestvy = vtx.y();
+  bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
+
+  pev_.vtxZ = (double) bestvz;
 
   Handle<CaloTowerCollection> towers;
   iEvent.getByLabel(towerSrc_, towers);
@@ -307,26 +308,30 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
     CentralityProvider * centProvider = 0;
     if (!centProvider) centProvider = new CentralityProvider(iSetup);
     centProvider->newEvent(iEvent,iSetup);
-    //int hiBin = centProvider->getBin();
+    int hiBin = centProvider->getBin();
+    pev_.cbin = (int) hiBin;
 
   }
 
   for(unsigned it = 0; it < tracks->size(); it++){
 
-      //const reco::Track & trk = (*tracks)[it];
+      const reco::Track & trk = (*tracks)[it];
 
-      // math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+      math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
 
-      // double dzvtx = trk.dz(bestvtx);
-      // double dxyvtx = trk.dxy(bestvtx);
-      // double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
-      // double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+      double dzvtx = trk.dz(bestvtx);
+      double dxyvtx = trk.dxy(bestvtx);
+      double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+      double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+      if(!trk.quality(reco::TrackBase::highPurity)) continue;
 
-      // if(!trk.quality(reco::TrackBase::highPurity)) continue;
-      // if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
-      // if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
-      // if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-      // if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
+      pev_.trkEta[pev_.nTrk] = trk.eta();
+      pev_.trkPhi[pev_.nTrk] = trk.phi();
+      pev_.trkPt[pev_.nTrk] = trk.pt();
+      pev_.trkDCAz[pev_.nTrk] = fabs(dzvtx/dzerror);
+      pev_.trkDCAxy[pev_.nTrk] = fabs(dxyvtx/dxyerror);
+      pev_.trkPtError[pev_.nTrk] = fabs(trk.ptError())/trk.pt();
+
   } 
 
    for(unsigned i = 0; i < towers->size(); ++i){
@@ -354,6 +359,15 @@ TrackAnalyzer::beginJob()
   trackTree_->Branch("nBX",&pev_.nBX,"nBX/I");
   trackTree_->Branch("nRun",&pev_.nRun,"nRun/I");
   trackTree_->Branch("N",&pev_.N,"N/I");
+  trackTree_->Branch("cbin", &pev_.cbin,"cbin/I");
+
+  trackTree_->Branch("vtxZ", &pev_.vtxZ,"vtxZ/D");
+  trackTree_->Branch("trkEta", &pev_.trkEta,"trkEta[nTrk]/D");
+  trackTree_->Branch("trkPhi", &pev_.trkPhi,"trkPhi[nTrk]/D");
+  trackTree_->Branch("trkPt", &pev_.trkPt,"trkPt[nTrk]/D");
+  trackTree_->Branch("trkPtError", &pev_.trkPtError,"trkPtError[nTrk]/D");
+  trackTree_->Branch("trDCAz", &pev_.trDCAz,"trDCAz[nTrk]/D");
+  trackTree_->Branch("trDCAxy", &pev_.trDCAxy,"trDCAxy[nTrk]/D");
 
 
 }
