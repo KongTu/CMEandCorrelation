@@ -357,6 +357,11 @@ ThreePointCorrelatorTree::beginJob()
   trackTree_->Branch("trkDCAz", &pev_.trkDCAz,"trkDCAz[nTrk]/D");
   trackTree_->Branch("trkDCAxy", &pev_.trkDCAxy,"trkDCAxy[nTrk]/D");
 
+  trackTree_->Branch("towEta", &pev_.towEta,"towEta[nTower]/D");
+  trackTree_->Branch("towPhi", &pev_.towPhi,"towPhi[nTower]/D");
+  trackTree_->Branch("towEt", &pev_.towEt,"towEt[nTower]/D");
+  trackTree_->Branch("towEnergy", &pev_.towEnergy,"towEnergy[nTower]/D");
+
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
