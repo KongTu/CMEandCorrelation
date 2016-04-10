@@ -478,7 +478,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         //       ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
         // }
         trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
-        if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
+        if( trk.eta() > 0.0 && trk.eta() < 2.4 ){
         trkPhi2->Fill( trk1 );
           //if( trk.charge() == 1 ){
             Qcos[0] += cos( trk1 );
