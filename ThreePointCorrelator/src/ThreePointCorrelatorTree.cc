@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    TrackAnalyzer
-// Class:      TrackAnalyzer
+// Package:    ThreePointCorrelatorTree
+// Class:      ThreePointCorrelatorTree
 //
-/**\class TrackAnalyzer TrackAnalyzer.cc MitHig/TrackAnalyzer/src/TrackAnalyzer.cc
+/**\class ThreePointCorrelatorTree ThreePointCorrelatorTree.cc MitHig/ThreePointCorrelatorTree/src/ThreePointCorrelatorTree.cc
 
    Description: <one line class summary>
 
@@ -14,7 +14,7 @@
 // Original Author:  Yilmaz Yetkin, Yen-Jie Lee
 // Updated: Frank Ma, Matt Nguyen
 //         Created:  Tue Sep 30 15:14:28 CEST 2008
-// $Id: TrackAnalyzer.cc,v 1.55 2013/06/11 20:58:09 yjlee Exp $
+// $Id: ThreePointCorrelatorTree.cc,v 1.55 2013/06/11 20:58:09 yjlee Exp $
 
 // system include files
 #include <memory>
@@ -197,11 +197,11 @@ struct TrackEvent{
 
 };
 
-class TrackAnalyzer : public edm::EDAnalyzer {
+class ThreePointCorrelatorTree : public edm::EDAnalyzer {
 
 public:
-  explicit TrackAnalyzer(const edm::ParameterSet&);
-  ~TrackAnalyzer();
+  explicit ThreePointCorrelatorTree(const edm::ParameterSet&);
+  ~ThreePointCorrelatorTree();
 
 private:
   virtual void beginJob() ;
@@ -227,7 +227,7 @@ private:
 };
 
 //--------------------------------------------------------------------------------------------------
-TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig)
+ThreePointCorrelatorTree::ThreePointCorrelatorTree(const edm::ParameterSet& iConfig)
 
 {
 
@@ -239,13 +239,13 @@ TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig)
 }
 
 //--------------------------------------------------------------------------------------------------
-TrackAnalyzer::~TrackAnalyzer()
+ThreePointCorrelatorTree::~ThreePointCorrelatorTree()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 void
-TrackAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+ThreePointCorrelatorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
   pev_.nEv = (int)iEvent.id().event();
@@ -260,7 +260,7 @@ TrackAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 //--------------------------------------------------------------------------------------------------
 void
-TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetup){
+ThreePointCorrelatorTree::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSrc_,vertices);
@@ -333,7 +333,7 @@ TrackAnalyzer::fillTracks(const edm::Event& iEvent, const edm::EventSetup& iSetu
 }
 // ------------ method called once each job just before starting event loop  ------------
 void
-TrackAnalyzer::beginJob()
+ThreePointCorrelatorTree::beginJob()
 {  
   edm::Service<TFileService> fs;
 
@@ -361,8 +361,8 @@ TrackAnalyzer::beginJob()
 
 // ------------ method called once each job just after ending the event loop  ------------
 void
-TrackAnalyzer::endJob() {
+ThreePointCorrelatorTree::endJob() {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(TrackAnalyzer);
+DEFINE_FWK_MODULE(ThreePointCorrelatorTree);
