@@ -468,6 +468,9 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
+
+        nTracks++;
+
         double trk1 = fRand(-3.14,3.14);
         double eta1 = fRand(-2.4,2.4);
         if( messAcceptance_ ) {
@@ -475,7 +478,6 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
               ( trk1 < (2.09 + holesize_) && trk1 > (2.09 - holesize_) )  ||
               ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
         }
-        nTracks++; 
 
         trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
         if( eta1 > -2.4 && eta1 < -2.0 ){
@@ -516,8 +518,6 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
           HFcounts++;
         }
   }
-
-  if( nTracks <= Nmin_ || nTracks > Nmax_ ) return;
   
   Ntrk->Fill(nTracks);
 
