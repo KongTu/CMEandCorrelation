@@ -344,8 +344,8 @@ ThreePointCorrelatorTree::beginJob()
   trackTree_->Branch("nLumi",&pev_.nLumi,"nLumi/I");
   trackTree_->Branch("nBX",&pev_.nBX,"nBX/I");
   trackTree_->Branch("nRun",&pev_.nRun,"nRun/I");
-  trackTree_->Branch("N",&pev_.N,"N/I");
-  trackTree_->Branch("cbin", &pev_.cbin,"cbin/I");
+
+  if( useCentrality_ )  trackTree_->Branch("cbin", &pev_.cbin,"cbin/I");
 
   trackTree_->Branch("nTower", &pev_.nTower,"nTower/I");
   trackTree_->Branch("nTrk", &pev_.nTrk,"nTrk/I");
