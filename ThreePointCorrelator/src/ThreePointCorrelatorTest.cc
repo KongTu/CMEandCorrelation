@@ -477,22 +477,22 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         //       ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
         // }
         trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
-        //if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
+        if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
 
           //if( trk.charge() == 1 ){
             Qcos[0] += cos( trk1 );
             Qsin[0] += sin( trk1 );
             Qcounts[0]++;
           //}
-        //}
-        //else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
+        }
+        else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
            //if( trk.charge() == 1 ){
               Qcos[1] += cos( trk2 );
               Qsin[1] += sin( trk2 );
               Qcounts[1]++;   
            //}
-        //}
-        //else {continue;}
+        }
+        else {continue;}
   }
 
     for(unsigned i = 0; i < towers->size(); ++i){
