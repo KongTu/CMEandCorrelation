@@ -501,11 +501,12 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
-        if( messAcceptance_ ){ 
-          if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
-              ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
-              ( caloPhi < (-2.09 + holesize_) && caloPhi > (-2.09 - holesize_) )  ) continue;
-        }
+        caloPhi = fRand(-0.5,3.14);
+        // if( messAcceptance_ ){ 
+        //   if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
+        //       ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
+        //       ( caloPhi < (-2.09 + holesize_) && caloPhi > (-2.09 - holesize_) )  ) continue;
+        // }
 
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
