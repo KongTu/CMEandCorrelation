@@ -184,6 +184,7 @@ class ThreePointCorrelatorTest : public edm::EDAnalyzer {
 
       TH1D* Ntrk;
       TH1D* trkPhi;
+      TH1D* trkPhi2;
       TH1D* hfPhi;
       TH1D* cbinHist;
 //v2
@@ -478,7 +479,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         // }
         trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
         if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
-
+        trkPhi2->Fill( trk1 );
           //if( trk.charge() == 1 ){
             Qcos[0] += cos( trk1 );
             Qsin[0] += sin( trk1 );
@@ -598,6 +599,7 @@ ThreePointCorrelatorTest::beginJob()
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
+  trkPhi2 = fs->make<TH1D>("trkPhi2", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
   for(int real = 0; real < 2; real++ ){
