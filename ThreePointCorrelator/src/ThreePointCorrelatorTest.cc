@@ -472,9 +472,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         nTracks++;
         double trk1 = trk.phi();
         if( messAcceptance_ ) {
-          if( ( trk1 < (0.0 + holesize_) && trk1 > (0.0 - holesize_) )    ||
-              ( trk1 < (2.09 + holesize_) && trk1 > (2.09 - holesize_) )  ||
-              ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
+          if( trk1 < -0.5 ) continue;
         }
         trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
         if( trk.eta() > 0.0 && trk.eta() < 2.4 ){
@@ -502,9 +500,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
         if( messAcceptance_ ){ 
-          if( ( caloPhi < (0.0 + holesize_) && caloPhi > (0.0 - holesize_) )    ||
-              ( caloPhi < (2.09 + holesize_) && caloPhi > (2.09 - holesize_) )  ||
-              ( caloPhi < (-2.09 + holesize_) && caloPhi > (-2.09 - holesize_) )  ) continue;
+          if( caloPhi < -0.5  ) continue;
         }
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
         if( fabs(caloEta) > etaLowHF_ && fabs(caloEta) < etaHighHF_ ){
