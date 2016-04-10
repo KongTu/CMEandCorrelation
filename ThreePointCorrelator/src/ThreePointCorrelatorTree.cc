@@ -193,7 +193,7 @@ struct TrackEvent{
   double towEta[MAXTRACKS];
   double towPhi[MAXTRACKS];
   double towEt[MAXTRACKS];
-  double towEnergy[MAXTRACKS]
+  double towEnergy[MAXTRACKS];
 
 };
 
@@ -212,35 +212,11 @@ private:
 
   // ----------member data ---------------------------
 
-  bool doTrack_;
-  bool doTrackExtra_;
-  bool doSimTrack_;
-  bool doSimVertex_;
-  bool fillSimTrack_;
-  bool doPFMatching_;
-  bool useQuality_;
-  bool doDeDx_;
-  bool doDebug_;
-  bool doMVA_;
-
   bool useCentrality_;
-  // bool associateChi2_;
-  bool doHighestPtVertex_;
-  bool doTrackVtxWImpPar_;
 
-  double trackPtMin_;
-  double trackVtxMaxDistance_;
-  std::vector<std::string> qualityStrings_;
-  std::string qualityString_;
-
-  double simTrackPtMin_;
-  bool fiducialCut_; 
   edm::InputTag trackSrc_;
   edm::InputTag towerSrc_;
-
-
   string vertexSrc_;
-
 
   // Root object
   TTree* trackTree_;
@@ -255,7 +231,6 @@ TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig)
 
 {
 
-  doTrack_             = iConfig.getUntrackedParameter<bool>  ("doTrack",true);
   useCentrality_       = iConfig.getUntrackedParameter<bool>  ("doCentrality",false);
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   towerSrc_ = iConfig.getParameter<edm::InputTag>("towerSrc");
