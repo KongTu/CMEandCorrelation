@@ -451,49 +451,49 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
 
   }
 
-  // int nTracks = 0;
-  // for(unsigned it = 0; it < tracks->size(); it++){
+  int nTracks = 0;
+  for(unsigned it = 0; it < tracks->size(); it++){
 
-  //    const reco::Track & trk = (*tracks)[it];
+     const reco::Track & trk = (*tracks)[it];
 
-  //    math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+     math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
         
-  //       double dzvtx = trk.dz(bestvtx);
-  //       double dxyvtx = trk.dxy(bestvtx);
-  //       double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
-  //       double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+        double dzvtx = trk.dz(bestvtx);
+        double dxyvtx = trk.dxy(bestvtx);
+        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
         
-  //       if(!trk.quality(reco::TrackBase::highPurity)) continue;
-  //       if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
-  //       if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
-  //       if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-  //       if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
-  //       nTracks++;
-  //       double trk1 = fRand(-0.5,3.14);
-  //       double trk2 = fRand(-0.5,3.14);
-  //       // if( messAcceptance_ ) {
-  //       //   if( ( trk1 < (0.0 + holesize_) && trk1 > (0.0 - holesize_) )    ||
-  //       //       ( trk1 < (2.09 + holesize_) && trk1 > (2.09 - holesize_) )  ||
-  //       //       ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
-  //       // }
-  //       trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
-  //       if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
+        if(!trk.quality(reco::TrackBase::highPurity)) continue;
+        if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
+        if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
+        if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
+        if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
+        nTracks++;
+        // double trk1 = fRand(-0.5,3.14);
+        // double trk2 = fRand(-0.5,3.14);
+        // // if( messAcceptance_ ) {
+        // //   if( ( trk1 < (0.0 + holesize_) && trk1 > (0.0 - holesize_) )    ||
+        // //       ( trk1 < (2.09 + holesize_) && trk1 > (2.09 - holesize_) )  ||
+        // //       ( trk1 < (-2.09 + holesize_) && trk1 > (-2.09 - holesize_) ) ) continue;
+        // // }
+        // trkPhi->Fill( trk1 );//make sure if messAcceptance is on or off
+        // if( trk.eta() > -2.4 && trk.eta() < -2.0 ){
 
-  //         if( trk.charge() == 1 ){
-  //           Qcos[0] += cos( trk1 );
-  //           Qsin[0] += sin( trk1 );
-  //           Qcounts[0]++;
-  //         }
-  //       }
-  //       else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
-  //          if( trk.charge() == 1 ){
-  //             Qcos[1] += cos( trk2 );
-  //             Qsin[1] += sin( trk2 );
-  //             Qcounts[1]++;   
-  //          }
-  //       }
-  //       else {continue;}
-  // }
+        //   if( trk.charge() == 1 ){
+        //     Qcos[0] += cos( trk1 );
+        //     Qsin[0] += sin( trk1 );
+        //     Qcounts[0]++;
+        //   }
+        // }
+        // else if( trk.eta() > 2.0 && trk.eta() < 2.4 ){
+        //    if( trk.charge() == 1 ){
+        //       Qcos[1] += cos( trk2 );
+        //       Qsin[1] += sin( trk2 );
+        //       Qcounts[1]++;   
+        //    }
+        // }
+        // else {continue;}
+  }
 
   //   for(unsigned i = 0; i < towers->size(); ++i){
 
@@ -517,7 +517,7 @@ ThreePointCorrelatorTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   //       }
   // }
   
-  //Ntrk->Fill(nTracks);
+  Ntrk->Fill(nTracks);
 
   XY_real = get2Real(Qcos[0], Qcos[1], Qsin[0], Qsin[1]);
   XY_imag = get2Imag(Qcos[0], Qcos[1], Qsin[0], Qsin[1]); 
