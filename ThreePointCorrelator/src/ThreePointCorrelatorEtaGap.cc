@@ -472,12 +472,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
 
-          if( deta == 1 ) count++;
-
           for(int sign = 0; sign < 2; sign++ ){
             
             if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0 ) continue; //USE HF plus first
 
+            if( deta == 1 ) count++;
             double Q_real = get3RealDup(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[0][0]/ETT[0], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[0][1]/ETT[0]);
             QvsdEta[deta][sign]->Fill( Q_real );  
 
