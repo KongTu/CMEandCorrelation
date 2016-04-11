@@ -450,13 +450,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           
             Q3[0][0] += cos( -2*caloPhi );
             Q3[0][1] += sin( -2*caloPhi );
-            ETT[0] ++;
+            ETT[0]++;
         }
         else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
 
             Q3[1][0] += cos( -2*caloPhi );
             Q3[1][1] += sin( -2*caloPhi );
-            ETT[1] ++;
+            ETT[1]++;
 
         }
         else{continue;}
@@ -474,7 +474,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
           for(int sign = 0; sign < 2; sign++ ){
             
-            if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0 ) continue; //USE HF plus first
+            //if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0 ) continue; //USE HF plus first
 
             if( deta == 1 ) count++;
             double Q_real = get3RealDup(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[0][0]/ETT[0], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[0][1]/ETT[0]);
