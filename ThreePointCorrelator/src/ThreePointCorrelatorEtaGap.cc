@@ -345,7 +345,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   }
 
-  const int binSize_ = etaBins_.size() - 1 ;
+  const int NetaBins = etaBins_.size() - 1 ;
+  const int NdEtaBins = dEtaBins_.size() - 1;
+
 
 // initialize Qcos and Qsin
 
@@ -353,10 +355,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double QsinTRK = 0.;
   int QcountsTrk = 0;
 
-  double Q1[binSize_][2][2];
-  int Q1_count[binSize_][2];
+  double Q1[NetaBins][2][2];
+  int Q1_count[NetaBins][2];
 
-  for(int i = 0; i < binSize_; i++){
+  for(int i = 0; i < NetaBins; i++){
     for(int j = 0; j < 2; j++){
       Q1_count[i][j] = 0;
       for(int k = 0; k < 2; k++){
@@ -395,7 +397,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QsinTRK += sin( 2*trk.phi() );
         QcountsTrk++;
 
-        for(int eta = 0; eta < binSize_; eta++){
+        for(int eta = 0; eta < NetaBins; eta++){
           if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
 
             if( trk.charge() == 1){
@@ -458,14 +460,14 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         else{continue;}
   }
 
-  for(int ieta = 0; ieta < binSize_; ieta++){
-    for(int jeta = 0; jeta < binSize_; jeta++){
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+    for(int jeta = 0; jeta < NetaBins; jeta++){
     
       if( ieta == jeta ) continue;
 
       double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
 
-      for(int deta = 0; deta < bins; deta++){
+      for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1] ){
           for(int sign = 0; sign < 2; sign++ ){
             if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0.0 ) continue; //USE HF plus first
@@ -545,7 +547,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
-  const int bins = dEtaBins_.size() - 1;
+  const int NdEtaBins = dEtaBins_.size() - 1;
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
@@ -558,7 +560,7 @@ ThreePointCorrelatorEtaGap::beginJob()
       }
   }
 
-  for(int deta = 0; deta < bins; deta++){
+  for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 2; sign++){
       
       QvsdEta[deta][sign] = fs->make<TH1D>(Form("QvsdEta_%d_%d",deta,sign), "", 20000,-1.0,1.0);
