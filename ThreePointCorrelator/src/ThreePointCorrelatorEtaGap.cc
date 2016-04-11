@@ -344,17 +344,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   const int binSize_ = etaBins_.size() - 1 ;
 
 // initialize Qcos and Qsin
-  double Qcos[binSize_][2];
-  double Qsin[binSize_][2];
-  int Qcounts[binSize_][2];
-  for(int eta = 0; eta < binSize_; eta++){
-    for(int sign = 0; sign < 2; sign++){
-
-      Qcounts[eta][sign] = 0;
-      Qcos[eta][sign] = 0.;
-      Qsin[eta][sign] = 0.;
-    }
-  }
 
   double QcosTRK = 0.;
   double QsinTRK = 0.;
@@ -490,7 +479,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   double dEtaBinsArray[48];
   for(int eta = 0; eta < temp; eta++){
 
-    dEtaBinsArray[eta] = dEtaBins_[eta] - 0.0001;
+    //dEtaBinsArray[eta] = dEtaBins_[eta] - 0.0001;
   }
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
