@@ -432,7 +432,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
-        double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+        //double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         if( messAcceptance_ ){ 
           if( caloPhi < -1.5 ) continue;
         }
@@ -442,15 +442,15 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if( reverseBeam_ ) caloEta = -hit.eta();
         if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
           
-            Q3[0][0] += w*cos( -2*caloPhi );
-            Q3[0][1] += w*sin( -2*caloPhi );
-            ETT[0] += w;
+            Q3[0][0] += cos( -2*caloPhi );
+            Q3[0][1] += sin( -2*caloPhi );
+            ETT[0] ++;
         }
         else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
 
-            Q3[1][0] += w*cos( -2*caloPhi );
-            Q3[1][1] += w*sin( -2*caloPhi );
-            ETT[1] += w;
+            Q3[1][0] += cos( -2*caloPhi );
+            Q3[1][1] += sin( -2*caloPhi );
+            ETT[1] ++;
 
         }
         else{continue;}
@@ -465,6 +465,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1] ){
+          
+          if( deta == 0 ) continue;
           for(int sign = 0; sign < 2; sign++ ){
             if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0.0 ) continue; //USE HF plus first
 
