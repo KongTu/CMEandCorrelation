@@ -349,7 +349,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   const int NdEtaBins = dEtaBins_.size() - 1;
   double dEtaBinsArray[48];
 
-  for(int i = 0; i < dEtaBins_.size(); i++){
+  for(unsigned i = 0; i < dEtaBins_.size(); i++){
 
     dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
   }
