@@ -416,7 +416,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }     
   } 
 
-  //if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
+  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
   
   Ntrk->Fill(nTracks);
 
