@@ -462,7 +462,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         else{continue;}
   }
 
-  int count = 0;
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
     
@@ -474,9 +473,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
           for(int sign = 0; sign < 2; sign++ ){
             
-            //if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0 ) continue; //USE HF plus first
+            if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0 ) continue; //USE HF plus first
 
-            if( deta == 1 ) count++;
             double Q_real = get3RealDup(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[0][0]/ETT[0], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[0][1]/ETT[0]);
             QvsdEta[deta][sign]->Fill( Q_real );  
 
@@ -515,8 +513,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       }
     }
   }
-
-  cout << "count when delta eta  = 0.1: " << count << endl;
 
 /*
 calculate v2 using 3 sub-events method:
