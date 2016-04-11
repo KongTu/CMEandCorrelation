@@ -404,8 +404,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 //loop over calo towers (HF)
 
-  double Q3[2][2] = 0.;
-  double ETT[2] = 0.;
+  double Q3[2][2];
+  double ETT[2];
 
   for(unsigned i = 0; i < towers->size(); ++i){
 
@@ -442,7 +442,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     
       if( ieta == jeta ) continue;
 
-      double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
+      //double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
 
     }
   }
@@ -483,7 +483,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
-  const int bins = dEtaBins_.size() - 1;
+  //const int bins = dEtaBins_.size() - 1;
   const int temp = dEtaBins_.size();
   //const int NbinsEta = etaBins_.size() - 1;
 
@@ -500,7 +500,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   for(int i = 0; i < 2; i++ ){
       for(int j = 0; j < 2; j++){
 
-        aveQ3[j] = fs->make<TH1D>(Form("aveQ3_%d_%d",i, j), ";aveQ3", 20000, -1.0, 1.0);
+        aveQ3[i][j] = fs->make<TH1D>(Form("aveQ3_%d_%d",i, j), ";aveQ3", 20000, -1.0, 1.0);
       }
   }
 
