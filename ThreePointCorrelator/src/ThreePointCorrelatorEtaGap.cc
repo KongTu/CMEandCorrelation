@@ -396,6 +396,14 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double Q3[2][2];
   double ETT[2];
 
+  for(int i = 0; i < 2; i++){\
+    ETT[i] = 0.;
+    for(int j = 0; j < 2; j++){
+
+      Q3[i][j] = 0.;
+    }
+  }
+
   for(unsigned i = 0; i < towers->size(); ++i){
 
         const CaloTower & hit= (*towers)[i];
