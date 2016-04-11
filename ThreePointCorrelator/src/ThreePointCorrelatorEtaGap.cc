@@ -440,7 +440,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
         if( reverseBeam_ ) caloEta = -hit.eta();
-        if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
+        if( fabs(caloEta) < etaHighHF_ && fabs(caloEta) > etaLowHF_ ){
           
             Q3[0][0] += cos( -2*caloPhi );
             Q3[0][1] += sin( -2*caloPhi );
