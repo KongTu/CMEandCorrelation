@@ -347,6 +347,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   const int NetaBins = etaBins_.size() - 1 ;
   const int NdEtaBins = dEtaBins_.size() - 1;
+  double dEtaBinsArray[48];
+
+  for(int i = 0; i < dEtaBins_.size(); i++){
+
+    dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
+  }
 
 
 // initialize Qcos and Qsin
@@ -464,7 +470,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
 
       for(int deta = 0; deta < NdEtaBins; deta++){
-        if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1] ){
+        if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
           
           for(int sign = 0; sign < 2; sign++ ){
             
