@@ -472,15 +472,15 @@ ThreePointCorrelatorEtaGap::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
-  //const int bins = dEtaBins_.size() - 1;
-  const int temp = dEtaBins_.size();
-  //const int NbinsEta = etaBins_.size() - 1;
+  // //const int bins = dEtaBins_.size() - 1;
+  // const int temp = dEtaBins_.size();
+  // //const int NbinsEta = etaBins_.size() - 1;
 
-  double dEtaBinsArray[48];
-  for(int eta = 0; eta < temp; eta++){
+  // double dEtaBinsArray[48];
+  // for(int eta = 0; eta < temp; eta++){
 
-    //dEtaBinsArray[eta] = dEtaBins_[eta] - 0.0001;
-  }
+  //   dEtaBinsArray[eta] = dEtaBins_[eta] - 0.0001;
+  // }
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
