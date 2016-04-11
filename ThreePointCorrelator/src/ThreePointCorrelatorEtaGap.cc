@@ -432,7 +432,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
-  const int HFside = 2;
+  int HFside = 2;
   if( useCentrality_ ) HFside = 1;
 
   for(unsigned i = 0; i < towers->size(); ++i){
@@ -589,7 +589,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
   const int NdEtaBins = dEtaBins_.size() - 1;
-  const int HFside = 2;
+  int HFside = 2;
   if( useCentrality_ ) HFside = 1;
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
