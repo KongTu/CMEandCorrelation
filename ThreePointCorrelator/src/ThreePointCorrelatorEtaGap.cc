@@ -538,7 +538,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   edm::Service<TFileService> fs;
     
-  TH3D::SetDefaultSumw2();
+  TH1D::SetDefaultSumw2();
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
