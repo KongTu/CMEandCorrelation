@@ -462,16 +462,18 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         else{continue;}
   }
 
-
+  int count = 0;
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
     
       if( ieta == jeta ) continue;
-      double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
+      double deltaEta = fabs(etaBins_[ieta] - etaBins_[jeta]);
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
-          
+
+          if( deta == 1 ) count++;
+
           for(int sign = 0; sign < 2; sign++ ){
             
             if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0 ) continue; //USE HF plus first
@@ -514,6 +516,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       }
     }
   }
+
+  cout << "count when delta eta  = 0.1: " << count << endl;
 
 /*
 calculate v2 using 3 sub-events method:
