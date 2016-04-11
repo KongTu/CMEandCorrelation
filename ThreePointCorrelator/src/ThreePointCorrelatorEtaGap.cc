@@ -432,6 +432,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
+  const int HFside = 2;
+  if( useCentrality_ ) HFside = 1;
+
   for(unsigned i = 0; i < towers->size(); ++i){
 
         const CaloTower & hit= (*towers)[i];
@@ -468,7 +471,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
 
-          for(int HF = 0; HF < 2; HF++){
+          for(int HF = 0; HF < HFside; HF++){
             for(int sign = 0; sign < 2; sign++ ){
               
               if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[HF] == 0 ) continue; //USE HF plus first
@@ -586,6 +589,8 @@ ThreePointCorrelatorEtaGap::beginJob()
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
   const int NdEtaBins = dEtaBins_.size() - 1;
+  const int HFside = 2;
+  if( useCentrality_ ) HFside = 1;
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
@@ -600,7 +605,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
-      for(int HF = 0; HF < 2; HF++){       
+      for(int HF = 0; HF < HFside; HF++){       
         QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
         
         XY_real[deta][sign][HF] = fs->make<TH1D>(Form("XY_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
