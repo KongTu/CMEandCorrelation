@@ -184,6 +184,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* Ntrk;
       TH1D* trkPhi;
       TH1D* hfPhi;
+      TH1D* cbinHist;
 
 //v2
       TH1D* c2_ab;
@@ -194,10 +195,13 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
 //end v2
 
-
-
-      TH1D* testDeta;
-      TH1D* cbinHist;
+      TH1D* QvsdEta[48][3];
+      TH1D* XY_real[48][3];TH1D* XY_imag[48][3];
+      TH1D* XZ_real[48][3];TH1D* XZ_imag[48][3];
+      TH1D* YZ_real[48][3];TH1D* YZ_imag[48][3];
+      TH1D* X_real[48][3]; TH1D* X_imag[48][3];
+      TH1D* Y_real[48][3]; TH1D* Y_imag[48][3];
+      TH1D* Z_real[48][3]; TH1D* Z_imag[48][3];
 
       int Nmin_;
       int Nmax_;
@@ -349,6 +353,18 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double QsinTRK = 0.;
   int QcountsTrk = 0;
 
+  double Q1[binSize_][2][2];
+  int Q1_count[binSize_][2];
+
+  for(int i = 0; i < binSize_; i++){
+    for(int j = 0; j < 2; j++){
+      Q1_count[i][j] = 0;
+      for(int k = 0; k < 2; k++){
+        Q1[i][j][k] = 0.0;
+      }
+    }
+  }
+
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
 
@@ -382,7 +398,16 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         for(int eta = 0; eta < binSize_; eta++){
           if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
 
-
+            if( trk.charge() == 1){
+              Q1[eta][0][0] += cos( trk.phi() );
+              Q1[eta][0][1] += sin( trk.phi() );
+              Q1_count[eta][0]++;
+            }
+            else if( trk.charge() == -1){
+              Q1[eta][1][0] += cos( trk.phi() );
+              Q1[eta][1][1] += sin( trk.phi() );
+              Q1_count[eta][1]++;
+            }
           }
         }     
   } 
@@ -396,10 +421,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double Q3[2][2];
   double ETT[2];
 
-  for(int i = 0; i < 2; i++){\
+  for(int i = 0; i < 2; i++){
     ETT[i] = 0.;
     for(int j = 0; j < 2; j++){
-
       Q3[i][j] = 0.;
     }
   }
@@ -439,8 +463,49 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     
       if( ieta == jeta ) continue;
 
-      //double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
+      double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
 
+      for(int deta = 0; deta < bins; deta++){
+        if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1] ){
+          for(int sign = 0; sign < 2; sign++ ){
+            if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0.0 ) continue; //USE HF plus first
+
+            double Q_real = get3RealDup(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[0][0]/ETT[0], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[0][1]/ETT[0]);
+            QvsdEta[deta][sign]->Fill( Q_real );  
+
+            double XY_real_temp = get2RealDup(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
+            double XY_imag_temp = get2ImagDup(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
+            
+            double XZ_real_temp = get2RealDup(Q1[ieta][sign][0], Q3[0][0], Q1[ieta][sign][1], Q3[0][1]);
+            double XZ_imag_temp = get2ImagDup(Q1[ieta][sign][0], Q3[0][0], Q1[ieta][sign][1], Q3[0][1]);
+
+            double YZ_real_temp = get2RealDup(Q1[jeta][sign][0], Q3[0][0], Q1[jeta][sign][1], Q3[0][1]);
+            double YZ_imag_temp = get2ImagDup(Q1[jeta][sign][0], Q3[0][0], Q1[jeta][sign][1], Q3[0][1]);
+
+            XY_real[deta][sign]->Fill( XY_real_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
+            XY_imag[deta][sign]->Fill( XY_imag_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
+            
+            XZ_real[deta][sign]->Fill( XZ_real_temp/(Q1_count[ieta][sign]*ETT[0]), Q1_count[ieta][sign]*ETT[0] );
+            XZ_imag[deta][sign]->Fill( XZ_imag_temp/(Q1_count[ieta][sign]*ETT[0]), Q1_count[ieta][sign]*ETT[0] );
+
+            YZ_real[deta][sign]->Fill( YZ_real_temp/(Q1_count[jeta][sign]*ETT[0]), Q1_count[jeta][sign]*ETT[0] );
+            YZ_imag[deta][sign]->Fill( YZ_imag_temp/(Q1_count[jeta][sign]*ETT[0]), Q1_count[jeta][sign]*ETT[0] );
+
+            double X_real_temp = Q1[ieta][sign][0]; double X_imag_temp = Q1[ieta][sign][1]; 
+            double Y_real_temp = Q1[jeta][sign][0]; double Y_imag_temp = Q1[jeta][sign][1]; 
+            double Z_real_temp = Q3[0][0];          double Z_imag_temp = Q3[0][1]; 
+
+            X_real[deta][sign]->Fill( X_real_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
+            Y_real[deta][sign]->Fill( Y_real_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
+            Z_real[deta][sign]->Fill( Z_real_temp/ETT[0], ETT[0]);  
+          
+            X_imag[deta][sign]->Fill( X_imag_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
+            Y_imag[deta][sign]->Fill( Y_imag_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
+            Z_imag[deta][sign]->Fill( Z_imag_temp/ETT[0], ETT[0]);
+
+          }
+        }
+      }
     }
   }
 
@@ -480,15 +545,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
-  // //const int bins = dEtaBins_.size() - 1;
-  // const int temp = dEtaBins_.size();
-  // //const int NbinsEta = etaBins_.size() - 1;
-
-  // double dEtaBinsArray[48];
-  // for(int eta = 0; eta < temp; eta++){
-
-  //   dEtaBinsArray[eta] = dEtaBins_[eta] - 0.0001;
-  // }
+  const int bins = dEtaBins_.size() - 1;
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
@@ -501,10 +558,29 @@ ThreePointCorrelatorEtaGap::beginJob()
       }
   }
 
+  for(int deta = 0; deta < bins; deta++){
+    for(int sign = 0; sign < 2; sign++){
+      
+      QvsdEta[deta][sign] = fs->make<TH1D>(Form("QvsdEta_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      
+      XY_real[deta][sign] = fs->make<TH1D>(Form("XY_real_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      XZ_real[deta][sign] = fs->make<TH1D>(Form("XZ_real_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      YZ_real[deta][sign] = fs->make<TH1D>(Form("YZ_real_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      
+      XY_imag[deta][sign] = fs->make<TH1D>(Form("XY_imag_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      XZ_imag[deta][sign] = fs->make<TH1D>(Form("XZ_imag_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      YZ_imag[deta][sign] = fs->make<TH1D>(Form("YZ_imag_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      
+      X_real[deta][sign] = fs->make<TH1D>(Form("X_real_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      Y_real[deta][sign] = fs->make<TH1D>(Form("Y_real_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      Z_real[deta][sign] = fs->make<TH1D>(Form("Z_real_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      
+      X_imag[deta][sign] = fs->make<TH1D>(Form("X_imag_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      Y_imag[deta][sign] = fs->make<TH1D>(Form("Y_imag_%d_%d",deta,sign), "", 20000,-1.0,1.0);
+      Z_imag[deta][sign] = fs->make<TH1D>(Form("Z_imag_%d_%d",deta,sign), "", 20000,-1.0,1.0);
 
-
-
-
+    }
+  }
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
