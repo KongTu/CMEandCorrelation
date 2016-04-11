@@ -383,7 +383,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-        //if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
+        if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
         if( messAcceptance_ ) { if( trk.phi() < -1.5 ) continue;}
         nTracks++;  
 
@@ -410,17 +410,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }     
   } 
 
-  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
+  //if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
   
   Ntrk->Fill(nTracks);
 
 //loop over calo towers (HF)
 
   double Q3[2][2];
-  double ETT[2];
+  int ETT[2];
 
   for(int i = 0; i < 2; i++){
-    ETT[i] = 0.;
+    ETT[i] = 0;
     for(int j = 0; j < 2; j++){
       Q3[i][j] = 0.;
     }
@@ -440,7 +440,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
 
         if( reverseBeam_ ) caloEta = -hit.eta();
-        if( fabs(caloEta) < etaHighHF_ && fabs(caloEta) > etaLowHF_ ){
+        if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
           
             Q3[0][0] += cos( -2*caloPhi );
             Q3[0][1] += sin( -2*caloPhi );
@@ -456,19 +456,19 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         else{continue;}
   }
 
+
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
     
       if( ieta == jeta ) continue;
-
       double deltaEta = fabs(etaBins_[jeta] - etaBins_[ieta]);
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1] ){
           
-          if( deta == 0 ) continue;
           for(int sign = 0; sign < 2; sign++ ){
-            if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0.0 ) continue; //USE HF plus first
+            
+            if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[0] == 0 ) continue; //USE HF plus first
 
             double Q_real = get3RealDup(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[0][0]/ETT[0], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[0][1]/ETT[0]);
             QvsdEta[deta][sign]->Fill( Q_real );  
