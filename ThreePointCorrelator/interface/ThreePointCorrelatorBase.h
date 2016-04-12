@@ -238,6 +238,7 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       TH1D* c2_ab;
       TH1D* c2_ac;
       TH1D* c2_cb;
+      TH1D* cbinHist;
     
       int Nmin_;
       int Nmax_;

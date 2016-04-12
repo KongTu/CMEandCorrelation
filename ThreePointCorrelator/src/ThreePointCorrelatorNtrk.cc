@@ -162,12 +162,6 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
 
           Qcounts[0]++;
 
-          TRKcosPlusSum->Fill( cos( trk.phi() ) );
-          TRKsinPlusSum->Fill( sin( trk.phi() ) );
-
-          TRK2cosPlusSum->Fill( cos( 2*trk.phi() ) );
-          TRK2sinPlusSum->Fill( sin( 2*trk.phi() ) );
-
         }
         else if( trk.charge() == -1 ){
 
@@ -178,12 +172,6 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
           Q2sin[1] += sin( 2*trk.phi() );
 
           Qcounts[1]++;
-
-          TRKcosMinusSum->Fill( cos( trk.phi() ) );
-          TRKsinMinusSum->Fill( sin( trk.phi() ) );
-
-          TRK2cosMinusSum->Fill( cos( 2*trk.phi() ) );
-          TRK2sinMinusSum->Fill( sin( 2*trk.phi() ) );
 
         }
         else{
@@ -230,10 +218,6 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         }
         if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
 
-          HFcosSum[1]->Fill( w*cos( 2*caloPhi ) );
-          HFsinSum[1]->Fill( w*sin( 2*caloPhi ) );
-          weightSum[1]->Fill( w );
-
           HFqVcosMinus = HFqVcosMinus + w*cos( 2*caloPhi );
           HFqVsinMinus = HFqVsinMinus + w*sin( 2*caloPhi );
          
@@ -242,10 +226,6 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
 
         }
         if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
-
-          HFcosSum[0]->Fill( w*cos( 2*caloPhi ) );
-          HFsinSum[0]->Fill( w*sin( 2*caloPhi ) );
-          weightSum[0]->Fill( w );
           
           HFqVcosPlus = HFqVcosPlus + w*cos( 2*caloPhi );
           HFqVsinPlus = HFqVsinPlus + w*sin( 2*caloPhi );
