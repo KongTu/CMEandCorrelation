@@ -287,7 +287,7 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       double offlineptErr_;
       double offlineDCA_;
 
-      std::vector<double> ntrkBins_;
+      std::vector<int> ntrkBins_;
 
 };
 

@@ -57,7 +57,7 @@ ThreePointCorrelatorNtrk::ThreePointCorrelatorNtrk(const edm::ParameterSet& iCon
 
   holesize_ = iConfig.getUntrackedParameter<double>("holesize");
 
-  ntrkBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ntrkBins");
+  ntrkBins_ = iConfig.getUntrackedParameter<std::vector<int>>("ntrkBins");
 
 }
 
