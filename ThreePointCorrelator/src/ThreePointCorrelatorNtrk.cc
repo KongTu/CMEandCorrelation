@@ -217,7 +217,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
   }
 
   for(int trk = 0; trk < nNtrkBins; trk++){
-    for( nTracks >= ntrkBins_[trk] && nTracks < ntrkBins_[trk+1] ){
+    if( nTracks >= ntrkBins_[trk] && nTracks < ntrkBins_[trk+1] ){
         for(int HF = 0; HF < HFside; HF++){
           for(int sign = 0; sign < 2; sign++){
             if( Q1_count[sign] == 0 || ETT[HF] == 0 ) continue;
