@@ -211,6 +211,51 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
 };
 
+class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
+   public:
+      explicit ThreePointCorrelatorNtrk(const edm::ParameterSet&);
+      ~ThreePointCorrelatorNtrk();
+
+      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+
+   private:
+      virtual void beginJob() ;
+      virtual void analyze(const edm::Event&, const edm::EventSetup&);
+      virtual void endJob() ;
+
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      virtual void endRun(edm::Run const&, edm::EventSetup const&);
+      virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+
+      // ----------member data ---------------------------
+      edm::InputTag trackSrc_;
+      edm::InputTag towerSrc_;
+      std::string vertexSrc_;
+
+      TH1D* Ntrk;
+      TH1D* c2_ab;
+      TH1D* c2_ac;
+      TH1D* c2_cb;
+    
+      int Nmin_;
+      int Nmax_;
+
+      double etaLowHF_;
+      double etaHighHF_;
+      double vzLow_;
+      double vzHigh_;
+
+      double offlineptErr_;
+      double offlineDCA_;
+
+      bool useCentrality_;
+
+      std::vector<double> ntrkBins_;
+
+};
+
 double get3Real(double R1, double R2, double R3, double I1, double I2, double I3){
 
   double t1 = R1*R2*R3;
