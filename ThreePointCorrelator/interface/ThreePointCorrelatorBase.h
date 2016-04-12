@@ -163,14 +163,14 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       virtual void endRun(edm::Run const&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
-      virtual void get3Real(double R1, double R2, double R3, double I1, double I2, double I3);
-      virtual void get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
-      virtual void get3Imag(double R1, double R2, double R3, double I1, double I2, double I3);
-      virtual void get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
-      virtual void get2Real( double R1, double R2, double I1, double I2);
-      virtual void get2RealOverlap( double R1, double R2, double I1, double I2);
-      virtual void get2ImagOverlap( double R1, double R2, double I1, double I2);
-      
+      virtual double get3Real(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual double get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual double get3Imag(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual double get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual double get2Real( double R1, double R2, double I1, double I2);
+      virtual double get2RealOverlap( double R1, double R2, double I1, double I2);
+      virtual double get2ImagOverlap( double R1, double R2, double I1, double I2);
+
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
       edm::InputTag towerSrc_;
@@ -235,13 +235,13 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       virtual void endRun(edm::Run const&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
-      virtual void get3Real(double R1, double R2, double R3, double I1, double I2, double I3);
-      virtual void get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
-      virtual void get3Imag(double R1, double R2, double R3, double I1, double I2, double I3);
-      virtual void get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
-      virtual void get2Real( double R1, double R2, double I1, double I2);
-      virtual void get2RealOverlap( double R1, double R2, double I1, double I2);
-      virtual void get2ImagOverlap( double R1, double R2, double I1, double I2);
+      virtual double get3Real(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual double get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual double get3Imag(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual double get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual double get2Real( double R1, double R2, double I1, double I2);
+      virtual double get2RealOverlap( double R1, double R2, double I1, double I2);
+      virtual double get2ImagOverlap( double R1, double R2, double I1, double I2);
 
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
