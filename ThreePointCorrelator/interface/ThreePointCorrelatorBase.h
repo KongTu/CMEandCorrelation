@@ -163,7 +163,14 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       virtual void endRun(edm::Run const&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
-
+      virtual void get3Real(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual void get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual void get3Imag(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual void get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual void get2Real( double R1, double R2, double I1, double I2);
+      virtual void get2RealOverlap( double R1, double R2, double I1, double I2);
+      virtual void get2ImagOverlap( double R1, double R2, double I1, double I2);
+      
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
       edm::InputTag towerSrc_;
@@ -228,6 +235,13 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       virtual void endRun(edm::Run const&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual void get3Real(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual void get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual void get3Imag(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual void get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3);
+      virtual void get2Real( double R1, double R2, double I1, double I2);
+      virtual void get2RealOverlap( double R1, double R2, double I1, double I2);
+      virtual void get2ImagOverlap( double R1, double R2, double I1, double I2);
 
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
@@ -256,66 +270,5 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       std::vector<double> ntrkBins_;
 
 };
-
-double get3Real(double R1, double R2, double R3, double I1, double I2, double I3){
-
-  double t1 = R1*R2*R3;
-  double t2 = R1*I2*I3;
-  double t3 = R2*I1*I3;
-  double t4 = I1*I2*R3;
-
-  return t1-t2-t3-t4;
-
-}
-double get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
-
-      double t1 = (R1*R1 - I1*I1 - R2)*R3;
-      double t2 = (2*R1*I1-I2)*I3;
-      double N = N1*(N1-1)*N3;
-
-      return (t1-t2)/N;
-}
-double get3Imag(double R1, double R2, double R3, double I1, double I2, double I3){
-
-  double t1 = R1*R2*I3;
-  double t2 = R1*R3*I2;
-  double t3 = R2*R3*I1;
-  double t4 = I1*I2*I3;
-
-  return t1+t2+t3-t4;
-
-}
-double get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
-
-      double t1 = (R1*R1 - I1*I1 - R2)*I3;
-      double t2 = (2*R1*I1-I2)*R3;
-      double N = N1*(N1-1)*N3;
-
-      return (t1+t2)/N;
-}
-
-double get2Real( double R1, double R2, double I1, double I2){
-
-      double real = R1*R2 - I1*I2;
-      return real;
-
-}
-double get2RealOverlap( double R1, double R2, double I1, double I2){
-
-      double real = R1*R1 - I1*I1 - R2;
-      return real;
-
-}
-double get2Imag( double R1, double R2, double I1, double I2){
-
-      double imag = R1*I2 + R2*I1;
-      return imag;
-}
-double get2ImagOverlap( double R1, double R2, double I1, double I2){
-
-      double imag = (2*R1*I1-I2);
-      return imag;
-} 
-
 
 #endif
