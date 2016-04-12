@@ -58,43 +58,6 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 
 }
 
-//
-// member functions
-//
-double get3RealDup(double R1, double R2, double R3, double I1, double I2, double I3){
-
-  double t1 = R1*R2*R3;
-  double t2 = R1*I2*I3;
-  double t3 = R2*I1*I3;
-  double t4 = I1*I2*R3;
-
-  return t1-t2-t3-t4;
-
-}
-double get3ImagDup(double R1, double R2, double R3, double I1, double I2, double I3){
-
-  double t1 = R1*R2*I3;
-  double t2 = R1*R3*I2;
-  double t3 = R2*R3*I1;
-  double t4 = I1*I2*I3;
-
-  return t1+t2+t3-t4;
-
-}
-double get2RealDup(double R1, double R2, double I1, double I2){
-
-  double t1 = R1*R2;
-  double t2 = I1*I2;
-
-  return t1-t2;
-}
-double get2ImagDup(double R1, double R2, double I1, double I2){
-
-  double t1 = R1*I2;
-  double t2 = R2*I1;
-
-  return t1+t2;
-}    
 // ------------ method called for each event  ------------
 void
 ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -261,17 +224,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               
               if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[HF] == 0 ) continue; //USE HF plus first
 
-              double Q_real = get3RealDup(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[HF][0]/ETT[HF], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[HF][1]/ETT[HF]);
+              double Q_real = get3Real(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[HF][0]/ETT[HF], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][sign][HF]->Fill( Q_real );  
 
-              double XY_real_temp = get2RealDup(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
-              double XY_imag_temp = get2ImagDup(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
+              double XY_real_temp = get2Real(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
+              double XY_imag_temp = get2Imag(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
               
-              double XZ_real_temp = get2RealDup(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
-              double XZ_imag_temp = get2ImagDup(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
+              double XZ_real_temp = get2Real(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
+              double XZ_imag_temp = get2Imag(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
 
-              double YZ_real_temp = get2RealDup(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
-              double YZ_imag_temp = get2ImagDup(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
+              double YZ_real_temp = get2Real(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
+              double YZ_imag_temp = get2Imag(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
 
               XY_real[deta][sign][HF]->Fill( XY_real_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
               XY_imag[deta][sign][HF]->Fill( XY_imag_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
@@ -298,17 +261,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
             if( Q1_count[ieta][0] == 0 || Q1_count[jeta][1] == 0 || ETT[HF] == 0 ) continue;
 
-              double Q_real = get3RealDup(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
+              double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real );  
 
-              double XY_real_temp = get2RealDup(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
-              double XY_imag_temp = get2ImagDup(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+              double XY_real_temp = get2Real(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+              double XY_imag_temp = get2Imag(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
               
-              double XZ_real_temp = get2RealDup(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
-              double XZ_imag_temp = get2ImagDup(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+              double XZ_real_temp = get2Real(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+              double XZ_imag_temp = get2Imag(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
 
-              double YZ_real_temp = get2RealDup(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
-              double YZ_imag_temp = get2ImagDup(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              double YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              double YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
 
               XY_real[deta][2][HF]->Fill( XY_real_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
               XY_imag[deta][2][HF]->Fill( XY_imag_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
@@ -350,9 +313,9 @@ calculate v2 using 3 sub-events method:
   QcosTRK = QcosTRK/QcountsTrk;
   QsinTRK = QsinTRK/QcountsTrk;
 
-  double QaQc = get2RealDup(Q3[1][0]/ETT[1], QcosTRK/QcountsTrk, Q3[1][1]/ETT[1], QsinTRK/QcountsTrk );
-  double QaQb = get2RealDup(Q3[1][0]/ETT[1], Q3[0][0]/ETT[0], Q3[1][1]/ETT[1], -Q3[0][1]/ETT[0]);//an extra minus sign 
-  double QcQb = get2RealDup(QcosTRK/QcountsTrk, Q3[0][0]/ETT[0], QsinTRK/QcountsTrk, Q3[0][1]/ETT[0]);
+  double QaQc = get2Real(Q3[1][0]/ETT[1], QcosTRK/QcountsTrk, Q3[1][1]/ETT[1], QsinTRK/QcountsTrk );
+  double QaQb = get2Real(Q3[1][0]/ETT[1], Q3[0][0]/ETT[0], Q3[1][1]/ETT[1], -Q3[0][1]/ETT[0]);//an extra minus sign 
+  double QcQb = get2Real(QcosTRK/QcountsTrk, Q3[0][0]/ETT[0], QsinTRK/QcountsTrk, Q3[0][1]/ETT[0]);
 
   c2_ac->Fill( QaQc );
   c2_cb->Fill( QcQb  );
