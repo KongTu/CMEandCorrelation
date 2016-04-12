@@ -17,6 +17,7 @@
 //
 //
 
+#include "CMEandCorrelation/ThreePointCorrelator/interface/ThreePointCorrelatorBase.h"
 
 
 //
