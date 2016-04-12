@@ -211,6 +211,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       double holesize_;
 
       bool useCentrality_;
+      bool useBothSide_;
       bool reverseBeam_;
       bool messAcceptance_;
 
@@ -251,11 +252,24 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       std::string vertexSrc_;
 
       TH1D* Ntrk;
+      TH1D* trkPhi;
+      TH1D* hfPhi;
+      TH1D* cbinHist;
+
       TH1D* c2_ab;
       TH1D* c2_ac;
       TH1D* c2_cb;
-      TH1D* cbinHist;
     
+      TH1D* aveQ3[2][2];//calculate the correction on v2
+      
+      TH1D* QvsNtrk[48][3][2];
+      TH1D* XY_real[48][3][2];TH1D* XY_imag[48][3][2];
+      TH1D* XZ_real[48][3][2];TH1D* XZ_imag[48][3][2];
+      TH1D* YZ_real[48][3][2];TH1D* YZ_imag[48][3][2];
+      TH1D* X_real[48][3][2]; TH1D* X_imag[48][3][2];
+      TH1D* Y_real[48][3][2]; TH1D* Y_imag[48][3][2];
+      TH1D* Z_real[48][3][2]; TH1D* Z_imag[48][3][2];
+      
       int Nmin_;
       int Nmax_;
 
@@ -263,11 +277,15 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       double etaHighHF_;
       double vzLow_;
       double vzHigh_;
+      double holesize_;
+
+      bool useCentrality_;
+      bool useBothSide_;
+      bool reverseBeam_;
+      bool messAcceptance_;
 
       double offlineptErr_;
       double offlineDCA_;
-
-      bool useCentrality_;
 
       std::vector<double> ntrkBins_;
 
