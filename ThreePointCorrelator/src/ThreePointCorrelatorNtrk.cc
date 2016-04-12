@@ -276,12 +276,12 @@ ThreePointCorrelatorNtrk::beginJob()
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
 
-  double ntrkBinsFill[100];
-  const int nNtrkBins = ntrkBins_.size() - 1;
-  for(unsigned num = 0; num < ntrkBins_.size(); num++ ){
+  // double ntrkBinsFill[100];
+  // const int nNtrkBins = ntrkBins_.size() - 1;
+  // for(unsigned num = 0; num < ntrkBins_.size(); num++ ){
 
-    ntrkBinsFill[num] = ntrkBins_[num];
-  }
+  //   ntrkBinsFill[num] = ntrkBins_[num];
+  // }
 
 //HF:
 
