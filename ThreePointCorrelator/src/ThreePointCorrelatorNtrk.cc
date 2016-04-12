@@ -252,16 +252,16 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
   QcosTRK = QcosTRK/QcountsTrk;
   QsinTRK = QsinTRK/QcountsTrk;
 
-  double QaQc = get2RealduP(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
-  double QaQb = get2RealduP(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
-  double QcQb = get2RealduP(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
+  double QaQc = get2Real(HFqVcosMinus, QcosTRK, HFqVsinMinus, QsinTRK );
+  double QaQb = get2Real(HFqVcosMinus, HFqVcosPlus, HFqVsinMinus, HFqVsinPlus);
+  double QcQb = get2Real(QcosTRK, HFqVcosPlus, QsinTRK, HFqVsinPlus);
 
   c2_ac->Fill( QaQc );
   c2_cb->Fill( QcQb  );
   c2_ab->Fill( QaQb );
 
 
-  }
+
 
 
 }
