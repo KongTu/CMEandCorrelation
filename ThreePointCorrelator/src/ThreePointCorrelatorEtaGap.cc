@@ -31,6 +31,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
   
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
+  useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");  
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
 
@@ -181,7 +182,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   }
 
   int HFside = 2;
-  if( useCentrality_ ) HFside = 1;
+  if( useBothSide_ ) HFside = 1;
 
   for(unsigned i = 0; i < towers->size(); ++i){
 
@@ -338,7 +339,7 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   const int NdEtaBins = dEtaBins_.size() - 1;
   int HFside = 2;
-  if( useCentrality_ ) HFside = 1;
+  if( useBothSide_ ) HFside = 1;
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);

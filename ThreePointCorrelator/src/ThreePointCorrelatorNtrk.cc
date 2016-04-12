@@ -43,6 +43,7 @@ ThreePointCorrelatorNtrk::ThreePointCorrelatorNtrk(const edm::ParameterSet& iCon
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
   
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality");
+  useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
 
@@ -129,7 +130,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
   }
 
   int HFside = 2;
-  if( useCentrality_ ) HFside = 1;
+  if( useBothSide_ ) HFside = 1;
 
 //track loop
   int nTracks = 0;
@@ -333,7 +334,7 @@ ThreePointCorrelatorNtrk::beginJob()
   const int nNtrkBins = ntrkBins_.size() - 1;
 
   int HFside = 2;
-  if( useCentrality_ ) HFside = 1;
+  if( useBothSide_ ) HFside = 1;
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
