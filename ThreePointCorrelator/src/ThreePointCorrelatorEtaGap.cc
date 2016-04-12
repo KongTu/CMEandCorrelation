@@ -390,7 +390,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
-        if( messAcceptance_ ) { if( trk.phi() < -1.5 ) continue;}
+        if( messAcceptance_ ) { if( trk.phi() < 0.6 && trk.phi() > 0.0 ) continue;}
         nTracks++;  
 
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
@@ -444,7 +444,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         if( reverseBeam_ ) caloEta = -hit.eta();
-        if( messAcceptance_ ){if( caloPhi < -1.5 ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
+        if( messAcceptance_ ){if( caloPhi < 0.6 && caloPhi > 0.0 ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
         
         if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
           
@@ -606,7 +606,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < HFside; HF++){       
-        QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
         
         XY_real[deta][sign][HF] = fs->make<TH1D>(Form("XY_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
         XZ_real[deta][sign][HF] = fs->make<TH1D>(Form("XZ_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
