@@ -390,7 +390,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
-        if( messAcceptance_ ) { if( trk.phi() < -2.5 ) continue;}
+        if( messAcceptance_ ) { if( trk.phi() < 0.6 && trk.phi() > 0.0 ) continue;}
         nTracks++;  
 
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
@@ -444,7 +444,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         if( reverseBeam_ ) caloEta = -hit.eta();
-        if( messAcceptance_ ){if( caloPhi < -2.5 ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
+        if( messAcceptance_ ){if( caloPhi < 0.6 && caloPhi > 0.0 ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
         
         if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
           
