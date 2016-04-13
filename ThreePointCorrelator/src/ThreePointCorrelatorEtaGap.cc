@@ -232,7 +232,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               if( Q1_count[ieta][sign] == 0.0 || Q1_count[jeta][sign] == 0.0 || ETT[HF] == 0.0 ) continue; //USE HF plus first
 
               double Q_real = get3Real(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[HF][0]/ETT[HF], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[HF][1]/ETT[HF]);
-              QvsdEta[deta][sign][HF]->Fill( Q_real );  
+              QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*Q1_count[jeta][sign]*ETT[HF] );  
 
               double XY_real_temp = get2Real(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
               double XY_imag_temp = get2Imag(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
@@ -269,7 +269,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
             if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
               double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
-              QvsdEta[deta][2][HF]->Fill( Q_real );  
+              QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
 
               double XY_real_temp = get2Real(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
               double XY_imag_temp = get2Imag(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
@@ -311,11 +311,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 calculate v2 using 3 sub-events method:
  */
 
-  aveQ3[0][0]->Fill( Q3[0][0]/ETT[0] );//HF+ cos
-  aveQ3[0][1]->Fill( Q3[0][1]/ETT[0] );//HF+ sin
+  aveQ3[0][0]->Fill( Q3[0][0]/ETT[0], ETT[0] );//HF+ cos
+  aveQ3[0][1]->Fill( Q3[0][1]/ETT[0], ETT[0] );//HF+ sin
   
-  aveQ3[1][0]->Fill( Q3[1][0]/ETT[1] );//HF- cos
-  aveQ3[1][1]->Fill( Q3[1][1]/ETT[1] );//HF- sin
+  aveQ3[1][0]->Fill( Q3[1][0]/ETT[1], ETT[1] );//HF- cos
+  aveQ3[1][1]->Fill( Q3[1][1]/ETT[1], ETT[1] );//HF- sin
 
   QcosTRK = QcosTRK/QcountsTrk;
   QsinTRK = QsinTRK/QcountsTrk;
@@ -324,9 +324,9 @@ calculate v2 using 3 sub-events method:
   double QaQb = get2Real(Q3[1][0]/ETT[1], Q3[0][0]/ETT[0], Q3[1][1]/ETT[1], -Q3[0][1]/ETT[0]);//an extra minus sign 
   double QcQb = get2Real(QcosTRK/QcountsTrk, Q3[0][0]/ETT[0], QsinTRK/QcountsTrk, Q3[0][1]/ETT[0]);
 
-  c2_ac->Fill( QaQc );
-  c2_cb->Fill( QcQb  );
-  c2_ab->Fill( QaQb );
+  c2_ac->Fill( QaQc, ETT[1]*QcountsTrk );
+  c2_cb->Fill( QcQb, ETT[1]*ETT[0]  );
+  c2_ab->Fill( QaQb, ETT[0]*QcountsTrk );
 
 }
 // ------------ method called once each job just before starting event loop  ------------
