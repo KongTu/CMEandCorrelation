@@ -206,6 +206,8 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       double etaHighHF_;
       double vzLow_;
       double vzHigh_;
+      double ptLow_;
+      double ptHigh_;
       double offlineptErr_;
       double offlineDCA_;
       double holesize_;
@@ -277,6 +279,8 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       double etaHighHF_;
       double vzLow_;
       double vzHigh_;
+      double ptLow_;
+      double ptHigh_;
       double holesize_;
 
       bool useCentrality_;

@@ -39,6 +39,8 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
   vzLow_ = iConfig.getUntrackedParameter<double>("vzLow");
   vzHigh_ = iConfig.getUntrackedParameter<double>("vzHigh");
+  ptLow_ = iConfig.getUntrackedParameter<double>("ptLow");
+  ptHigh_ = iConfig.getUntrackedParameter<double>("ptHigh");
 
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
@@ -138,7 +140,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-        if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4) continue;
+        if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < 0.6 && trk.phi() > 0.0 ) continue;}
         nTracks++;  
 
