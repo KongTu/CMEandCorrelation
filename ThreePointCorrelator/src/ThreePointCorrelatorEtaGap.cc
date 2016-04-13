@@ -454,21 +454,21 @@ ThreePointCorrelatorEtaGap::beginJob()
       for(int HF = 0; HF < HFside; HF++){       
         QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
         
-        XY_real[deta][sign][HF] = fs->make<TH1D>(Form("XY_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        XZ_real[deta][sign][HF] = fs->make<TH1D>(Form("XZ_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        YZ_real[deta][sign][HF] = fs->make<TH1D>(Form("YZ_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
+        XY_real[deta][sign][HF] = fs->make<TH1D>(Form("XY_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        XZ_real[deta][sign][HF] = fs->make<TH1D>(Form("XZ_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        YZ_real[deta][sign][HF] = fs->make<TH1D>(Form("YZ_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
         
-        XY_imag[deta][sign][HF] = fs->make<TH1D>(Form("XY_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        XZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("XZ_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        YZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("YZ_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
+        XY_imag[deta][sign][HF] = fs->make<TH1D>(Form("XY_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        XZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("XZ_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        YZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("YZ_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
         
-        X_real[deta][sign][HF] = fs->make<TH1D>(Form("X_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        Y_real[deta][sign][HF] = fs->make<TH1D>(Form("Y_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        Z_real[deta][sign][HF] = fs->make<TH1D>(Form("Z_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
+        X_real[deta][sign][HF] = fs->make<TH1D>(Form("X_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        Y_real[deta][sign][HF] = fs->make<TH1D>(Form("Y_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        Z_real[deta][sign][HF] = fs->make<TH1D>(Form("Z_real_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
         
-        X_imag[deta][sign][HF] = fs->make<TH1D>(Form("X_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        Y_imag[deta][sign][HF] = fs->make<TH1D>(Form("Y_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
-        Z_imag[deta][sign][HF] = fs->make<TH1D>(Form("Z_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.1,1.1);
+        X_imag[deta][sign][HF] = fs->make<TH1D>(Form("X_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        Y_imag[deta][sign][HF] = fs->make<TH1D>(Form("Y_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
+        Z_imag[deta][sign][HF] = fs->make<TH1D>(Form("Z_imag_%d_%d_%d",deta,sign,HF), "", 20000,-1.0,1.0);
       }
     }
   }
