@@ -151,10 +151,10 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
+        if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4 ){nTracks++;}// NtrkOffline
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < 0.6 && trk.phi() > 0.0 ) continue;}trkPhi->Fill( trk.phi() );
-        nTracks++;   
-
+           
         //for c particle v2;
         QcosTRK += cos( 2*trk.phi() );
         QsinTRK += sin( 2*trk.phi() );
