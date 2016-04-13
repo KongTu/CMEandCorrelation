@@ -146,7 +146,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4 ){nTracks++;}// NtrkOffline        
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
-        if( doEffCorrection_ ){ weight = effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
