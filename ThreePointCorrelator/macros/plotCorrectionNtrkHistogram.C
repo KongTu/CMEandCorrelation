@@ -2,11 +2,9 @@
 
 using namespace std;
 
-const int MAXTRACKS = 40000;
-double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2,-1.1,-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4};
-const int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
-double dEtaBins[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
-const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
+int Ntrkbins[] = {10,20,30,40,50,60,70,80,90,100,110,120,135,150,165,185,200,220,240,260,300};
+double Ntrkbins_fill[] = {10,20,30,40,50,60,70,80,90,100,110,120,135,150,165,185,200,220,240,260,300};
+const int nNtrkBins = sizeof(Ntrkbins)/ sizeof(Ntrkbins[0]) - 1;
 
 double get3Real(double R1, double R2, double R3, double I1, double I2, double I3){
 
@@ -43,16 +41,11 @@ double get2Imag( double R1, double R2, double I1, double I2){
 	return imag;
 }
 
-void plotCorrectionHistogram(){
+void plotCorrectionNtrkHistogram(){
 
-	for(int deta = 0; deta < NdEtaBins+1; deta++){
-		dEtaBins[deta] = dEtaBins[deta] - 0.00001;//fix bin boundary
-	}
+	TFile* file = new TFile("../rootfiles/test_trk.root");
 
-
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_PbPb_30_40_v22.root");
-
-	TH1D* QvsdEta[48][3][2];
+	TH1D* QvsNtrk[48][3][2];
 	TH1D* XY_real[48][3][2];TH1D* XY_imag[48][3][2];
 	TH1D* XZ_real[48][3][2];TH1D* XZ_imag[48][3][2];
 	TH1D* YZ_real[48][3][2];TH1D* YZ_imag[48][3][2];
@@ -74,27 +67,27 @@ void plotCorrectionHistogram(){
 		}
 	}
 
-	for(int deta = 0; deta < NdEtaBins; deta++){
+	for(int trk = 0; trk < nNtrkBins; trk++){
 		for(int sign = 0; sign < 3; sign++){
-			for(int HF = 0; HF < 1; HF++){
+			for(int HF = 0; HF < 2; HF++){
 		  
-			  QvsdEta[deta][sign][HF] = (TH1D*) file->Get( Form("ana/QvsdEta_%d_%d_%d",deta,sign,HF) );
+			  QvsNtrk[trk][sign][HF] = (TH1D*) file->Get( Form("ana/QvsNtrk_%d_%d_%d",trk,sign,HF) );
 			  
-			  XY_real[deta][sign][HF] = (TH1D*) file->Get( Form("ana/XY_real_%d_%d_%d",deta,sign,HF) );
-			  XZ_real[deta][sign][HF] = (TH1D*) file->Get( Form("ana/XZ_real_%d_%d_%d",deta,sign,HF) );
-			  YZ_real[deta][sign][HF] = (TH1D*) file->Get( Form("ana/YZ_real_%d_%d_%d",deta,sign,HF) );
+			  XY_real[trk][sign][HF] = (TH1D*) file->Get( Form("ana/XY_real_%d_%d_%d",trk,sign,HF) );
+			  XZ_real[trk][sign][HF] = (TH1D*) file->Get( Form("ana/XZ_real_%d_%d_%d",trk,sign,HF) );
+			  YZ_real[trk][sign][HF] = (TH1D*) file->Get( Form("ana/YZ_real_%d_%d_%d",trk,sign,HF) );
 			  
-			  XY_imag[deta][sign][HF] = (TH1D*) file->Get( Form("ana/XY_imag_%d_%d_%d",deta,sign,HF) );
-			  XZ_imag[deta][sign][HF] = (TH1D*) file->Get( Form("ana/XZ_imag_%d_%d_%d",deta,sign,HF) );
-			  YZ_imag[deta][sign][HF] = (TH1D*) file->Get( Form("ana/YZ_imag_%d_%d_%d",deta,sign,HF) );
+			  XY_imag[trk][sign][HF] = (TH1D*) file->Get( Form("ana/XY_imag_%d_%d_%d",trk,sign,HF) );
+			  XZ_imag[trk][sign][HF] = (TH1D*) file->Get( Form("ana/XZ_imag_%d_%d_%d",trk,sign,HF) );
+			  YZ_imag[trk][sign][HF] = (TH1D*) file->Get( Form("ana/YZ_imag_%d_%d_%d",trk,sign,HF) );
 			  
-			  X_real[deta][sign][HF] = (TH1D*) file->Get( Form("ana/X_real_%d_%d_%d",deta,sign,HF) );
-			  Y_real[deta][sign][HF] = (TH1D*) file->Get( Form("ana/Y_real_%d_%d_%d",deta,sign,HF) );
-			  Z_real[deta][sign][HF] = (TH1D*) file->Get( Form("ana/Z_real_%d_%d_%d",deta,sign,HF) );
+			  X_real[trk][sign][HF] = (TH1D*) file->Get( Form("ana/X_real_%d_%d_%d",trk,sign,HF) );
+			  Y_real[trk][sign][HF] = (TH1D*) file->Get( Form("ana/Y_real_%d_%d_%d",trk,sign,HF) );
+			  Z_real[trk][sign][HF] = (TH1D*) file->Get( Form("ana/Z_real_%d_%d_%d",trk,sign,HF) );
 			  
-			  X_imag[deta][sign][HF] = (TH1D*) file->Get( Form("ana/X_imag_%d_%d_%d",deta,sign,HF) );
-			  Y_imag[deta][sign][HF] = (TH1D*) file->Get( Form("ana/Y_imag_%d_%d_%d",deta,sign,HF) );
-			  Z_imag[deta][sign][HF] = (TH1D*) file->Get( Form("ana/Z_imag_%d_%d_%d",deta,sign,HF) );
+			  X_imag[trk][sign][HF] = (TH1D*) file->Get( Form("ana/X_imag_%d_%d_%d",trk,sign,HF) );
+			  Y_imag[trk][sign][HF] = (TH1D*) file->Get( Form("ana/Y_imag_%d_%d_%d",trk,sign,HF) );
+			  Z_imag[trk][sign][HF] = (TH1D*) file->Get( Form("ana/Z_imag_%d_%d_%d",trk,sign,HF) );
 			}
 		}
 	}
@@ -116,10 +109,9 @@ void plotCorrectionHistogram(){
 
 //correction factor for the V2 values from HF. 
 	double v2[3];
-	v2[0] = sqrt(meanQcQb);
-	// v2[0] = sqrt(c2_b - bCorr);
-	// v2[1] = sqrt(c2_a - aCorr );
-	// v2[2] = sqrt(c2_ab - abCorr );
+	v2[0] = sqrt(c2_b - bCorr);
+	v2[1] = sqrt(c2_a - aCorr );
+	v2[2] = sqrt(c2_ab - abCorr );
 
 	// v2[0] = sqrt(c2_b );
 	// v2[1] = sqrt(c2_a  );
@@ -131,42 +123,39 @@ void plotCorrectionHistogram(){
 	TH1D* hist1[3][2];
 	TH1D* hist2[3][2];
 	for(int sign = 0; sign < 3; sign++){
-		for(int HF = 0; HF < 1; HF++){
-			hist1[sign][HF] = new TH1D(Form("hist1_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
-			hist2[sign][HF] = new TH1D(Form("hist2_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
+		for(int HF = 0; HF < 2; HF++){
+			hist1[sign][HF] = new TH1D(Form("hist1_%d_%d",sign,HF),"test", nNtrkBins, Ntrkbins_fill);
+			hist2[sign][HF] = new TH1D(Form("hist2_%d_%d",sign,HF),"test", nNtrkBins, Ntrkbins_fill);
 		}
 	}
 
-	for(int deta = 0; deta < NdEtaBins; deta++){
-
-		if(deta == 0) continue;
-
+	for(int trk = 0; trk < nNtrkBins; trk++){
 		for(int sign = 0; sign < 3; sign++){
-			for(int HF = 0; HF < 1; HF++){
+			for(int HF = 0; HF < 2; HF++){
 
-				double Q_total_real_dEta = QvsdEta[deta][sign][HF]->GetMean();
-				double Q_total_real_dEta_error = QvsdEta[deta][sign][HF]->GetMeanError();
+				double Q_total_real_Ntrk = QvsNtrk[trk][sign][HF]->GetMean();
+				double Q_total_real_Ntrk_error = QvsNtrk[trk][sign][HF]->GetMeanError();
 
-				cout << "Q_total_real_dEta_error: " <<Q_total_real_dEta_error<<endl;
+				cout << "Q_total_real_Ntrk_error: " <<Q_total_real_Ntrk_error<<endl;
 				
 				double XY_real_temp = 0.; double XZ_real_temp = 0.; double YZ_real_temp = 0.; double X_real_temp = 0.; double Y_real_temp = 0.; double Z_real_temp = 0.;
 				double XY_imag_temp = 0.; double XZ_imag_temp = 0.; double YZ_imag_temp = 0.; double X_imag_temp = 0.; double Y_imag_temp = 0.; double Z_imag_temp = 0.;
 
-				XY_real_temp = XY_real[deta][sign][HF]->GetMean();
-				XZ_real_temp = XZ_real[deta][sign][HF]->GetMean();
-				YZ_real_temp = YZ_real[deta][sign][HF]->GetMean();
+				XY_real_temp = XY_real[trk][sign][HF]->GetMean();
+				XZ_real_temp = XZ_real[trk][sign][HF]->GetMean();
+				YZ_real_temp = YZ_real[trk][sign][HF]->GetMean();
 
-				XY_imag_temp = XY_imag[deta][sign][HF]->GetMean();
-				XZ_imag_temp = XZ_imag[deta][sign][HF]->GetMean();
-				YZ_imag_temp = YZ_imag[deta][sign][HF]->GetMean();
+				XY_imag_temp = XY_imag[trk][sign][HF]->GetMean();
+				XZ_imag_temp = XZ_imag[trk][sign][HF]->GetMean();
+				YZ_imag_temp = YZ_imag[trk][sign][HF]->GetMean();
 
-				X_real_temp = X_real[deta][sign][HF]->GetMean();
-				Y_real_temp = Y_real[deta][sign][HF]->GetMean();
-				Z_real_temp = Z_real[deta][sign][HF]->GetMean();
+				X_real_temp = X_real[trk][sign][HF]->GetMean();
+				Y_real_temp = Y_real[trk][sign][HF]->GetMean();
+				Z_real_temp = Z_real[trk][sign][HF]->GetMean();
 
-				X_imag_temp = X_imag[deta][sign][HF]->GetMean();
-				Y_imag_temp = Y_imag[deta][sign][HF]->GetMean();
-				Z_imag_temp = Z_imag[deta][sign][HF]->GetMean();
+				X_imag_temp = X_imag[trk][sign][HF]->GetMean();
+				Y_imag_temp = Y_imag[trk][sign][HF]->GetMean();
+				Z_imag_temp = Z_imag[trk][sign][HF]->GetMean();
 
 				double term1_real = get2Real(XY_real_temp, Z_real_temp, XY_imag_temp, Z_imag_temp);
 				double term2_real = get2Real(XZ_real_temp, Y_real_temp, XZ_imag_temp, Y_imag_temp);
@@ -174,29 +163,29 @@ void plotCorrectionHistogram(){
 				double term4_real = get3Real(X_real_temp, Y_real_temp, Z_real_temp, X_imag_temp, Y_imag_temp, Z_imag_temp);
 				double all_real = term1_real+term2_real+term3_real-2*term4_real;
 
-				if( Q_total_real_dEta == 0.00000 ) continue;
+				if( Q_total_real_Ntrk == 0.00000 ) continue;
 
-				cout << "before correction is " << Q_total_real_dEta << endl;
+				cout << "before correction is " << Q_total_real_Ntrk << endl;
 				cout << "correction factor is: " << all_real << endl;
-				cout << "after correction is " << Q_total_real_dEta - all_real << endl;
+				cout << "after correction is " << Q_total_real_Ntrk - all_real << endl;
 				cout << "-------- " << endl;
-				hist1[sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
-				hist1[sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
-				hist2[sign][HF]->SetBinContent(deta+1, Q_total_real_dEta - all_real);
-				hist2[sign][HF]->SetBinError(deta+1, Q_total_real_dEta_error);
+				hist1[sign][HF]->SetBinContent(trk+1, Q_total_real_Ntrk );
+				hist1[sign][HF]->SetBinError(trk+1,  Q_total_real_Ntrk_error);
+				hist2[sign][HF]->SetBinContent(trk+1, Q_total_real_Ntrk - all_real);
+				hist2[sign][HF]->SetBinError(trk+1, Q_total_real_Ntrk_error);
 			}
 		}
 	}
 
-	TH1D* base3 = makeHist("base3","","#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}", 48,0,4.8);
+	TH1D* base3 = makeHist("base3","","N^{offline}_{trk}", "cos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}", 300,0,300);
     base3->GetXaxis()->SetTitleColor(kBlack);
-    base3->GetYaxis()->SetRangeUser(-0.015,0.012);
+    base3->GetYaxis()->SetRangeUser(-0.01,0.01);
     base3->GetYaxis()->SetTitleOffset(1.9);
 
     TH1D* base4 = (TH1D*) base3->Clone("base4");
 
     TCanvas* c4 = makeMultiCanvas("c4","c4",2,1);
-    for(int HF = 0; HF < 1; HF++){
+    for(int HF = 0; HF < 2; HF++){
 		c4->cd(HF+1);
 		gPad->SetTicks();
 		gPad->SetLeftMargin(0.20);
@@ -242,13 +231,13 @@ void plotCorrectionHistogram(){
     w1->AddEntry(hist2[0][0],"corrected","P");
     w1->AddEntry(hist1[0][0],"uncorrected","P");
 
-    TH1D* base = makeHist("base","", "#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})", 48,0,4.8);
+    TH1D* base = makeHist("base","", "N^{offline}_{trk}", "cos(#phi_{1}+#phi_{2}-2#phi_{3})", 300,0,300);
     base->GetXaxis()->SetTitleColor(kBlack);
-    base->GetYaxis()->SetRangeUser(-0.003,0.003);
+    base->GetYaxis()->SetRangeUser(-0.05,0.05);
     base->GetYaxis()->SetTitleOffset(1.9);
 
 	TCanvas* c1 = makeMultiCanvas("c1","c1",2,1);
-	for(int HF = 0; HF < 1; HF++){
+	for(int HF = 0; HF < 2; HF++){
 		c1->cd(HF+1);
 		gPad->SetTicks();
 		gPad->SetLeftMargin(0.20);
@@ -273,7 +262,7 @@ void plotCorrectionHistogram(){
 
 	TCanvas* c2 = makeMultiCanvas("c2","c2",2,1);
 	TH1D* base1 = (TH1D*) base->Clone("base1");
-	for(int HF = 0; HF < 1; HF++){
+	for(int HF = 0; HF < 2; HF++){
 		c2->cd(HF+1);
 		gPad->SetTicks();
 		gPad->SetLeftMargin(0.20);
@@ -296,7 +285,7 @@ void plotCorrectionHistogram(){
 
 	TCanvas* c3 = makeMultiCanvas("c3","c3",2,1);
 	TH1D* base2 = (TH1D*) base->Clone("base2");
-	for(int HF = 0; HF < 1; HF++){
+	for(int HF = 0; HF < 2; HF++){
 		c3->cd(HF+1);
 		gPad->SetTicks();
 		gPad->SetLeftMargin(0.20);
