@@ -154,7 +154,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QsinTRK += weight*sin( 2*trk.phi() );
         QcountsTrk += weight;
 
-        cout << "weight: " << endl;
+        cout << "weight: " << weight << endl;
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
