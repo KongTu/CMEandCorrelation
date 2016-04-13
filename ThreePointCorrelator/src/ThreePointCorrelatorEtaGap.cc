@@ -117,11 +117,16 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   double Q1[NetaBins][2][2];
   double Q1_count[NetaBins][2];
 
+  double Q2[NetaBins][2][2];
+  double Q2_count[NetaBins][2];
+
   for(int i = 0; i < NetaBins; i++){
     for(int j = 0; j < 2; j++){
       Q1_count[i][j] = 0.0;
+      Q2_count[i][j] = 0.0;
       for(int k = 0; k < 2; k++){
         Q1[i][j][k] = 0.0;
+        Q2[i][j][k] = 0.0;
       }
     }
   }
@@ -161,11 +166,19 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               Q1[eta][0][0] += weight*cos( trk.phi() );
               Q1[eta][0][1] += weight*sin( trk.phi() );
               Q1_count[eta][0] += weight;
+
+              Q2[eta][0][0] += weight*cos( 2*trk.phi() );
+              Q2[eta][0][1] += weight*sin( 2*trk.phi() );
+              Q2_count[eta][0] += weight;
             }
             else if( trk.charge() == -1){
               Q1[eta][1][0] += weight*cos( trk.phi() );
               Q1[eta][1][1] += weight*sin( trk.phi() );
               Q1_count[eta][1] += weight;
+
+              Q2[eta][1][0] += weight*cos( 2*trk.phi() );
+              Q2[eta][1][1] += weight*sin( 2*trk.phi() );
+              Q2_count[eta][1] += weight;
             }
           }
         }     
@@ -220,53 +233,54 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
     
-      if( ieta == jeta ) continue;
       double deltaEta = fabs(etaBins_[ieta] - etaBins_[jeta]);
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+          if( deta == 0 ){
+            for(int HF = 0; HF < HFside; HF++){
+              for(int sign = 0; sign < 2; sign++){
 
-          for(int HF = 0; HF < HFside; HF++){
-            for(int sign = 0; sign < 2; sign++ ){
+                if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
+
+                cout << "ieta: " << ieta << " and jeta: " << jeta << endl;
+                cout << "deta == 0 " << " and deltaEta = " << deltaEta << "," << " which is good!" << endl;
+
+                double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
+                QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
+                
+                double XY_real_temp = get2RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q1[ieta][sign][1], Q2[jeta][sign][1]);
+                double XY_imag_temp = get2ImagOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q1[ieta][sign][1], Q2[ieta][sign][1]);
+                
+                double XZ_real_temp = get2Real(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
+                double XZ_imag_temp = get2Imag(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
+
+                double YZ_real_temp = get2Real(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
+                double YZ_imag_temp = get2Imag(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
+
+                XY_real[deta][sign][HF]->Fill( XY_real_temp/(Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) ), (Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) );
+                XY_imag[deta][sign][HF]->Fill( XY_imag_temp/(Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) ), (Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) );
+                
+                XZ_real[deta][sign][HF]->Fill( XZ_real_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
+                XZ_imag[deta][sign][HF]->Fill( XZ_imag_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
+
+                YZ_real[deta][sign][HF]->Fill( YZ_real_temp/(Q1_count[jeta][sign]*ETT[HF]), Q1_count[jeta][sign]*ETT[HF] );
+                YZ_imag[deta][sign][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][sign]*ETT[HF]), Q1_count[jeta][sign]*ETT[HF] );
+
+                double X_real_temp = Q1[ieta][sign][0]; double X_imag_temp = Q1[ieta][sign][1]; 
+                double Y_real_temp = Q1[jeta][sign][0]; double Y_imag_temp = Q1[jeta][sign][1]; 
+                double Z_real_temp = Q3[HF][0];         double Z_imag_temp = Q3[HF][1]; 
+
+                X_real[deta][sign][HF]->Fill( X_real_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
+                Y_real[deta][sign][HF]->Fill( Y_real_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
+                Z_real[deta][sign][HF]->Fill( Z_real_temp/ETT[HF], ETT[HF]);  
               
-              if( Q1_count[ieta][sign] == 0.0 || Q1_count[jeta][sign] == 0.0 || ETT[HF] == 0.0 ) continue; //USE HF plus first
+                X_imag[deta][sign][HF]->Fill( X_imag_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
+                Y_imag[deta][sign][HF]->Fill( Y_imag_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
+                Z_imag[deta][sign][HF]->Fill( Z_imag_temp/ETT[HF], ETT[HF]);
+              }
 
-              double Q_real = get3Real(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[HF][0]/ETT[HF], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[HF][1]/ETT[HF]);
-              QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*Q1_count[jeta][sign]*ETT[HF] );  
-
-              double XY_real_temp = get2Real(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
-              double XY_imag_temp = get2Imag(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
-              
-              double XZ_real_temp = get2Real(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
-              double XZ_imag_temp = get2Imag(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
-
-              double YZ_real_temp = get2Real(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
-              double YZ_imag_temp = get2Imag(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
-
-              XY_real[deta][sign][HF]->Fill( XY_real_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
-              XY_imag[deta][sign][HF]->Fill( XY_imag_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
-              
-              XZ_real[deta][sign][HF]->Fill( XZ_real_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
-              XZ_imag[deta][sign][HF]->Fill( XZ_imag_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
-
-              YZ_real[deta][sign][HF]->Fill( YZ_real_temp/(Q1_count[jeta][sign]*ETT[HF]), Q1_count[jeta][sign]*ETT[HF] );
-              YZ_imag[deta][sign][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][sign]*ETT[HF]), Q1_count[jeta][sign]*ETT[HF] );
-
-              double X_real_temp = Q1[ieta][sign][0]; double X_imag_temp = Q1[ieta][sign][1]; 
-              double Y_real_temp = Q1[jeta][sign][0]; double Y_imag_temp = Q1[jeta][sign][1]; 
-              double Z_real_temp = Q3[HF][0];         double Z_imag_temp = Q3[HF][1]; 
-
-              X_real[deta][sign][HF]->Fill( X_real_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
-              Y_real[deta][sign][HF]->Fill( Y_real_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
-              Z_real[deta][sign][HF]->Fill( Z_real_temp/ETT[HF], ETT[HF]);  
-            
-              X_imag[deta][sign][HF]->Fill( X_imag_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
-              Y_imag[deta][sign][HF]->Fill( Y_imag_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
-              Z_imag[deta][sign][HF]->Fill( Z_imag_temp/ETT[HF], ETT[HF]);
-
-            }
-
-            if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
+              if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
               double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
@@ -300,7 +314,83 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               X_imag[deta][2][HF]->Fill( X_imag_temp/Q1_count[ieta][0], Q1_count[ieta][0]);    
               Y_imag[deta][2][HF]->Fill( Y_imag_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
               Z_imag[deta][2][HF]->Fill( Z_imag_temp/ETT[HF], ETT[HF]);
+            }
+          }
+          else{
+            for(int HF = 0; HF < HFside; HF++){
+              for(int sign = 0; sign < 2; sign++ ){
+              
+                if( Q1_count[ieta][sign] == 0.0 || Q1_count[jeta][sign] == 0.0 || ETT[HF] == 0.0 ) continue; 
 
+                double Q_real = get3Real(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[HF][0]/ETT[HF], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[HF][1]/ETT[HF]);
+                QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*Q1_count[jeta][sign]*ETT[HF] );  
+
+                double XY_real_temp = get2Real(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
+                double XY_imag_temp = get2Imag(Q1[ieta][sign][0], Q1[jeta][sign][0], Q1[ieta][sign][1], Q1[jeta][sign][1]);
+                
+                double XZ_real_temp = get2Real(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
+                double XZ_imag_temp = get2Imag(Q1[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q3[HF][1]);
+
+                double YZ_real_temp = get2Real(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
+                double YZ_imag_temp = get2Imag(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
+
+                XY_real[deta][sign][HF]->Fill( XY_real_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
+                XY_imag[deta][sign][HF]->Fill( XY_imag_temp/(Q1_count[ieta][sign]*Q1_count[jeta][sign]), Q1_count[ieta][sign]*Q1_count[jeta][sign] );
+                
+                XZ_real[deta][sign][HF]->Fill( XZ_real_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
+                XZ_imag[deta][sign][HF]->Fill( XZ_imag_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
+
+                YZ_real[deta][sign][HF]->Fill( YZ_real_temp/(Q1_count[jeta][sign]*ETT[HF]), Q1_count[jeta][sign]*ETT[HF] );
+                YZ_imag[deta][sign][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][sign]*ETT[HF]), Q1_count[jeta][sign]*ETT[HF] );
+
+                double X_real_temp = Q1[ieta][sign][0]; double X_imag_temp = Q1[ieta][sign][1]; 
+                double Y_real_temp = Q1[jeta][sign][0]; double Y_imag_temp = Q1[jeta][sign][1]; 
+                double Z_real_temp = Q3[HF][0];         double Z_imag_temp = Q3[HF][1]; 
+
+                X_real[deta][sign][HF]->Fill( X_real_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
+                Y_real[deta][sign][HF]->Fill( Y_real_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
+                Z_real[deta][sign][HF]->Fill( Z_real_temp/ETT[HF], ETT[HF]);  
+              
+                X_imag[deta][sign][HF]->Fill( X_imag_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
+                Y_imag[deta][sign][HF]->Fill( Y_imag_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
+                Z_imag[deta][sign][HF]->Fill( Z_imag_temp/ETT[HF], ETT[HF]);
+              }
+
+              if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
+
+                double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
+                QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
+
+                double XY_real_temp = get2Real(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+                double XY_imag_temp = get2Imag(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+                
+                double XZ_real_temp = get2Real(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+                double XZ_imag_temp = get2Imag(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+
+                double YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+                double YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+
+                XY_real[deta][2][HF]->Fill( XY_real_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
+                XY_imag[deta][2][HF]->Fill( XY_imag_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
+                
+                XZ_real[deta][2][HF]->Fill( XZ_real_temp/(Q1_count[ieta][0]*ETT[HF]), Q1_count[ieta][0]*ETT[HF] );
+                XZ_imag[deta][2][HF]->Fill( XZ_imag_temp/(Q1_count[ieta][0]*ETT[HF]), Q1_count[ieta][0]*ETT[HF] );
+
+                YZ_real[deta][2][HF]->Fill( YZ_real_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
+                YZ_imag[deta][2][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
+
+                double X_real_temp = Q1[ieta][0][0]; double X_imag_temp = Q1[ieta][0][1]; 
+                double Y_real_temp = Q1[jeta][1][0]; double Y_imag_temp = Q1[jeta][1][1]; 
+                double Z_real_temp = Q3[HF][0];      double Z_imag_temp = Q3[HF][1]; 
+
+                X_real[deta][2][HF]->Fill( X_real_temp/Q1_count[ieta][0], Q1_count[ieta][0]);    
+                Y_real[deta][2][HF]->Fill( Y_real_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
+                Z_real[deta][2][HF]->Fill( Z_real_temp/ETT[HF], ETT[HF]);  
+              
+                X_imag[deta][2][HF]->Fill( X_imag_temp/Q1_count[ieta][0], Q1_count[ieta][0]);    
+                Y_imag[deta][2][HF]->Fill( Y_imag_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
+                Z_imag[deta][2][HF]->Fill( Z_imag_temp/ETT[HF], ETT[HF]);
+            }
           }
         }
       }
@@ -400,7 +490,7 @@ ThreePointCorrelatorEtaGap::get3Real(double R1, double R2, double R3, double I1,
   return t1-t2-t3-t4;
 }
 
-double ThreePointCorrelatorEtaGap::get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
+double ThreePointCorrelatorEtaGap::get3RealOverlap();(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
 
       double t1 = (R1*R1 - I1*I1 - R2)*R3;
       double t2 = (2*R1*I1-I2)*I3;
