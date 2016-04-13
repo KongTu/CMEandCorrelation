@@ -156,7 +156,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4 ){nTracks++;}// NtrkOffline
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
-        if( doEffCorrection_ ){ weight = effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}trkPhi->Fill( trk.phi() );
            
         //for c particle v2;
