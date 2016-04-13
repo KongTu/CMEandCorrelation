@@ -53,7 +53,9 @@ ThreePointCorrelatorNtrk::ThreePointCorrelatorNtrk(const edm::ParameterSet& iCon
   vzHigh_ = iConfig.getUntrackedParameter<double>("vzHigh");
   ptLow_ = iConfig.getUntrackedParameter<double>("ptLow");
   ptHigh_ = iConfig.getUntrackedParameter<double>("ptHigh");
-
+  holeLeft_ = iConfig.getUntrackedParameter<double>("holeLeft");
+  holeRight_ = iConfig.getUntrackedParameter<double>("holeRight");
+  
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
 
@@ -155,7 +157,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4 ){nTracks++;}// NtrkOffline
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( doEffCorrection_ ){ weight = effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
-        if( messAcceptance_ ) { if( trk.phi() < 0.6 && trk.phi() > 0.0 ) continue;}trkPhi->Fill( trk.phi() );
+        if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}trkPhi->Fill( trk.phi() );
            
         //for c particle v2;
         QcosTRK += weight*cos( 2*trk.phi() );
@@ -201,7 +203,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         if( reverseBeam_ ) caloEta = -hit.eta();
-        if( messAcceptance_ ){if( caloPhi < 0.6 && caloPhi > 0.0 ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
+        if( messAcceptance_ ){if( caloPhi < holeRight_ && caloPhi > holeLeft_ ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
         
         if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
             
