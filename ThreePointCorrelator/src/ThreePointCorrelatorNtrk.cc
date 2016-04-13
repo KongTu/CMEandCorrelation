@@ -111,7 +111,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
 
   double QcosTRK = 0.;
   double QsinTRK = 0.;
-  int QcountsTrk = 0;
+  double QcountsTrk = 0;
 
   double Q1[2][2];
   double Q2[2][2];
@@ -146,38 +146,40 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
-        
+        double weight = 1.0;
+
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4 ){nTracks++;}// NtrkOffline
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
+        if( doEffCorrection_ ){ weight = effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
         if( messAcceptance_ ) { if( trk.phi() < 0.6 && trk.phi() > 0.0 ) continue;}trkPhi->Fill( trk.phi() );
            
         //for c particle v2;
-        QcosTRK += cos( 2*trk.phi() );
-        QsinTRK += sin( 2*trk.phi() );
-        QcountsTrk++;
+        QcosTRK += weight*cos( 2*trk.phi() );
+        QsinTRK += weight*sin( 2*trk.phi() );
+        QcountsTrk += weight;
 
         if( trk.charge() == 1 ){
 
-          Q1[0][0] += cos( trk.phi() );
-          Q1[0][1] += sin( trk.phi() );
-          Q1_count[0]++;
+          Q1[0][0] += weight*cos( trk.phi() );
+          Q1[0][1] += weight*sin( trk.phi() );
+          Q1_count[0] += weight;
 
-          Q2[0][0] += cos( 2*trk.phi() );
-          Q2[0][1] += sin( 2*trk.phi() );
+          Q2[0][0] += weight*cos( 2*trk.phi() );
+          Q2[0][1] += weight*sin( 2*trk.phi() );
 
         }
         else if( trk.charge() == -1 ){
 
-          Q1[1][0] += cos( trk.phi() );
-          Q1[1][1] += sin( trk.phi() );
-          Q1_count[1]++;
+          Q1[1][0] += weight*cos( trk.phi() );
+          Q1[1][1] += weight*sin( trk.phi() );
+          Q1_count[1] += weight;
 
-          Q2[1][0] += cos( 2*trk.phi() );
-          Q2[1][1] += sin( 2*trk.phi() );
+          Q2[1][0] += weight*cos( 2*trk.phi() );
+          Q2[1][1] += weight*sin( 2*trk.phi() );
 
         }
         else{
@@ -223,7 +225,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
     if( nTracks >= ntrkBins_[trk] && nTracks < ntrkBins_[trk+1] ){
         for(int HF = 0; HF < HFside; HF++){
           for(int sign = 0; sign < 2; sign++){
-            if( Q1_count[sign] == 0 || ETT[HF] == 0 ) continue;
+            if( Q1_count[sign] == 0.0 || ETT[HF] == 0.0 ) continue;
               double Q_real = 0.;
               Q_real = get3RealOverlap(Q1[sign][0], Q2[sign][0], Q3[HF][0], Q1[sign][1], Q2[sign][1], Q3[HF][1], Q1_count[sign],ETT[HF]);
               QvsNtrk[trk][sign][HF]->Fill( Q_real );
@@ -261,7 +263,7 @@ ThreePointCorrelatorNtrk::analyze(const edm::Event& iEvent, const edm::EventSetu
               Z_imag[trk][sign][HF]->Fill( Z_imag_temp/ETT[HF], ETT[HF]);
             } 
             
-            if( Q1_count[0] == 0 || Q1_count[1] == 0 || ETT[HF] == 0 ) continue;
+            if( Q1_count[0] == 0.0 || Q1_count[1] == 0.0 || ETT[HF] == 0.0 ) continue;
             double Q_real = 0.;
             Q_real = get3Real(Q1[0][0]/Q1_count[0], Q1[1][0]/Q1_count[1], Q3[HF][0]/ETT[HF], Q1[0][1]/Q1_count[0], Q2[1][1]/Q1_count[1], Q3[HF][1]/ETT[HF]);
             QvsNtrk[trk][2][HF]->Fill( Q_real );

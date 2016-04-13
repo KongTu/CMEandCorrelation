@@ -219,6 +219,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       bool useBothSide_;
       bool reverseBeam_;
       bool messAcceptance_;
+      bool doEffCorrection_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
@@ -293,6 +294,7 @@ class ThreePointCorrelatorNtrk : public edm::EDAnalyzer {
       bool useBothSide_;
       bool reverseBeam_;
       bool messAcceptance_;
+      bool doEffCorrection_;
 
       double offlineptErr_;
       double offlineDCA_;

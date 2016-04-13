@@ -110,14 +110,14 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   double QcosTRK = 0.;
   double QsinTRK = 0.;
-  int QcountsTrk = 0;
+  double QcountsTrk = 0;
 
   double Q1[NetaBins][2][2];
-  int Q1_count[NetaBins][2];
+  double Q1_count[NetaBins][2];
 
   for(int i = 0; i < NetaBins; i++){
     for(int j = 0; j < 2; j++){
-      Q1_count[i][j] = 0;
+      Q1_count[i][j] = 0.0;
       for(int k = 0; k < 2; k++){
         Q1[i][j][k] = 0.0;
       }
@@ -135,7 +135,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
-        
+        double weight = 1.0;
+
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
@@ -143,25 +144,25 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.eta()) > 2.4 || trk.pt() < 0.4 ){nTracks++;}// NtrkOffline        
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < 0.6 && trk.phi() > 0.0 ) continue;}
-
+        if( doEffCorrection_ ){ weight = effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
-        QcosTRK += cos( 2*trk.phi() );
-        QsinTRK += sin( 2*trk.phi() );
-        QcountsTrk++;
+        QcosTRK += weight*cos( 2*trk.phi() );
+        QsinTRK += weight*sin( 2*trk.phi() );
+        QcountsTrk += weight;
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
 
             if( trk.charge() == 1){
-              Q1[eta][0][0] += cos( trk.phi() );
-              Q1[eta][0][1] += sin( trk.phi() );
-              Q1_count[eta][0]++;
+              Q1[eta][0][0] += weight*cos( trk.phi() );
+              Q1[eta][0][1] += weight*sin( trk.phi() );
+              Q1_count[eta][0] += weight;
             }
             else if( trk.charge() == -1){
-              Q1[eta][1][0] += cos( trk.phi() );
-              Q1[eta][1][1] += sin( trk.phi() );
-              Q1_count[eta][1]++;
+              Q1[eta][1][0] += weight*cos( trk.phi() );
+              Q1[eta][1][1] += weight*sin( trk.phi() );
+              Q1_count[eta][1] += weight;
             }
           }
         }     
@@ -225,7 +226,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           for(int HF = 0; HF < HFside; HF++){
             for(int sign = 0; sign < 2; sign++ ){
               
-              if( Q1_count[ieta][sign] == 0 || Q1_count[jeta][sign] == 0 || ETT[HF] == 0 ) continue; //USE HF plus first
+              if( Q1_count[ieta][sign] == 0.0 || Q1_count[jeta][sign] == 0.0 || ETT[HF] == 0.0 ) continue; //USE HF plus first
 
               double Q_real = get3Real(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[HF][0]/ETT[HF], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][sign][HF]->Fill( Q_real );  
@@ -250,7 +251,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
               double X_real_temp = Q1[ieta][sign][0]; double X_imag_temp = Q1[ieta][sign][1]; 
               double Y_real_temp = Q1[jeta][sign][0]; double Y_imag_temp = Q1[jeta][sign][1]; 
-              double Z_real_temp = Q3[HF][0];          double Z_imag_temp = Q3[HF][1]; 
+              double Z_real_temp = Q3[HF][0];         double Z_imag_temp = Q3[HF][1]; 
 
               X_real[deta][sign][HF]->Fill( X_real_temp/Q1_count[ieta][sign], Q1_count[ieta][sign]);    
               Y_real[deta][sign][HF]->Fill( Y_real_temp/Q1_count[jeta][sign], Q1_count[jeta][sign]);    
@@ -262,7 +263,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
             }
 
-            if( Q1_count[ieta][0] == 0 || Q1_count[jeta][1] == 0 || ETT[HF] == 0 ) continue;
+            if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
               double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real );  
@@ -287,7 +288,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
               double X_real_temp = Q1[ieta][0][0]; double X_imag_temp = Q1[ieta][0][1]; 
               double Y_real_temp = Q1[jeta][1][0]; double Y_imag_temp = Q1[jeta][1][1]; 
-              double Z_real_temp = Q3[HF][0];          double Z_imag_temp = Q3[HF][1]; 
+              double Z_real_temp = Q3[HF][0];      double Z_imag_temp = Q3[HF][1]; 
 
               X_real[deta][2][HF]->Fill( X_real_temp/Q1_count[ieta][0], Q1_count[ieta][0]);    
               Y_real[deta][2][HF]->Fill( Y_real_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
