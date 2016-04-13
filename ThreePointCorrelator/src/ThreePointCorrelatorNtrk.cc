@@ -333,6 +333,10 @@ ThreePointCorrelatorNtrk::beginJob()
     
   TH1D::SetDefaultSumw2();
   
+  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
+  TFile f1(fip1.fullPath().c_str(),"READ");
+  effTable = (TH2D*)f1.Get("rTotalEff3D");
+
   const int nNtrkBins = ntrkBins_.size() - 1;
 
   int HFside = 2;

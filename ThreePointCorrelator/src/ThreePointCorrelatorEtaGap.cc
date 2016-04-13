@@ -334,6 +334,10 @@ ThreePointCorrelatorEtaGap::beginJob()
     
   TH1D::SetDefaultSumw2();
 
+  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
+  TFile f1(fip1.fullPath().c_str(),"READ");
+  effTable = (TH2D*)f1.Get("rTotalEff3D");
+
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
