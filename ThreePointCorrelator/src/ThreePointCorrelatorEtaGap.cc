@@ -258,8 +258,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
                 double YZ_real_temp = get2Real(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
                 double YZ_imag_temp = get2Imag(Q1[jeta][sign][0], Q3[HF][0], Q1[jeta][sign][1], Q3[HF][1]);
 
-                XY_real[deta][sign][HF]->Fill( XY_real_temp/(Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) ), (Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) );
-                XY_imag[deta][sign][HF]->Fill( XY_imag_temp/(Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) ), (Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) );
+                XY_real[deta][sign][HF]->Fill( XY_real_temp/(Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) ), Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) );
+                XY_imag[deta][sign][HF]->Fill( XY_imag_temp/(Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) ), Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1) );
                 
                 XZ_real[deta][sign][HF]->Fill( XZ_real_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
                 XZ_imag[deta][sign][HF]->Fill( XZ_imag_temp/(Q1_count[ieta][sign]*ETT[HF]), Q1_count[ieta][sign]*ETT[HF] );
