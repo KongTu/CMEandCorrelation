@@ -33,7 +33,8 @@ void function(){
 }
 
 //eta bins and dEta bins
-double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2,-1.1,-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4};
+//double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2,-1.1,-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4};
+double etabins[] = {-2.4,0.0,2.4};
 const int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
 
 double dEtaBins[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
@@ -57,10 +58,6 @@ TH1D* ntrk3[3];
 TH1D* corrHistPlusPlus[3]; 
 TH1D* corrHistMinusMinus[3]; 
 TH1D* corrHistPlusMinus[3]; 
-
-TH2D* corrVsEtaPlusPlus[3];
-TH2D* corrVsEtaMinusMinus[3];
-TH2D* corrVsEtaPlusMinus[3];
 
 TH1D* corrVsEtaPlusPlus1D[3][48];
 TH1D* corrVsEtaMinusMinus1D[3][48];
@@ -114,7 +111,7 @@ double getNormalizedSum( TH1D* hist ){
 
 }
 
-double getNormalizedSumOnly( TH1D* hist ){
+double getSumOnly( TH1D* hist ){
 
 	double integral2 = 0.;
 	for(int i = 0; i < hist->GetNbinsX(); i++ ){

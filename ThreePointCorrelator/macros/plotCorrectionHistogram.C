@@ -18,7 +18,6 @@ double get3Real(double R1, double R2, double R3, double I1, double I2, double I3
   return t1-t2-t3-t4;
 
 }
-
 double get3Imag(double R1, double R2, double R3, double I1, double I2, double I3){
 
   double t1 = R1*R2*I3;
@@ -29,8 +28,6 @@ double get3Imag(double R1, double R2, double R3, double I1, double I2, double I3
   return t1+t2+t3-t4;
 
 }
-
-
 double get2Real( double R1, double R2, double I1, double I2){
 
 	double real = R1*R2 - I1*I2;
@@ -50,7 +47,7 @@ void plotCorrectionHistogram(){
 	}
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_PbPb_30_40_v22.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v24.root");
 
 	TH1D* QvsdEta[48][3][2];
 	TH1D* XY_real[48][3][2];TH1D* XY_imag[48][3][2];
@@ -76,7 +73,7 @@ void plotCorrectionHistogram(){
 
 	for(int deta = 0; deta < NdEtaBins; deta++){
 		for(int sign = 0; sign < 3; sign++){
-			for(int HF = 0; HF < 1; HF++){
+			for(int HF = 0; HF < 2; HF++){
 		  
 			  QvsdEta[deta][sign][HF] = (TH1D*) file->Get( Form("ana/QvsdEta_%d_%d_%d",deta,sign,HF) );
 			  
@@ -116,14 +113,14 @@ void plotCorrectionHistogram(){
 
 //correction factor for the V2 values from HF. 
 	double v2[3];
-	v2[0] = sqrt(meanQcQb);
-	// v2[0] = sqrt(c2_b - bCorr);
-	// v2[1] = sqrt(c2_a - aCorr );
-	// v2[2] = sqrt(c2_ab - abCorr );
+	//v2[0] = sqrt(meanQcQb);
+	v2[0] = sqrt(c2_b - bCorr);
+	v2[1] = sqrt(c2_a - aCorr );
+	v2[2] = sqrt(c2_ab - abCorr );
 
-	// v2[0] = sqrt(c2_b );
-	// v2[1] = sqrt(c2_a  );
-	// v2[2] = sqrt(c2_ab );
+	v2[0] = sqrt(c2_b );
+	v2[1] = sqrt(c2_a  );
+	v2[2] = sqrt(c2_ab );
 	cout << "v2[0]: " << v2[0] << endl;
 	cout << "v2[1]: " << v2[1] << endl;
 	cout << "v2[2]: " << v2[2] << endl;
@@ -131,7 +128,7 @@ void plotCorrectionHistogram(){
 	TH1D* hist1[3][2];
 	TH1D* hist2[3][2];
 	for(int sign = 0; sign < 3; sign++){
-		for(int HF = 0; HF < 1; HF++){
+		for(int HF = 0; HF < 2; HF++){
 			hist1[sign][HF] = new TH1D(Form("hist1_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
 			hist2[sign][HF] = new TH1D(Form("hist2_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
 		}
@@ -142,7 +139,7 @@ void plotCorrectionHistogram(){
 		if(deta == 0) continue;
 
 		for(int sign = 0; sign < 3; sign++){
-			for(int HF = 0; HF < 1; HF++){
+			for(int HF = 0; HF < 2; HF++){
 
 				double Q_total_real_dEta = QvsdEta[deta][sign][HF]->GetMean();
 				double Q_total_real_dEta_error = QvsdEta[deta][sign][HF]->GetMeanError();
@@ -190,13 +187,13 @@ void plotCorrectionHistogram(){
 
 	TH1D* base3 = makeHist("base3","","#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
-    base3->GetYaxis()->SetRangeUser(-0.015,0.012);
+    base3->GetYaxis()->SetRangeUser(-0.0015,0.001);
     base3->GetYaxis()->SetTitleOffset(1.9);
 
     TH1D* base4 = (TH1D*) base3->Clone("base4");
 
     TCanvas* c4 = makeMultiCanvas("c4","c4",2,1);
-    for(int HF = 0; HF < 1; HF++){
+    for(int HF = 0; HF < 2; HF++){
 		c4->cd(HF+1);
 		gPad->SetTicks();
 		gPad->SetLeftMargin(0.20);
@@ -234,86 +231,86 @@ void plotCorrectionHistogram(){
     w2->Draw("same");
 
 
-	TLegend *w1 = new TLegend(0.50,0.65,0.8,0.80);
-    w1->SetLineColor(kWhite);
-    w1->SetFillColor(0);
-    w1->SetTextSize(20);
-    w1->SetTextFont(43);
-    w1->AddEntry(hist2[0][0],"corrected","P");
-    w1->AddEntry(hist1[0][0],"uncorrected","P");
+	// TLegend *w1 = new TLegend(0.50,0.65,0.8,0.80);
+ //    w1->SetLineColor(kWhite);
+ //    w1->SetFillColor(0);
+ //    w1->SetTextSize(20);
+ //    w1->SetTextFont(43);
+ //    w1->AddEntry(hist2[0][0],"corrected","P");
+ //    w1->AddEntry(hist1[0][0],"uncorrected","P");
 
-    TH1D* base = makeHist("base","", "#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})", 48,0,4.8);
-    base->GetXaxis()->SetTitleColor(kBlack);
-    base->GetYaxis()->SetRangeUser(-0.003,0.003);
-    base->GetYaxis()->SetTitleOffset(1.9);
+ //    TH1D* base = makeHist("base","", "#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})", 48,0,4.8);
+ //    base->GetXaxis()->SetTitleColor(kBlack);
+ //    base->GetYaxis()->SetRangeUser(-0.003,0.003);
+ //    base->GetYaxis()->SetTitleOffset(1.9);
 
-	TCanvas* c1 = makeMultiCanvas("c1","c1",2,1);
-	for(int HF = 0; HF < 1; HF++){
-		c1->cd(HF+1);
-		gPad->SetTicks();
-		gPad->SetLeftMargin(0.20);
-		gPad->SetBottomMargin(0.16);
-		base->SetTitle("like sign(++)");
-		base->Draw();
+	// TCanvas* c1 = makeMultiCanvas("c1","c1",2,1);
+	// for(int HF = 0; HF < 2; HF++){
+	// 	c1->cd(HF+1);
+	// 	gPad->SetTicks();
+	// 	gPad->SetLeftMargin(0.20);
+	// 	gPad->SetBottomMargin(0.16);
+	// 	base->SetTitle("like sign(++)");
+	// 	base->Draw();
 
-		hist1[0][HF]->SetMarkerColor(kBlack);
-		hist1[0][HF]->SetLineColor(kBlack);
-		hist1[0][HF]->SetMarkerStyle(20);
-		hist1[0][HF]->Draw("Psame");
+	// 	hist1[0][HF]->SetMarkerColor(kBlack);
+	// 	hist1[0][HF]->SetLineColor(kBlack);
+	// 	hist1[0][HF]->SetMarkerStyle(20);
+	// 	hist1[0][HF]->Draw("Psame");
 
-		hist2[0][HF]->SetMarkerColor(kRed);
-		hist2[0][HF]->SetLineColor(kRed);
-		hist2[0][HF]->SetMarkerStyle(20);
-		hist2[0][HF]->Draw("Psame");
+	// 	hist2[0][HF]->SetMarkerColor(kRed);
+	// 	hist2[0][HF]->SetLineColor(kRed);
+	// 	hist2[0][HF]->SetMarkerStyle(20);
+	// 	hist2[0][HF]->Draw("Psame");
 
-	}
+	// }
 
-	w1->Draw("same");
+	// w1->Draw("same");
 
 
-	TCanvas* c2 = makeMultiCanvas("c2","c2",2,1);
-	TH1D* base1 = (TH1D*) base->Clone("base1");
-	for(int HF = 0; HF < 1; HF++){
-		c2->cd(HF+1);
-		gPad->SetTicks();
-		gPad->SetLeftMargin(0.20);
-		gPad->SetBottomMargin(0.16);
-		base1->SetTitle("like sign(--)");
-		base1->Draw();
+	// TCanvas* c2 = makeMultiCanvas("c2","c2",2,1);
+	// TH1D* base1 = (TH1D*) base->Clone("base1");
+	// for(int HF = 0; HF < 2; HF++){
+	// 	c2->cd(HF+1);
+	// 	gPad->SetTicks();
+	// 	gPad->SetLeftMargin(0.20);
+	// 	gPad->SetBottomMargin(0.16);
+	// 	base1->SetTitle("like sign(--)");
+	// 	base1->Draw();
 
-		hist1[1][HF]->SetMarkerColor(kBlack);
-		hist1[1][HF]->SetLineColor(kBlack);
-		hist1[1][HF]->SetMarkerStyle(20);
-		hist1[1][HF]->Draw("Psame");
+	// 	hist1[1][HF]->SetMarkerColor(kBlack);
+	// 	hist1[1][HF]->SetLineColor(kBlack);
+	// 	hist1[1][HF]->SetMarkerStyle(20);
+	// 	hist1[1][HF]->Draw("Psame");
 		
-		hist2[1][HF]->SetMarkerColor(kRed);
-		hist2[1][HF]->SetLineColor(kRed);
-		hist2[1][HF]->SetMarkerStyle(20);
-		hist2[1][HF]->Draw("Psame");
+	// 	hist2[1][HF]->SetMarkerColor(kRed);
+	// 	hist2[1][HF]->SetLineColor(kRed);
+	// 	hist2[1][HF]->SetMarkerStyle(20);
+	// 	hist2[1][HF]->Draw("Psame");
 	
-	}
-	w1->Draw("same");
+	// }
+	// w1->Draw("same");
 
-	TCanvas* c3 = makeMultiCanvas("c3","c3",2,1);
-	TH1D* base2 = (TH1D*) base->Clone("base2");
-	for(int HF = 0; HF < 1; HF++){
-		c3->cd(HF+1);
-		gPad->SetTicks();
-		gPad->SetLeftMargin(0.20);
-		gPad->SetBottomMargin(0.16);
-		base2->SetTitle("unlike sign(+-/-+)");
-		base2->Draw();
+	// TCanvas* c3 = makeMultiCanvas("c3","c3",2,1);
+	// TH1D* base2 = (TH1D*) base->Clone("base2");
+	// for(int HF = 0; HF < 2; HF++){
+	// 	c3->cd(HF+1);
+	// 	gPad->SetTicks();
+	// 	gPad->SetLeftMargin(0.20);
+	// 	gPad->SetBottomMargin(0.16);
+	// 	base2->SetTitle("unlike sign(+-/-+)");
+	// 	base2->Draw();
 
-		hist1[2][HF]->SetMarkerColor(kBlack);
-		hist1[2][HF]->SetLineColor(kBlack);
-		hist1[2][HF]->SetMarkerStyle(20);
-		hist1[2][HF]->Draw("Psame");
+	// 	hist1[2][HF]->SetMarkerColor(kBlack);
+	// 	hist1[2][HF]->SetLineColor(kBlack);
+	// 	hist1[2][HF]->SetMarkerStyle(20);
+	// 	hist1[2][HF]->Draw("Psame");
 		
-		hist2[2][HF]->SetMarkerColor(kRed);
-		hist2[2][HF]->SetLineColor(kRed);
-		hist2[2][HF]->SetMarkerStyle(20);
-		hist2[2][HF]->Draw("Psame");
-	}	
-	w1->Draw("same");
+	// 	hist2[2][HF]->SetMarkerColor(kRed);
+	// 	hist2[2][HF]->SetLineColor(kRed);
+	// 	hist2[2][HF]->SetMarkerStyle(20);
+	// 	hist2[2][HF]->Draw("Psame");
+	// }	
+	// w1->Draw("same");
 
 }
