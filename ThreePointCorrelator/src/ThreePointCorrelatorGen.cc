@@ -185,6 +185,8 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
 
     if( fabs(geneta) < 2.4 ){
 
+      if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
+
       QcosTRK += cos( 2*genphi );
       QsinTRK += sin( 2*genphi );
       QcountsTrk++ ;
