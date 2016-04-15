@@ -179,17 +179,17 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
             if( geneta3 < etaLowHF_ || geneta3 > etaHighHF_ ) continue;
 
             double deltaEta = fabs(geneta1 - geneta2);
+              //for(int deta = 0; deta < NdEtaBins; deta++){
+                if( deltaEta > 0.1 && deltaEta < 0.2  ){
 
-            cout << "deltaEta : " << deltaEta << endl;
-              for(int deta = 0; deta < NdEtaBins; deta++){
-                if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta]  ){
+                  cout << "deltaEta = " << deltaEta << endl;
 
                   real_term[deta] += cos( genphi1 + genphi2 - 2*genphi3 );
                   cout << "deta = " << deta << " , cos(p1+p2-2p3) = " << real_term[deta] << endl;
                   Npairs[deta]++;
 
                 }
-              }
+              //}
           }
       }
   }
