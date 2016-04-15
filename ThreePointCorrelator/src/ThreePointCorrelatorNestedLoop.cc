@@ -179,8 +179,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
             if( geneta3 < etaLowHF_ || geneta3 > etaHighHF_ ) continue;
 
             double deltaEta = fabs(geneta1 - geneta2);
-              //for(int deta = 0; deta < NdEtaBins; deta++){
-                if( deltaEta > 0.1 && deltaEta < 0.2  ){
+            if( deltaEta > 0.1 && deltaEta < 0.2  ){
 
                   cout << "deltaEta = " << deltaEta << endl;
 
@@ -189,7 +188,9 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
                   Npairs[0]++;
 
                 }
-              //}
+              for(int deta = 0; deta < NdEtaBins; deta++){
+                
+              }
           }
       }
   }
