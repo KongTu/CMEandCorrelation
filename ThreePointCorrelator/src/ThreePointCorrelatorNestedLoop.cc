@@ -99,13 +99,13 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
 
   }
 
-  const int NdEtaBins = dEtaBins_.size() - 1;
-  double dEtaBinsArray[48];
+  // const int NdEtaBins = dEtaBins_.size() - 1;
+  // double dEtaBinsArray[48];
 
-  for(unsigned i = 0; i < dEtaBins_.size(); i++){
+  // for(unsigned i = 0; i < dEtaBins_.size(); i++){
 
-    dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
-  }
+  //   dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
+  // }
 
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
