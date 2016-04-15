@@ -184,9 +184,9 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
 
                   cout << "deltaEta = " << deltaEta << endl;
 
-                  real_term[deta] += cos( genphi1 + genphi2 - 2*genphi3 );
-                  cout << "deta = " << deta << " , cos(p1+p2-2p3) = " << real_term[deta] << endl;
-                  Npairs[deta]++;
+                  real_term[0] += cos( genphi1 + genphi2 - 2*genphi3 );
+                  cout << "deta = " << "0" << " , cos(p1+p2-2p3) = " << real_term[0] << endl;
+                  Npairs[0]++;
 
                 }
               //}
