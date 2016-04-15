@@ -154,8 +154,6 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
     if( status1 != 1  || gencharge1 != 1 ) continue;
     if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
 
-    cout << "loop 1 with " << it << endl;
-
       for(unsigned jt=0; jt<genParticleCollection->size(); ++jt) {
 
         const reco::GenParticle & genCand2 = (*genParticleCollection)[jt];
@@ -167,10 +165,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
 
         if( status2 != 1  || gencharge2 != 1 ) continue;//only plus sign
         if( genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
-        //if( it == jt ) continue;
-
-        cout << "loop 2 with " << jt << endl;
-
+        if( it == jt ) continue;
 
           for(unsigned kt=0; kt<genParticleCollection->size(); ++kt) {
 
@@ -183,10 +178,9 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
             if( status3 != 1  || gencharge3 == 0 ) continue;
             if( geneta3 < etaLowHF_ || geneta3 > etaHighHF_ ) continue;
 
-
-            cout << "loop 3 with " << kt << endl;
-
             double deltaEta = fabs(geneta1 - geneta2);
+
+            cout << "deltaEta : " << deltaEta << endl;
               for(int deta = 0; deta < NdEtaBins; deta++){
                 if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta]  ){
 
