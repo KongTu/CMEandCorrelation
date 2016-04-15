@@ -181,12 +181,9 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
 
               }
             }
-            
-            
           }
       }
   }
-
 
   for(int deta = 0; deta < NdEtaBins; deta++){
 
