@@ -100,12 +100,6 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
   }
 
    const int NdEtaBins = dEtaBins_.size() - 1;
-  // double dEtaBinsArray[48];
-
-  // for(unsigned i = 0; i < dEtaBins_.size(); i++){
-
-  //   dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
-  // }
 
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -179,7 +173,8 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
             if( geneta3 < etaLowHF_ || geneta3 > etaHighHF_ ) continue;
 
             double deltaEta = fabs(geneta1 - geneta2);
-            if( deltaEta > 0.1 && deltaEta < 0.2  ){
+            for(int deta = 0; deta < NdEtaBins; deta++){
+              if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1]  ){
 
                   cout << "deltaEta = " << deltaEta << endl;
 
@@ -187,10 +182,10 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
                   cout << "deta = " << "0" << " , cos(p1+p2-2p3) = " << real_term[0] << endl;
                   Npairs[0]++;
 
-                }
-              for(int deta = 0; deta < NdEtaBins; deta++){
-                
               }
+            }
+            
+            
           }
       }
   }
