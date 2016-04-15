@@ -165,7 +165,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
 
         if( status2 != 1  || gencharge2 != 1 ) continue;//only plus sign
         if( genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
-        if( it == jt ) continue;
+        //if( it == jt ) continue;
 
           for(unsigned kt=0; kt<genParticleCollection->size(); ++kt) {
 
