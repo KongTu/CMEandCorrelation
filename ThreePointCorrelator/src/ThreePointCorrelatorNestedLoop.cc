@@ -139,7 +139,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
 
   for(int eta = 0; eta < NdEtaBins; eta++){
     real_term[eta] = 0.;
-    Npairs = 0;
+    Npairs[eta] = 0;
   }
 
   for(unsigned it=0; it<genParticleCollection->size(); ++it) {
