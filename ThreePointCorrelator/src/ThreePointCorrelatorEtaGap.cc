@@ -287,17 +287,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
             //minusminus:
               if( Q1_TrueCount[ieta][1] == 0 || Q1_TrueCount[ieta][1] == 1 || ETT[HF] == 0.0 ) continue;
 
-              double Q_real = get3RealOverlap(Q1[ieta][1][0], Q2[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q2[ieta][1][1], Q3[HF][1], Q1_count[ieta][1], ETT[HF] );
+              Q_real = get3RealOverlap(Q1[ieta][1][0], Q2[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q2[ieta][1][1], Q3[HF][1], Q1_count[ieta][1], ETT[HF] );
               QvsdEta[deta][1][HF]->Fill( Q_real, Q1_count[ieta][1]*(Q1_count[ieta][1]-1)*ETT[HF] );
               
-              double XY_real_temp = get2RealOverlap(Q1[ieta][1][0], Q2[ieta][1][0], Q1[ieta][1][1], Q2[jeta][1][1]);
-              double XY_imag_temp = get2ImagOverlap(Q1[ieta][1][0], Q2[ieta][1][0], Q1[ieta][1][1], Q2[ieta][1][1]);
+              XY_real_temp = get2RealOverlap(Q1[ieta][1][0], Q2[ieta][1][0], Q1[ieta][1][1], Q2[jeta][1][1]);
+              XY_imag_temp = get2ImagOverlap(Q1[ieta][1][0], Q2[ieta][1][0], Q1[ieta][1][1], Q2[ieta][1][1]);
               
-              double XZ_real_temp = get2Real(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
-              double XZ_imag_temp = get2Imag(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
+              XZ_real_temp = get2Real(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
+              XZ_imag_temp = get2Imag(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
 
-              double YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
-              double YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
 
               XY_real[deta][1][HF]->Fill( XY_real_temp/(Q1_count[ieta][1]*(Q1_count[ieta][1]-1) ), Q1_count[ieta][1]*(Q1_count[ieta][1]-1) );
               XY_imag[deta][1][HF]->Fill( XY_imag_temp/(Q1_count[ieta][1]*(Q1_count[ieta][1]-1) ), Q1_count[ieta][1]*(Q1_count[ieta][1]-1) );
@@ -308,9 +308,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               YZ_real[deta][1][HF]->Fill( YZ_real_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
               YZ_imag[deta][1][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
 
-              double X_real_temp = Q1[ieta][1][0]; double X_imag_temp = Q1[ieta][1][1]; 
-              double Y_real_temp = Q1[jeta][1][0]; double Y_imag_temp = Q1[jeta][1][1]; 
-              double Z_real_temp = Q3[HF][0];         double Z_imag_temp = Q3[HF][1]; 
+              X_real_temp = Q1[ieta][1][0]; X_imag_temp = Q1[ieta][1][1]; 
+              Y_real_temp = Q1[jeta][1][0]; Y_imag_temp = Q1[jeta][1][1]; 
+              Z_real_temp = Q3[HF][0];         Z_imag_temp = Q3[HF][1]; 
 
               X_real[deta][1][HF]->Fill( X_real_temp/Q1_count[ieta][1], Q1_count[ieta][1]);    
               Y_real[deta][1][HF]->Fill( Y_real_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
@@ -323,17 +323,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               //plusminus:
               if( Q1_TrueCount[ieta][0] == 0 || Q1_TrueCount[ieta][1] == 0 || ETT[HF] == 0.0 ) continue;
 
-              double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
+              Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
 
-              double XY_real_temp = get2Real(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
-              double XY_imag_temp = get2Imag(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+              XY_real_temp = get2Real(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+              XY_imag_temp = get2Imag(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
               
-              double XZ_real_temp = get2Real(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
-              double XZ_imag_temp = get2Imag(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+              XZ_real_temp = get2Real(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+              XZ_imag_temp = get2Imag(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
 
-              double YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
-              double YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
 
               XY_real[deta][2][HF]->Fill( XY_real_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
               XY_imag[deta][2][HF]->Fill( XY_imag_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
@@ -344,9 +344,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               YZ_real[deta][2][HF]->Fill( YZ_real_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
               YZ_imag[deta][2][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
 
-              double X_real_temp = Q1[ieta][0][0]; double X_imag_temp = Q1[ieta][0][1]; 
-              double Y_real_temp = Q1[jeta][1][0]; double Y_imag_temp = Q1[jeta][1][1]; 
-              double Z_real_temp = Q3[HF][0];      double Z_imag_temp = Q3[HF][1]; 
+              X_real_temp = Q1[ieta][0][0]; X_imag_temp = Q1[ieta][0][1]; 
+              Y_real_temp = Q1[jeta][1][0]; Y_imag_temp = Q1[jeta][1][1]; 
+              Z_real_temp = Q3[HF][0];      Z_imag_temp = Q3[HF][1]; 
 
               X_real[deta][2][HF]->Fill( X_real_temp/Q1_count[ieta][0], Q1_count[ieta][0]);    
               Y_real[deta][2][HF]->Fill( Y_real_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
@@ -400,17 +400,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               //minusminus
               if( Q1_count[ieta][1] == 0.0 || Q1_count[jeta][1] == 0.0 || ETT[HF] == 0.0 ) continue; 
 
-              double Q_real = get3Real(Q1[ieta][1][0]/Q1_count[ieta][1],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][1][1]/Q1_count[ieta][1], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
+              Q_real = get3Real(Q1[ieta][1][0]/Q1_count[ieta][1],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][1][1]/Q1_count[ieta][1], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][1][HF]->Fill( Q_real, Q1_count[ieta][1]*Q1_count[jeta][1]*ETT[HF] );  
 
-              double XY_real_temp = get2Real(Q1[ieta][1][0], Q1[jeta][1][0], Q1[ieta][1][1], Q1[jeta][1][1]);
-              double XY_imag_temp = get2Imag(Q1[ieta][1][0], Q1[jeta][1][0], Q1[ieta][1][1], Q1[jeta][1][1]);
+              XY_real_temp = get2Real(Q1[ieta][1][0], Q1[jeta][1][0], Q1[ieta][1][1], Q1[jeta][1][1]);
+              XY_imag_temp = get2Imag(Q1[ieta][1][0], Q1[jeta][1][0], Q1[ieta][1][1], Q1[jeta][1][1]);
               
-              double XZ_real_temp = get2Real(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
-              double XZ_imag_temp = get2Imag(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
+              XZ_real_temp = get2Real(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
+              XZ_imag_temp = get2Imag(Q1[ieta][1][0], Q3[HF][0], Q1[ieta][1][1], Q3[HF][1]);
 
-              double YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
-              double YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
 
               XY_real[deta][1][HF]->Fill( XY_real_temp/(Q1_count[ieta][1]*Q1_count[jeta][1]), Q1_count[ieta][1]*Q1_count[jeta][1] );
               XY_imag[deta][1][HF]->Fill( XY_imag_temp/(Q1_count[ieta][1]*Q1_count[jeta][1]), Q1_count[ieta][1]*Q1_count[jeta][1] );
@@ -421,9 +421,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               YZ_real[deta][1][HF]->Fill( YZ_real_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
               YZ_imag[deta][1][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
 
-              double X_real_temp = Q1[ieta][1][0]; double X_imag_temp = Q1[ieta][1][1]; 
-              double Y_real_temp = Q1[jeta][1][0]; double Y_imag_temp = Q1[jeta][1][1]; 
-              double Z_real_temp = Q3[HF][0];         double Z_imag_temp = Q3[HF][1]; 
+              X_real_temp = Q1[ieta][1][0]; X_imag_temp = Q1[ieta][1][1]; 
+              Y_real_temp = Q1[jeta][1][0]; Y_imag_temp = Q1[jeta][1][1]; 
+              Z_real_temp = Q3[HF][0];         Z_imag_temp = Q3[HF][1]; 
 
               X_real[deta][1][HF]->Fill( X_real_temp/Q1_count[ieta][1], Q1_count[ieta][1]);    
               Y_real[deta][1][HF]->Fill( Y_real_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
@@ -436,17 +436,17 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               //plusminus
               if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
-              double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
+              Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
 
-              double XY_real_temp = get2Real(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
-              double XY_imag_temp = get2Imag(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+              XY_real_temp = get2Real(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
+              XY_imag_temp = get2Imag(Q1[ieta][0][0], Q1[jeta][1][0], Q1[ieta][0][1], Q1[jeta][1][1]);
               
-              double XZ_real_temp = get2Real(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
-              double XZ_imag_temp = get2Imag(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+              XZ_real_temp = get2Real(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
+              XZ_imag_temp = get2Imag(Q1[ieta][0][0], Q3[HF][0], Q1[ieta][0][1], Q3[HF][1]);
 
-              double YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
-              double YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_real_temp = get2Real(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
+              YZ_imag_temp = get2Imag(Q1[jeta][1][0], Q3[HF][0], Q1[jeta][1][1], Q3[HF][1]);
 
               XY_real[deta][2][HF]->Fill( XY_real_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
               XY_imag[deta][2][HF]->Fill( XY_imag_temp/(Q1_count[ieta][0]*Q1_count[jeta][1]), Q1_count[ieta][0]*Q1_count[jeta][1] );
@@ -457,9 +457,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               YZ_real[deta][2][HF]->Fill( YZ_real_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
               YZ_imag[deta][2][HF]->Fill( YZ_imag_temp/(Q1_count[jeta][1]*ETT[HF]), Q1_count[jeta][1]*ETT[HF] );
 
-              double X_real_temp = Q1[ieta][0][0]; double X_imag_temp = Q1[ieta][0][1]; 
-              double Y_real_temp = Q1[jeta][1][0]; double Y_imag_temp = Q1[jeta][1][1]; 
-              double Z_real_temp = Q3[HF][0];      double Z_imag_temp = Q3[HF][1]; 
+              X_real_temp = Q1[ieta][0][0]; X_imag_temp = Q1[ieta][0][1]; 
+              Y_real_temp = Q1[jeta][1][0]; Y_imag_temp = Q1[jeta][1][1]; 
+              Z_real_temp = Q3[HF][0];      Z_imag_temp = Q3[HF][1]; 
 
               X_real[deta][2][HF]->Fill( X_real_temp/Q1_count[ieta][0], Q1_count[ieta][0]);    
               Y_real[deta][2][HF]->Fill( Y_real_temp/Q1_count[jeta][1], Q1_count[jeta][1]);    
