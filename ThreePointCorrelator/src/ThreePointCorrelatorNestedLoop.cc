@@ -183,6 +183,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
                 if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta]  ){
 
                   real_term[deta] += cos( genphi1 + genphi2 - 2*genphi3 );
+                  cout << "deta = " << deta << " , cos(p1+p2-2p3) = " << real_term[deta] << endl;
                   Npairs[deta]++;
 
                 }
