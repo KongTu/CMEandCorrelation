@@ -176,8 +176,8 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
             for(int deta = 0; deta < NdEtaBins; deta++){
               if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1]  ){
 
-                  real_term[0] += cos( genphi1 + genphi2 - 2*genphi3 );
-                  Npairs[0]++;
+                  real_term[deta] += cos( genphi1 + genphi2 - 2*genphi3 );
+                  Npairs[deta]++;
 
               }
             }
