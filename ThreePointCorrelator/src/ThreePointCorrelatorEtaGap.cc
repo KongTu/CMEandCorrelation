@@ -248,8 +248,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
             for(int HF = 0; HF < HFside; HF++){
               for(int sign = 0; sign < 2; sign++){
 
-                if( Q1_TrueCount[ieta][sign] == 0 || Q1_TrueCount[ieta][sign] == 1 || ETT[HF] == 0.0 ) continue;
-
                 double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
                 QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
                 
@@ -500,7 +498,9 @@ double ThreePointCorrelatorEtaGap::get3RealOverlap(double R1, double R2, double 
       double t2 = (2*R1*I1-I2)*I3;
       double N = N1*(N1-1)*N3;
 
-      return (t1-t2)/N;
+      if( N == 0.0 ){return 0.0;}
+      else{return (t1-t2)/N;}
+
 }
 double ThreePointCorrelatorEtaGap::get3Imag(double R1, double R2, double R3, double I1, double I2, double I3){
 
@@ -518,7 +518,9 @@ double ThreePointCorrelatorEtaGap::get3ImagOverlap(double R1, double R2, double 
       double t2 = (2*R1*I1-I2)*R3;
       double N = N1*(N1-1)*N3;
 
-      return (t1+t2)/N;
+      if( N == 0.0 ){ return 0.0;}
+      else{return (t1+t2)/N;}
+
 }
 
 double ThreePointCorrelatorEtaGap::get2Real( double R1, double R2, double I1, double I2){
