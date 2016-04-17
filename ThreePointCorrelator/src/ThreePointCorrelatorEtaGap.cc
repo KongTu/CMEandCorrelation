@@ -212,6 +212,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
         double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+        w = 1.0;
         
         if( reverseBeam_ ) caloEta = -hit.eta();
         if( messAcceptance_ ){if( caloPhi < holeRight_ && caloPhi > holeLeft_ ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
