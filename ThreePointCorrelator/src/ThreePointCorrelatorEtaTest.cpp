@@ -245,8 +245,8 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
           } 
         if( Q1_count[ieta][0] == 0 || Q1_count[ieta][1] == 0 || ETT[HF] == 0.0 ) continue;
 
-        double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
-        QvsdEta[ieta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
+        double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[ieta][1][0]/Q1_count[ieta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[ieta][1][1]/Q1_count[ieta][1], Q3[HF][1]/ETT[HF]);
+        QvsdEta[ieta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[ieta][1]*ETT[HF] );  
       } 
     }
   }
