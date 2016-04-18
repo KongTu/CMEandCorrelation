@@ -283,7 +283,7 @@ ThreePointCorrelatorEtaGapNestedLoop::beginJob()
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
-      for(int HF = 0; HF < HFside; HF++){       
+      for(int HF = 0; HF < 2; HF++){       
         QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
       }
     }
