@@ -137,8 +137,13 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
   int Npairs[48][3][2];
 
   for(int eta = 0; eta < NdEtaBins; eta++){
-    real_term[eta] = 0.;
-    Npairs[eta] = 0;
+    for(int sign = 0; sign < 3; sign++){
+      for(int HF = 0; HF < 2; HF++){
+        
+        real_term[eta][sign][HF] = 0.;
+        Npairs[eta][sign][HF] = 0;
+      }
+    } 
   }
 
   for(unsigned it = 0; it < tracks->size(); it++){
