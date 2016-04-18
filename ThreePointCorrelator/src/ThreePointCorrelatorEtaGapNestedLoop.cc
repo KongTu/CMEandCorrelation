@@ -100,7 +100,6 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
 
   }
 
-  const int NetaBins = etaBins_.size() - 1 ;
   const int NdEtaBins = dEtaBins_.size() - 1;
   double dEtaBinsArray[100];
 
