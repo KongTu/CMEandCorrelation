@@ -133,8 +133,8 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
   
   Ntrk->Fill(nTracks);
 
-  double real_term[48];
-  int Npairs[48];
+  double real_term[48][3][2];
+  int Npairs[48][3][2];
 
   for(int eta = 0; eta < NdEtaBins; eta++){
     real_term[eta] = 0.;
@@ -165,8 +165,6 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
         if(nhits < offlinenhits_) continue;
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
-        if(trk.charge() != 1) continue;
-
         for(unsigned jt = 0; jt < tracks->size(); jt++){
 
           const reco::Track & trk1 = (*tracks)[jt];
@@ -190,7 +188,6 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
           if(chi2n > offlineChi2_) continue;
           if(nhits < offlinenhits_) continue;
 
-          if(trk1.charge() != 1) continue;
           if(it == jt ) continue;
 
            for(unsigned i = 0; i < towers->size(); ++i){
@@ -205,8 +202,43 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
                 for(int deta = 0; deta < NdEtaBins; deta++){
                   if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
 
-                      real_term[deta] += cos( trk.phi() + trk1.phi() - 2*caloPhi );
-                      Npairs[deta]++;
+                      if( trk.charge() == 1 && trk1.charge() == 1){
+                        
+                        real_term[deta][0][0] += cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                        Npairs[deta][0][0]++;
+                      }
+                      if( trk.charge() == -1 && trk1.charge() == -1){
+                        real_term[deta][1][0] += cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                        Npairs[deta][1][0]++;
+                      }
+                      if( trk.charge() == 1 && trk1.charge() == -1 ){
+
+                        real_term[deta][2][0] += cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                        Npairs[deta][2][0]++;
+                      }
+                      
+                  }
+                }  
+              }
+              else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
+                double deltaEta = fabs( trk.eta() - trk1.eta() );
+                for(int deta = 0; deta < NdEtaBins; deta++){
+                  if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+
+                      if( trk.charge() == 1 && trk1.charge() == 1){
+                        
+                        real_term[deta][0][1] += cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                        Npairs[deta][0][1]++;
+                      }
+                      if( trk.charge() == -1 && trk1.charge() == -1){
+                        real_term[deta][1][1] += cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                        Npairs[deta][1][1]++;
+                      }
+                      if( trk.charge() == 1 && trk1.charge() == -1 ){
+
+                        real_term[deta][2][1] += cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                        Npairs[deta][2][1]++;
+                      }
                   }
                 }  
               }
@@ -216,9 +248,11 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
   } 
 
   for(int deta = 0; deta < NdEtaBins; deta++){
-
-    QvsdEta[deta]->Fill( real_term[deta]/Npairs[deta], Npairs[deta]);
-
+    for(int sign = 0; sign < 3; sign++){
+      for(int HF = 0; HF < 2; HF++){
+        QvsdEta[deta][sign][HF]->Fill( real_term[deta][sign][HF]/Npairs[deta][sign][HF], Npairs[deta][sign][HF]);
+      }
+    }
   }
 
 }
@@ -243,8 +277,11 @@ ThreePointCorrelatorEtaGapNestedLoop::beginJob()
   const int NdEtaBins = dEtaBins_.size() - 1;
 
   for(int deta = 0; deta < NdEtaBins; deta++){
-       
-    QvsdEta[deta] = fs->make<TH1D>(Form("QvsdEta_%d",deta), "", 20000,-1.0-0.00005, 1.0-0.00005);
+    for(int sign = 0; sign < 3; sign++){
+      for(int HF = 0; HF < HFside; HF++){       
+        QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
+      }
+    }
   }
   
 }

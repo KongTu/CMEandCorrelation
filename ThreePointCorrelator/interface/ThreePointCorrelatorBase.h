@@ -270,7 +270,7 @@ class ThreePointCorrelatorEtaGapNestedLoop : public edm::EDAnalyzer {
       TH1D* cbinHist;
 
 
-      TH1D* QvsdEta[48];
+      TH1D* QvsdEta[48][3][2];
 
 
       int Nmin_;
