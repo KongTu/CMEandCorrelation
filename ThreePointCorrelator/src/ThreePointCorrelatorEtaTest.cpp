@@ -101,14 +101,6 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
   }
 
   const int NetaBins = etaBins_.size() - 1 ;
-  const int NdEtaBins = dEtaBins_.size() - 1;
-  double dEtaBinsArray[100];
-
-  for(unsigned i = 0; i < dEtaBins_.size(); i++){
-
-    dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
-  }
-
 
 // initialize Qcos and Qsin
 
@@ -248,13 +240,13 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
           if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
             double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
-            QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
+            QvsdEta[ieta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
         
           } 
         if( Q1_count[ieta][0] == 0 || Q1_count[ieta][1] == 0 || ETT[HF] == 0.0 ) continue;
 
         double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
-        QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
+        QvsdEta[ieta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
       } 
     }
   }
@@ -299,7 +291,7 @@ ThreePointCorrelatorEtaTest::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
-  const int NdEtaBins = dEtaBins_.size() - 1;
+  const int NetaBins = etaBins_.size() - 1 ;
   int HFside = 2;
   if( useBothSide_ ) HFside = 1;
 //HF:
@@ -314,10 +306,10 @@ ThreePointCorrelatorEtaTest::beginJob()
       }
   }
 
-  for(int deta = 0; deta < NdEtaBins; deta++){
+  for(int eta = 0; eta < NetaBins; eta++){
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < HFside; HF++){       
-        QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
+        QvsdEta[eta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",eta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
       }
     }
   }
