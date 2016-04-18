@@ -213,6 +213,8 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       double ptHigh_;
       double offlineptErr_;
       double offlineDCA_;
+      double offlineChi2_;
+      double offlinenhits_;
       double holeLeft_;
       double holeRight_;
       double holesize_;

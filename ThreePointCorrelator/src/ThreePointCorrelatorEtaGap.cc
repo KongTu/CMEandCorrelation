@@ -46,7 +46,9 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
 
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
-
+  offlineChi2_ = iConfig.getUntrackedParameter<double>("offlineChi2", 0.0);
+  offlinenhits_ = iConfig.getUntrackedParameter<double>("offlinenhits", 0.0);
+  
   holesize_ = iConfig.getUntrackedParameter<double>("holesize");
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
@@ -142,6 +144,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+        double nhits = trk.numberOfValidHits();
+        double chi2n = trk.normalizedChi2();
+        double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
+        chi2n = chi2n/nlayers;
+
         double weight = 1.0;
 
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
@@ -150,6 +157,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nTracks++;}// NtrkOffline        
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
+        if(chi2n > offlineChi2_) continue;
+        if(nhits < offlinenhits_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
        
