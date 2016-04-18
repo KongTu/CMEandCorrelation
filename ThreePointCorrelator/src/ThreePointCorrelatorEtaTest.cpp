@@ -237,7 +237,10 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
   int count2 = 0;
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int HF = 0; HF < HFside; HF++){
-      for(int sign = 0; sign < 2; sign++){
+
+
+
+      for(int sign = 0; sign < 1; sign++){
         if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
           count1++;
@@ -245,18 +248,25 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
           QvsdEta[ieta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
         
         } 
-      if( Q1_count[ieta][0] == 0 || Q1_count[ieta][1] == 0 || ETT[HF] == 0.0 ) continue;
+      if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
       count2++;
       double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[ieta][1][0]/Q1_count[ieta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[ieta][1][1]/Q1_count[ieta][1], Q3[HF][1]/ETT[HF]);
       QvsdEta[ieta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[ieta][1]*ETT[HF] );  
+    
+
+
+
+
+
+
     } 
     
   }
 
   cout << "count1: " << count1 << endl;
   cout << "count2: " << count2 << endl;
-  
+
 
 /*
 calculate v2 using 3 sub-events method:
