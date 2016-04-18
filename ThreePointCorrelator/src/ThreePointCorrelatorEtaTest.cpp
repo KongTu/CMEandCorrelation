@@ -241,7 +241,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
 
 
       for(int sign = 0; sign < 1; sign++){
-        if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
+        if( Q1_count[ieta][sign] == 0.0 || Q1_count[ieta][sign] == 1.0 || ETT[HF] == 0.0 ) continue;
 
           count1++;
           double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
