@@ -34,6 +34,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");  
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
+  doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
@@ -163,6 +164,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
+
+        cout << "weight=" << weight << endl;
 
         QcosTRK += weight*cos( 2*trk.phi() );
         QsinTRK += weight*sin( 2*trk.phi() );
