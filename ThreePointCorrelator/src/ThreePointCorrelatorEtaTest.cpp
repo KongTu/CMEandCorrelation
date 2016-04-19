@@ -155,7 +155,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
         if(nhits < offlinenhits_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         
-        if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        //if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
@@ -195,15 +195,6 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
 
 
   } 
-
-  for(int eta = 0; eta < NetaBins; eta++){
-
-    cout << "Q1_count: " << Q1_count[eta][0] << endl;
-    cout << "Q1_TrueCount: " << Q1_TrueCount[eta][0] << endl;
-
-    plusCount[eta]->Fill( Q1_count[eta][0] );
-    minusCount[eta]->Fill( Q1_count[eta][1] );
-  }
 
   if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
   
@@ -255,21 +246,24 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
     for(int HF = 0; HF < HFside; HF++){
       for(int sign = 0; sign < 2; sign++){
         
-        if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
+        if( Q1_TrueCount[ieta][sign] == 0 || ETT[HF] == 0.0 ) continue;
 
           double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_TrueCount[ieta][sign], ETT[HF] );
           QvsdEta[ieta][sign][HF]->Fill( Q_real, Q1_TrueCount[ieta][sign]*(Q1_TrueCount[ieta][sign]-1)*ETT[HF] );
 
-          cout << "Q1_count: " << Q1_TrueCount[ieta][sign] << endl;
-          cout << "ETT: " << ETT[HF] << endl;
-          cout << "total: " << Q1_TrueCount[ieta][sign]*(Q1_TrueCount[ieta][sign]-1)*ETT[HF] << endl;
+          cout << "like sign Q1_count: " << Q1_TrueCount[ieta][sign] << endl;
+          cout << "like sign ETT: " << ETT[HF] << endl;
+          cout << "like sign total: " << Q1_TrueCount[ieta][sign]*(Q1_TrueCount[ieta][sign]-1)*ETT[HF] << endl;
         
         } 
       if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
       double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[ieta][1][0]/Q1_count[ieta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[ieta][1][1]/Q1_count[ieta][1], Q3[HF][1]/ETT[HF]);
       QvsdEta[ieta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[ieta][1]*ETT[HF] );  
-    
+          
+      cout << "unlike sign Q1_count plus: " << Q1_count[ieta][0] << endl;
+      cout << "unlike sign Q1_count minus: " << Q1_count[ieta][1] << endl;
+      cout << "unlike sign total: " << Q1_count[ieta][0]*Q1_count[ieta][1]*ETT[HF] << endl;
 
     } 
   }
@@ -331,8 +325,6 @@ ThreePointCorrelatorEtaTest::beginJob()
   }
 
   for(int eta = 0; eta < NetaBins; eta++){
-    plusCount[eta] = fs->make<TH1D>(Form("plusCount_%d",eta), ";#eta", 10, 0, 10);
-    minusCount[eta] = fs->make<TH1D>(Form("minusCount_%d",eta), ";#eta", 10, 0, 10);
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < HFside; HF++){       
         QvsdEta[eta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",eta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
