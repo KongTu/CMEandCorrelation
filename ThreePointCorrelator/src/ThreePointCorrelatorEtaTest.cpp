@@ -110,6 +110,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
 
   double Q1[NetaBins][2][2];
   double Q1_count[NetaBins][2];
+  int    Q1_TrueCount[NetaBins][2];
 
   double Q2[NetaBins][2][2];
   double Q2_count[NetaBins][2];
@@ -169,6 +170,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
               Q1[eta][0][0] += weight*cos( trk.phi() );
               Q1[eta][0][1] += weight*sin( trk.phi() );
               Q1_count[eta][0] += weight;
+              Q1_TrueCount[eta][0] ++;
 
               Q2[eta][0][0] += weight*cos( 2*trk.phi() );
               Q2[eta][0][1] += weight*sin( 2*trk.phi() );
@@ -179,6 +181,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
               Q1[eta][1][0] += weight*cos( trk.phi() );
               Q1[eta][1][1] += weight*sin( trk.phi() );
               Q1_count[eta][1] += weight;
+              Q1_TrueCount[eta][1] ++;
 
               Q2[eta][1][0] += weight*cos( 2*trk.phi() );
               Q2[eta][1][1] += weight*sin( 2*trk.phi() );
@@ -194,6 +197,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
   for(int eta = 0; eta < NetaBins; eta++){
 
     cout << "Q1_count: " << Q1_count[eta][0] << endl;
+    cout << "Q1_count: " << Q1_TrueCount[eta][0] << endl;
 
     plusCount[eta]->Fill( Q1_count[eta][0] );
     minusCount[eta]->Fill( Q1_count[eta][1] );
@@ -251,8 +255,8 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
         
         if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
-          double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
-          QvsdEta[ieta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
+          double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_TrueCount[ieta][sign], ETT[HF] );
+          QvsdEta[ieta][sign][HF]->Fill( Q_real, Q1_TrueCount[ieta][sign]*(Q1_TrueCount[ieta][sign]-1)*ETT[HF] );
 
           cout << "Q1_count: " << Q1_count[ieta][sign] << endl;
           cout << "ETT: " << ETT[HF] << endl;
@@ -264,7 +268,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
       double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[ieta][1][0]/Q1_count[ieta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[ieta][1][1]/Q1_count[ieta][1], Q3[HF][1]/ETT[HF]);
       QvsdEta[ieta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[ieta][1]*ETT[HF] );  
     
-    
+
     } 
   }
 
