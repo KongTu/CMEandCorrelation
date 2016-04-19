@@ -165,8 +165,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
-        cout << "weight=" << weight << endl;
-
         QcosTRK += weight*cos( 2*trk.phi() );
         QsinTRK += weight*sin( 2*trk.phi() );
         QcountsTrk += weight;
