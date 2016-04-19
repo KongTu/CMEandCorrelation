@@ -468,7 +468,7 @@ double ThreePointCorrelatorEtaGap::get3Imag(double R1, double R2, double R3, dou
   return t1+t2+t3-t4;
 
 }
-double ThreePointCorrelatorEtaGap::get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
+double ThreePointCorrelatorEtaGap::get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N2, double N3){
 
       double t1 = (R1*R1 - I1*I1 - R2)*I3;
       double t2 = (2*R1*I1-I2)*R3;
