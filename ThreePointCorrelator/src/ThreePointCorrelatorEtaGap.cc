@@ -171,8 +171,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
         if( reverseBeam_ ) {trkEta = -trk.eta();}
 
-        weight = 1000.0;
-
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
         QcosTRK += weight*cos( 2*trk.phi() );
@@ -337,6 +335,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
                 double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], Q2_count[ieta][sign], ETT[HF] );
                 QvsdEta[deta][sign][HF]->Fill( Q_real, (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] );
+              
+                cout << "likesign === Q_real: " << Q_real << endl;
+                cout << "likesign === Q1_count: " << Q1_count[ieta][sign] << endl;
+                cout << "likesign === Q2_count: " << Q2_count[ieta][sign] << endl;
+                cout << "likesign === ETT: " << ETT[HF] << endl;
+                cout << "total count ==== " << (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] << endl;
+
               }
 
               if( Q1_count[ieta][0] == 0 || Q1_count[ieta][1] == 0 || ETT[HF] == 0.0 ) continue;
