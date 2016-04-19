@@ -258,6 +258,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
                 double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], Q2_count[ieta][sign], ETT[HF] );
                 QvsdEta[deta][sign][HF]->Fill( Q_real, (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] );
                 
+                cout << "Q1_count: " << Q1_count[ieta][sign] << endl;
+                cout << "Q2_count: " << Q2_count[ieta][sign] << endl;
+                cout << "ETT: " << ETT[HF] << endl;
               }
 
               if( Q1_count[ieta][0] == 0 || Q1_count[ieta][1] == 0 ) cout << "zero count for either positive or negative!" << endl;
@@ -266,6 +269,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
 
+              cout << "Q1_count 0: " << Q1_count[ieta][0] << endl;
+              cout << "Q1_count 1: " << Q1_count[ieta][1] << endl;
+              cout << "ETT: " << ETT[HF] << endl;
             }
           }
           else{
