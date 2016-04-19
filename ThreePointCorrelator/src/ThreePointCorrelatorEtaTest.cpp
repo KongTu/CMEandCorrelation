@@ -245,21 +245,6 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
 
           double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], Q2_count[ieta][sign], ETT[HF] );
           QvsdEta[ieta][sign][HF]->Fill( Q_real, (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] );
-          
-          cout << "likesign === Q_real: " << Q_real << endl;
-          cout << "-----------------------" << endl;
-          cout << "like sign === Q1 cos: " << Q1[ieta][sign][0] << endl;
-          cout << "like sign === Q2 cos: " << Q2[ieta][sign][0] << endl;
-          cout << "like sign === Q3 cos: " << Q3[HF][0] << endl;
-          cout << "like sign === Q1 sin: " << Q1[ieta][sign][1] << endl;
-          cout << "like sign === Q2 sin: " << Q2[ieta][sign][1] << endl;
-          cout << "like sign === Q3 sin: " << Q3[HF][1] << endl;
-
-          cout << "likesign === Q1_count: " << Q1_count[ieta][sign] << endl;
-          cout << "likesign === Q2_count: " << Q2_count[ieta][sign] << endl;
-          cout << "likesign === ETT: " << ETT[HF] << endl;
-          cout << "total count ==== " << (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] << endl;
-          cout << "-----------------------" << endl;
 
         } 
       if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
