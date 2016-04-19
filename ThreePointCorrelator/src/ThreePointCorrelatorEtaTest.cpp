@@ -170,9 +170,9 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
               Q1[eta][0][1] += weight*sin( trk.phi() );
               Q1_count[eta][0] += weight;
 
-              Q2[eta][0][0] += weight*cos( 2*trk.phi() );
-              Q2[eta][0][1] += weight*sin( 2*trk.phi() );
-              Q2_count[eta][0] += weight;
+              Q2[eta][0][0] += weight*weight*cos( 2*trk.phi() );
+              Q2[eta][0][1] += weight*weight*sin( 2*trk.phi() );
+              Q2_count[eta][0] += weight*weight;
 
             }
             else if( trk.charge() == -1){
@@ -180,9 +180,9 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
               Q1[eta][1][1] += weight*sin( trk.phi() );
               Q1_count[eta][1] += weight;
 
-              Q2[eta][1][0] += weight*cos( 2*trk.phi() );
-              Q2[eta][1][1] += weight*sin( 2*trk.phi() );
-              Q2_count[eta][1] += weight;
+              Q2[eta][1][0] += weight*weight*cos( 2*trk.phi() );
+              Q2[eta][1][1] += weight*weight*sin( 2*trk.phi() );
+              Q2_count[eta][1] += weight*weight;
 
             }
           }
@@ -243,9 +243,24 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
         
         if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
-          double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
-          QvsdEta[ieta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
-        
+          double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], Q2_count[ieta][sign], ETT[HF] );
+          QvsdEta[ieta][sign][HF]->Fill( Q_real, (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] );
+          
+          cout << "likesign === Q_real: " << Q_real << endl;
+          cout << "-----------------------" << endl;
+          cout << "like sign === Q1 cos: " << Q1[ieta][sign][0] << endl;
+          cout << "like sign === Q2 cos: " << Q2[ieta][sign][0] << endl;
+          cout << "like sign === Q3 cos: " << Q3[HF][0] << endl;
+          cout << "like sign === Q1 sin: " << Q1[ieta][sign][1] << endl;
+          cout << "like sign === Q2 sin: " << Q2[ieta][sign][1] << endl;
+          cout << "like sign === Q3 sin: " << Q3[HF][1] << endl;
+
+          cout << "likesign === Q1_count: " << Q1_count[ieta][sign] << endl;
+          cout << "likesign === Q2_count: " << Q2_count[ieta][sign] << endl;
+          cout << "likesign === ETT: " << ETT[HF] << endl;
+          cout << "total count ==== " << (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] << endl;
+          cout << "-----------------------" << endl;
+
         } 
       if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
@@ -333,11 +348,11 @@ ThreePointCorrelatorEtaTest::get3Real(double R1, double R2, double R3, double I1
   return t1-t2-t3-t4;
 }
 
-double ThreePointCorrelatorEtaTest::get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
+double ThreePointCorrelatorEtaTest::get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N2, double N3){
 
       double t1 = (R1*R1 - I1*I1 - R2)*R3;
       double t2 = (2*R1*I1-I2)*I3;
-      double N = N1*(N1-1)*N3;
+      double N = (N1*N1-N2)*N3;
 
       if( N == 0.0 ){return 0.0;}
       else{return (t1-t2)/N;}
