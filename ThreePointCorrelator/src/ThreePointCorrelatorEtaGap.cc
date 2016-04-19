@@ -162,8 +162,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(chi2n > offlineChi2_) continue;
         if(nhits < offlinenhits_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
-        if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
-        if( reverseBeam_ ) trkEta = -trk.eta();
+        if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        if( reverseBeam_ ) {trkEta = -trk.eta();}
 
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
