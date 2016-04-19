@@ -156,6 +156,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         
         if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        else{ weight = 1.0; }
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
