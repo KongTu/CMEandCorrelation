@@ -268,6 +268,9 @@ class ThreePointCorrelatorEtaTest : public edm::EDAnalyzer {
       TH1D* trkPhi;
       TH1D* hfPhi;
       TH1D* cbinHist;
+
+      TH1D* plusCount;
+      TH1D* minusCount;
 //v2
       TH1D* c2_ab;
       TH1D* c2_ac;

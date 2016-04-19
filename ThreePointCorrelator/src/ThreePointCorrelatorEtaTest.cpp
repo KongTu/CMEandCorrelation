@@ -187,6 +187,12 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
         }     
   } 
 
+  for(int eta = 0; eta < NetaBins; eta++){
+
+    plusCount->SetBinContent(eta+1, Q1_count[eta][0]);
+    minusCount->SetBinContent(eta+1, Q1_count[eta][1]);
+  }
+
   if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
   
   Ntrk->Fill(nTracks);
@@ -289,7 +295,14 @@ ThreePointCorrelatorEtaTest::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
 
+
   const int NetaBins = etaBins_.size() - 1 ;
+  const int temp = etaBins_.size();
+  double etabinsArray[temp];
+  for(int eta = 0; eta < temp; eta++){
+
+      etabinsArray[eta] = etaBins_[eta];
+  }
   int HFside = 2;
   if( useBothSide_ ) HFside = 1;
 //HF:
@@ -303,6 +316,10 @@ ThreePointCorrelatorEtaTest::beginJob()
         aveQ3[i][j] = fs->make<TH1D>(Form("aveQ3_%d_%d",i, j), ";aveQ3", 20000, -1.0, 1.0);
       }
   }
+
+
+  plusCount = fs->make<TH1D>("plusCount", ";#eta", NetaBins, etabinsArray);
+  minusCount = fs->make<TH1D>("minusCount", ";#eta", NetaBins, etabinsArray);
 
   for(int eta = 0; eta < NetaBins; eta++){
     for(int sign = 0; sign < 3; sign++){
