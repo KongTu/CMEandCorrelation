@@ -171,6 +171,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
         if( reverseBeam_ ) {trkEta = -trk.eta();}
 
+        weight = 1000.0;
+
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
         QcosTRK += weight*cos( 2*trk.phi() );
@@ -470,7 +472,7 @@ double ThreePointCorrelatorEtaGap::get3ImagOverlap(double R1, double R2, double 
 
       double t1 = (R1*R1 - I1*I1 - R2)*I3;
       double t2 = (2*R1*I1-I2)*R3;
-      double N = N1*(N1-1)*N3;
+      double N = (N1*N1-N2)*N3;
 
       if( N == 0.0 ){ return 0.0;}
       else{return (t1+t2)/N;}
