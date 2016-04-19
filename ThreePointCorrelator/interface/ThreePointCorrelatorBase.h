@@ -508,6 +508,7 @@ class ThreePointCorrelatorGen : public edm::EDAnalyzer {
 //end v2
 
       TH1D* QvsdEta[48][3][2];
+      TH1D* PvsdEta[48][3];
 
       int Nmin_;
       int Nmax_;

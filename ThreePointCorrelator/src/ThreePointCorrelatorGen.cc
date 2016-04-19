@@ -145,6 +145,9 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
   double Q2[NetaBins][2][2];
   double Q2_count[NetaBins][2];
 
+  double P1[NetaBins][2][2];
+  double P2[NetaBins][2][2];
+
   for(int i = 0; i < NetaBins; i++){
     for(int j = 0; j < 2; j++){
       Q1_count[i][j] = 0.0;
@@ -152,6 +155,9 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
       for(int k = 0; k < 2; k++){
         Q1[i][j][k] = 0.0;
         Q2[i][j][k] = 0.0;
+
+        P1[i][j][k] = 0.0;
+        P2[i][j][k] = 0.0;
       }
     }
   }
@@ -204,6 +210,12 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
               Q2[eta][0][1] += sin( 2*genphi );
               Q2_count[eta][0]++;
 
+              P1[eta][0][0] += cos( genphi );
+              P1[eta][0][1] += sin( genphi );
+
+              P2[eta][0][0] += cos( -genphi );
+              P2[eta][0][1] += sin( -genphi );
+
             }
             else if( gencharge == -1 ){
 
@@ -214,7 +226,12 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
               Q2[eta][1][0] += cos( 2*genphi );
               Q2[eta][1][1] += sin( 2*genphi );
               Q2_count[eta][1]++;
+              
+              P1[eta][1][0] += cos( genphi );
+              P1[eta][1][1] += sin( genphi );
 
+              P2[eta][1][0] += cos( -genphi );
+              P2[eta][1][1] += sin( -genphi );
 
             }
             else{cout << "break!" << endl; return;}
@@ -237,6 +254,60 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
       else{continue;}
   }
 
+//2p correlators
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+    for(int jeta = 0; jeta < NetaBins; jeta++){
+
+      double deltaEta = fabs(etaBins_[ieta] - etaBins_[jeta]);
+      
+      for(int deta = 0; deta < NdEtaBins; deta++){
+        if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+          if( deta == 0){
+            for(int sign = 0; sign < 2; sign++){
+              if( Q2_count[ieta][sign] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][sign][0], P2[ieta][sign][0], P1[ieta][sign][1], P2[ieta][sign][1]);
+              double P_real_count = Q2_count[ieta][sign]*(Q2_count[ieta][sign]-1);
+              P_real = (P_real - Q2_count[ieta][sign])/P_real_count; //for COS(P1-P2) needs to minus the N.
+
+              PvsdEta[deta][sign]->Fill( P_real, P_real_count  );
+            }
+
+            if( Q2_count[ieta][0] == 0.0 || Q2_count[ieta][1] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][0][0], P2[ieta][1][0], P1[ieta][0][1], P2[ieta][1][1]);
+              double P_real_count = Q2_count[ieta][0]*Q2_count[ieta][1];
+              P_real = P_real/P_real_count;
+
+              PvsdEta[deta][2]->Fill( P_real, P_real_count  );
+
+          }
+          else{
+            for(int sign = 0; sign < 2; sign++){
+              if( Q2_count[ieta][sign] == 0.0 || Q2_count[jeta][sign] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][sign][0], P2[jeta][sign][0], P1[ieta][sign][1], P2[jeta][sign][1]);
+              double P_real_count = Q2_count[ieta][sign]*Q2_count[jeta][sign];
+              P_real = P_real/P_real_count; //for COS(P1-P2) needs to minus the N.
+
+              PvsdEta[deta][sign]->Fill( P_real, P_real_count  );
+            }
+
+            if( Q2_count[ieta][0] == 0.0 || Q2_count[jeta][1] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][0][0], P2[jeta][1][0], P1[ieta][0][1], P2[jeta][1][1]);
+              double P_real_count = Q2_count[ieta][0]*Q2_count[jeta][1];
+              P_real = P_real/P_real_count;
+
+              PvsdEta[deta][2]->Fill( P_real, P_real_count  );
+
+          }
+        }
+      }
+    }
+  }
+
+//3p correlators
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
     
@@ -329,6 +400,9 @@ ThreePointCorrelatorGen::beginJob()
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
+
+      PvsdEta[deta][sign] = fs->make<TH1D>(Form("PvsdEta_%d_%d", deta, sign), "", 20000, -1.0-0.00005, 1.0-0.00005);
+
       for(int HF = 0; HF < HFside; HF++){       
         QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
       }
@@ -401,6 +475,7 @@ double ThreePointCorrelatorGen::get2ImagOverlap( double R1, double R2, double I1
       double imag = (2*R1*I1-I2);
       return imag;
 } 
+
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 ThreePointCorrelatorGen::endJob() 
