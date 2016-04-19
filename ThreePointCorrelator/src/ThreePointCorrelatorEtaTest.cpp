@@ -155,7 +155,7 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
         if(nhits < offlinenhits_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         
-        //if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
@@ -250,10 +250,6 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
 
           double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_TrueCount[ieta][sign], ETT[HF] );
           QvsdEta[ieta][sign][HF]->Fill( Q_real, Q1_TrueCount[ieta][sign]*(Q1_TrueCount[ieta][sign]-1)*ETT[HF] );
-
-          cout << "like sign Q1_count: " << Q1_TrueCount[ieta][sign] << endl;
-          cout << "like sign ETT: " << ETT[HF] << endl;
-          cout << "like sign total: " << Q1_TrueCount[ieta][sign]*(Q1_TrueCount[ieta][sign]-1)*ETT[HF] << endl;
         
         } 
       if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
