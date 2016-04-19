@@ -218,22 +218,22 @@ ThreePointCorrelatorEtaTest::analyze(const edm::Event& iEvent, const edm::EventS
 
         double caloEta = hit.eta();
         double caloPhi = hit.phi();
-        double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+        //double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
         
         if( reverseBeam_ ) caloEta = -hit.eta();
         if( messAcceptance_ ){if( caloPhi < holeRight_ && caloPhi > holeLeft_ ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
         
         if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
           
-            Q3[0][0] += w*cos( -2*caloPhi );
-            Q3[0][1] += w*sin( -2*caloPhi );
-            ETT[0] += w;
+            Q3[0][0] += cos( -2*caloPhi );
+            Q3[0][1] += sin( -2*caloPhi );
+            ETT[0]++;
         }
         else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
 
-            Q3[1][0] += w*cos( -2*caloPhi );
-            Q3[1][1] += w*sin( -2*caloPhi );
-            ETT[1] += w;
+            Q3[1][0] += cos( -2*caloPhi );
+            Q3[1][1] += sin( -2*caloPhi );
+            ETT[1]++;
 
         }
         else{continue;}
