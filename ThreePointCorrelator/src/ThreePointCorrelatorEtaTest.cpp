@@ -34,6 +34,7 @@ ThreePointCorrelatorEtaTest::ThreePointCorrelatorEtaTest(const edm::ParameterSet
   useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");  
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
+  doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
