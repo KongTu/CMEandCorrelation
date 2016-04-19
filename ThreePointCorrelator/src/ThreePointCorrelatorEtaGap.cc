@@ -119,6 +119,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   double Q1[NetaBins][2][2];
   double Q1_count[NetaBins][2];
+  double Q1_TrueCount[NetaBins][2];
 
   double Q2[NetaBins][2][2];
   double Q2_count[NetaBins][2];
@@ -130,6 +131,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     for(int j = 0; j < 2; j++){
       Q1_count[i][j] = 0.0;
       Q2_count[i][j] = 0.0;
+      Q1_TrueCount[i][j] = 0.0;
       for(int k = 0; k < 2; k++){
         Q1[i][j][k] = 0.0;
         Q2[i][j][k] = 0.0;
@@ -188,6 +190,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               P1[eta][0][1] += weight*sin( trk.phi() );
 
               Q1_count[eta][0] += weight;
+              Q1_TrueCount[eta][0]++;
 
               Q2[eta][0][0] += weight*weight*cos( 2*trk.phi() );
               Q2[eta][0][1] += weight*weight*sin( 2*trk.phi() );
@@ -206,6 +209,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               P1[eta][1][1] += weight*sin( trk.phi() );
             
               Q1_count[eta][1] += weight;
+              Q1_TrueCount[eta][1]++;
 
               Q2[eta][1][0] += weight*weight*cos( 2*trk.phi() );
               Q2[eta][1][1] += weight*weight*sin( 2*trk.phi() );
@@ -333,9 +337,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
                 if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
+                if( Q1_TrueCount[ieta][sign] >= 3 ){
                 double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], Q2_count[ieta][sign], ETT[HF] );
                 QvsdEta[deta][sign][HF]->Fill( Q_real, (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] );
-              
+                
                 cout << "likesign === Q_real: " << Q_real << endl;
                 cout << "-----------------------" << endl;
                 cout << "like sign === Q1 cos: " << Q1[ieta][sign][0] << endl;
@@ -350,6 +355,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
                 cout << "likesign === ETT: " << ETT[HF] << endl;
                 cout << "total count ==== " << (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] << endl;
                 cout << "-----------------------" << endl;
+                }
               }
 
               if( Q1_count[ieta][0] == 0 || Q1_count[ieta][1] == 0 || ETT[HF] == 0.0 ) continue;
