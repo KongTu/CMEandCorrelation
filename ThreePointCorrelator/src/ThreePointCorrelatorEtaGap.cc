@@ -150,7 +150,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
         chi2n = chi2n/nlayers;
 
-        double weight = 1.0;
+        //double weight = 1.0;
 
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
