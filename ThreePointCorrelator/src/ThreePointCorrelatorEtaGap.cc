@@ -165,34 +165,31 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
-
-        cout << "weight: " << weight << endl;
-
-        QcosTRK += weight*cos( 2*trk.phi() );
-        QsinTRK += weight*sin( 2*trk.phi() );
-        QcountsTrk += weight;
+        QcosTRK += cos( 2*trk.phi() );
+        QsinTRK += sin( 2*trk.phi() );
+        QcountsTrk++ ;
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
 
             if( trk.charge() == 1){
-              Q1[eta][0][0] += weight*cos( trk.phi() );
-              Q1[eta][0][1] += weight*sin( trk.phi() );
-              Q1_count[eta][0] += weight;
+              Q1[eta][0][0] += cos( trk.phi() );
+              Q1[eta][0][1] += sin( trk.phi() );
+              Q1_count[eta][0]++;
 
-              Q2[eta][0][0] += weight*cos( 2*trk.phi() );
-              Q2[eta][0][1] += weight*sin( 2*trk.phi() );
-              Q2_count[eta][0] += weight;
+              Q2[eta][0][0] += cos( 2*trk.phi() );
+              Q2[eta][0][1] += sin( 2*trk.phi() );
+              Q2_count[eta][0]++;
 
             }
             else if( trk.charge() == -1){
-              Q1[eta][1][0] += weight*cos( trk.phi() );
-              Q1[eta][1][1] += weight*sin( trk.phi() );
-              Q1_count[eta][1] += weight;
+              Q1[eta][1][0] += cos( trk.phi() );
+              Q1[eta][1][1] += sin( trk.phi() );
+              Q1_count[eta][1]++;
 
-              Q2[eta][1][0] += weight*cos( 2*trk.phi() );
-              Q2[eta][1][1] += weight*sin( 2*trk.phi() );
-              Q2_count[eta][1] += weight;
+              Q2[eta][1][0] += cos( 2*trk.phi() );
+              Q2[eta][1][1] += sin( 2*trk.phi() );
+              Q2_count[eta][1]++;
 
             }
           }
