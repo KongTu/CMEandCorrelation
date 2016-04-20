@@ -122,13 +122,11 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   double Q2[NetaBins][2][2];
   double Q2_count[NetaBins][2];
-  double temp[NetaBins][2];
 
   for(int i = 0; i < NetaBins; i++){
     for(int j = 0; j < 2; j++){
       Q1_count[i][j] = 0.0;
       Q2_count[i][j] = 0.0;
-      temp[i][j] = 0.0;
       for(int k = 0; k < 2; k++){
         Q1[i][j][k] = 0.0;
         Q2[i][j][k] = 0.0;
@@ -163,17 +161,16 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(chi2n > offlineChi2_) continue;
         if(nhits < offlinenhits_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
-        if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        //if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
        
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
+
+
+        cout << "weight: " << weight << endl;
 
         QcosTRK += weight*cos( 2*trk.phi() );
         QsinTRK += weight*sin( 2*trk.phi() );
         QcountsTrk += weight;
-
-
-        cout << "weight: " << weight << endl;
-        cout << "weight*weight: " << weight*weight << endl;
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
@@ -185,11 +182,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
               Q2[eta][0][0] += weight*cos( 2*trk.phi() );
               Q2[eta][0][1] += weight*sin( 2*trk.phi() );
-              Q2_count[eta][0] += weight*weight;
-
-
-              double weight2 = weight*weight;
-              temp[eta][0] += weight2;
+              Q2_count[eta][0] += weight;
 
             }
             else if( trk.charge() == -1){
@@ -203,9 +196,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
             }
           }
-
-          cout << "Q2_count: " << Q2_count[eta][0] << endl;
-          cout << "temp: " << temp[eta][0] << endl;
         }     
   } 
 
