@@ -119,19 +119,23 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   double Q1[NetaBins][2][2];
   double Q1_count[NetaBins][2];
-  int Q1_TrueCount[NetaBins][2];
 
   double Q2[NetaBins][2][2];
   double Q2_count[NetaBins][2];
+
+  double P1[NetaBins][2][2];
+  double P2[NetaBins][2][2];
 
   for(int i = 0; i < NetaBins; i++){
     for(int j = 0; j < 2; j++){
       Q1_count[i][j] = 0.0;
       Q2_count[i][j] = 0.0;
-      Q1_TrueCount[i][j] = 0;
       for(int k = 0; k < 2; k++){
         Q1[i][j][k] = 0.0;
         Q2[i][j][k] = 0.0;
+
+        P1[i][j][k] = 0.0;
+        P2[i][j][k] = 0.0;
       }
     }
   }
@@ -151,8 +155,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double chi2n = trk.normalizedChi2();
         double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
         chi2n = chi2n/nlayers;
+        double trkEta = trk.eta();
 
-        //double weight = 1.0;
+        double weight = 1.0;
 
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
@@ -163,39 +168,52 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(chi2n > offlineChi2_) continue;
         if(nhits < offlinenhits_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
-        //if( doEffCorrection_ ){ weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
-       
+        if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        if( reverseBeam_ ) {trkEta = -trk.eta();}
+
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
 
-        QcosTRK += cos( 2*trk.phi() );
-        QsinTRK += sin( 2*trk.phi() );
-        QcountsTrk++ ;
+        QcosTRK += weight*cos( 2*trk.phi() );
+        QsinTRK += weight*sin( 2*trk.phi() );
+        QcountsTrk += weight;
 
         for(int eta = 0; eta < NetaBins; eta++){
-          if( trk.eta() > etaBins_[eta] && trk.eta() < etaBins_[eta+1] ){
+          if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
             if( trk.charge() == 1){
-              Q1[eta][0][0] += cos( trk.phi() );
-              Q1[eta][0][1] += sin( trk.phi() );
-              Q1_count[eta][0]++;
+              Q1[eta][0][0] += weight*cos( trk.phi() );
+              Q1[eta][0][1] += weight*sin( trk.phi() );
 
-              Q1_TrueCount[eta][0]++;
+              P1[eta][0][0] += weight*cos( trk.phi() );//the same as Q1, just for consistency
+              P1[eta][0][1] += weight*sin( trk.phi() );
 
-              Q2[eta][0][0] += cos( 2*trk.phi() );
-              Q2[eta][0][1] += sin( 2*trk.phi() );
-              Q2_count[eta][0]++;
+              Q1_count[eta][0] += weight;
+
+              Q2[eta][0][0] += weight*weight*cos( 2*trk.phi() );
+              Q2[eta][0][1] += weight*weight*sin( 2*trk.phi() );
+
+              P2[eta][0][0] += weight*cos( -trk.phi() );
+              P2[eta][0][1] += weight*sin( -trk.phi() );
+
+              Q2_count[eta][0] += weight*weight;
 
             }
             else if( trk.charge() == -1){
-              Q1[eta][1][0] += cos( trk.phi() );
-              Q1[eta][1][1] += sin( trk.phi() );
-              Q1_count[eta][1]++;
+              Q1[eta][1][0] += weight*cos( trk.phi() );
+              Q1[eta][1][1] += weight*sin( trk.phi() );
 
-              Q1_TrueCount[eta][1]++;
+              P1[eta][1][0] += weight*cos( trk.phi() );//the same as Q1, just for consistency
+              P1[eta][1][1] += weight*sin( trk.phi() );
+            
+              Q1_count[eta][1] += weight;
 
-              Q2[eta][1][0] += cos( 2*trk.phi() );
-              Q2[eta][1][1] += sin( 2*trk.phi() );
-              Q2_count[eta][1]++;
+              Q2[eta][1][0] += weight*weight*cos( 2*trk.phi() );
+              Q2[eta][1][1] += weight*weight*sin( 2*trk.phi() );
+
+              P2[eta][1][0] += weight*cos( -trk.phi() );
+              P2[eta][1][1] += weight*sin( -trk.phi() );
+              
+              Q2_count[eta][1] += weight*weight;
 
             }
           }
@@ -248,6 +266,60 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         else{continue;}
   }
 
+//2p correlators
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+    for(int jeta = 0; jeta < NetaBins; jeta++){
+
+      double deltaEta = fabs(etaBins_[ieta] - etaBins_[jeta]);
+      
+      for(int deta = 0; deta < NdEtaBins; deta++){
+        if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+          if( deta == 0){
+            for(int sign = 0; sign < 2; sign++){
+              if( Q1_count[ieta][sign] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][sign][0], P2[ieta][sign][0], P1[ieta][sign][1], P2[ieta][sign][1]);
+              double P_real_count = Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign];
+              P_real = (P_real - Q2_count[ieta][sign])/P_real_count; //for COS(P1-P2) needs to minus the N.
+
+              PvsdEta[deta][sign]->Fill( P_real, P_real_count  );
+            }
+
+            if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][0][0], P2[ieta][1][0], P1[ieta][0][1], P2[ieta][1][1]);
+              double P_real_count = Q1_count[ieta][0]*Q1_count[ieta][1];
+              P_real = P_real/P_real_count;
+
+              PvsdEta[deta][2]->Fill( P_real, P_real_count  );
+
+          }
+          else{
+            for(int sign = 0; sign < 2; sign++){
+              if( Q1_count[ieta][sign] == 0.0 || Q1_count[jeta][sign] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][sign][0], P2[jeta][sign][0], P1[ieta][sign][1], P2[jeta][sign][1]);
+              double P_real_count = Q1_count[ieta][sign]*Q1_count[jeta][sign];
+              P_real = P_real/P_real_count; 
+
+              PvsdEta[deta][sign]->Fill( P_real, P_real_count  );
+            }
+
+            if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 ) continue;
+
+              double P_real = get2Real(P1[ieta][0][0], P2[jeta][1][0], P1[ieta][0][1], P2[jeta][1][1]);
+              double P_real_count = Q1_count[ieta][0]*Q1_count[jeta][1];
+              P_real = P_real/P_real_count;
+
+              PvsdEta[deta][2]->Fill( P_real, P_real_count  );
+
+          }
+        }
+      }
+    }
+  }
+
+//3p correlators
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
     
@@ -255,26 +327,22 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
-
           if( deta == 0 ){
             for(int HF = 0; HF < HFside; HF++){
               for(int sign = 0; sign < 2; sign++){
 
-                //if( Q1_TrueCount[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
+                if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
-                double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
-                QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
-
+                double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], Q2_count[ieta][sign], ETT[HF] );
+                QvsdEta[deta][sign][HF]->Fill( Q_real, (Q1_count[ieta][sign]*Q1_count[ieta][sign] - Q2_count[ieta][sign])*ETT[HF] );
               }
 
               if( Q1_count[ieta][0] == 0 || Q1_count[ieta][1] == 0 || ETT[HF] == 0.0 ) continue;
 
               double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
-
             }
           }
-
           else{
             for(int HF = 0; HF < HFside; HF++){
               for(int sign = 0; sign < 2; sign++ ){
@@ -355,6 +423,9 @@ ThreePointCorrelatorEtaGap::beginJob()
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
+
+      PvsdEta[deta][sign] = fs->make<TH1D>(Form("PvsdEta_%d_%d", deta, sign), "", 20000, -1.0-0.00005, 1.0-0.00005);
+
       for(int HF = 0; HF < HFside; HF++){       
         QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
       }
@@ -375,11 +446,11 @@ ThreePointCorrelatorEtaGap::get3Real(double R1, double R2, double R3, double I1,
   return t1-t2-t3-t4;
 }
 
-double ThreePointCorrelatorEtaGap::get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
+double ThreePointCorrelatorEtaGap::get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N2, double N3){
 
       double t1 = (R1*R1 - I1*I1 - R2)*R3;
       double t2 = (2*R1*I1-I2)*I3;
-      double N = N1*(N1-1)*N3;
+      double N = (N1*N1-N2)*N3;
 
       if( N == 0.0 ){return 0.0;}
       else{return (t1-t2)/N;}
@@ -395,11 +466,11 @@ double ThreePointCorrelatorEtaGap::get3Imag(double R1, double R2, double R3, dou
   return t1+t2+t3-t4;
 
 }
-double ThreePointCorrelatorEtaGap::get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N3){
+double ThreePointCorrelatorEtaGap::get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N2, double N3){
 
       double t1 = (R1*R1 - I1*I1 - R2)*I3;
       double t2 = (2*R1*I1-I2)*R3;
-      double N = N1*(N1-1)*N3;
+      double N = (N1*N1-N2)*N3;
 
       if( N == 0.0 ){ return 0.0;}
       else{return (t1+t2)/N;}
