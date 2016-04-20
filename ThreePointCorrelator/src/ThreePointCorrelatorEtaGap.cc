@@ -122,19 +122,19 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   double Q2[NetaBins][2][2];
   double Q2_count[NetaBins][2];
+  double temp[NetaBins][2];
 
   for(int i = 0; i < NetaBins; i++){
     for(int j = 0; j < 2; j++){
       Q1_count[i][j] = 0.0;
       Q2_count[i][j] = 0.0;
+      temp[i][j] = 0.0;
       for(int k = 0; k < 2; k++){
         Q1[i][j][k] = 0.0;
         Q2[i][j][k] = 0.0;
       }
     }
   }
-
-  double temp = 0.;
 
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -189,11 +189,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 
               double weight2 = weight*weight;
-              temp += weight2;
-
-              cout << "Q2_count: " << Q2_count[eta][0] << endl;
-              cout << "temp: " << temp << endl;
-
+              temp[eta][0] += weight2;
 
             }
             else if( trk.charge() == -1){
@@ -207,6 +203,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
             }
           }
+
+          cout << "Q2_count: " << Q2_count[eta][0] << endl;
+          cout << "temp: " << temp[eta][0] << endl;
         }     
   } 
 
