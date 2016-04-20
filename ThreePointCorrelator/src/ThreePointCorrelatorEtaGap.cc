@@ -255,11 +255,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+
           if( deta == 0 ){
             for(int HF = 0; HF < HFside; HF++){
               for(int sign = 0; sign < 2; sign++){
 
-                if( Q1_TrueCount[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
+                //if( Q1_TrueCount[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
                 double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
                 QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
@@ -273,6 +274,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
             }
           }
+
           else{
             for(int HF = 0; HF < HFside; HF++){
               for(int sign = 0; sign < 2; sign++ ){
