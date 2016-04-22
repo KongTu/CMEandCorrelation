@@ -50,7 +50,7 @@ if __name__ == '__main__':
    for paths in range(0,4):
    	for num in range(0,3):
 		
-		print 'double check that multiplicity range is fram %r to %r' $ (ntrkRange[paths],ntrkRange[paths+1])
+		print 'double check that multiplicity range is fram %r to %r' % (ntrkRange[paths],ntrkRange[paths+1])
        		print 'double check that with %r sample the reverse beam option is %r ' % (num, beam[num])
       		
 		process.ana.Nmin = ntrkRange[paths]
