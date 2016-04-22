@@ -71,7 +71,7 @@ if __name__ == '__main__':
 			process.hltHM.HLTPaths = [hltPathNames[0],hltPathNames[1],hltPathNames[2],hltPathNames[3]]
 
 		process.ana.reverseBeam = beam[num]       
-       		RequestName = outputName + '_' + str(num)
+       		RequestName = outputName + '_' + str(paths) + "_" + str(num)
        		DataSetName = sampleName[num]
        		config.General.requestName = RequestName
        		config.Data.inputDataset = DataSetName
