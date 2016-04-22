@@ -4,18 +4,6 @@ process = cms.Process("Demo")
 
 process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
-import HLTrigger.HLTfilters.hltHighLevel_cfi
-process.hltHM = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
-process.hltHM.HLTPaths = ['HLT_PAPixelTracks_Multiplicity100_v*',
-                          'HLT_PAPixelTracks_Multiplicity130_v*',
-                          'HLT_PAPixelTracks_Multiplicity160_v*'
-                          #'HLT_PAPixelTracks_Multiplicity190_v*'
-                          #'HLT_PAPixelTracks_Multiplicity220_v*'
-]
-
-process.hltHM.andOr = cms.bool(True)
-process.hltHM.throw = cms.bool(False)
-
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
 process.options   = cms.untracked.PSet( wantSummary =
@@ -38,7 +26,9 @@ process.source = cms.Source("PoolSource",
 #'root://cmsxrootd.fnal.gov//store/user/davidlw/ReggeGribovPartonMCfix_EposLHC_5TeV_pPb/RecoSkim_ReTracking_v4_5M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_100_2_s6H.root'
 #'root://xrootd-cms.infn.it//store/user/davidlw/Hijing_PPb502_MinimumBias/RecoSkim_ReTracking_v4_10M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_100_1_yjL.root'
 'file:/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/pPb_HM_1000_1_BPd.root'
-#'file:/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/pPb_MB_100_2_s6H.root'
+#'file:/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/pPb_MB_100_2_s6H.root',
+#'root://cmsxrootd.fnal.gov//store/user/davidlw/PAMinBiasUPC/PA2013_FlowCorr_PromptReco_MB_Gplus_Rereco_ReTracking_v18/25c9a89be536a41c8ccb3c75e9fd9358/pPb_HM_1000_1_Bgt.root'
+
 )
 )
 
@@ -47,10 +37,8 @@ process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatoretagap_
 #define the cuts
 process.ana.Nmin = 185
 process.ana.Nmax = 220
-process.ana.holeLeft = 0.0
-process.ana.holeRight = 1.0
-process.ana.messAcceptance = False
 process.ana.doEffCorrection = True
+
 
 process.TFileService = cms.Service("TFileService",fileName = cms.string("test.root"))
 process.p = cms.Path(   process.hltHM*
