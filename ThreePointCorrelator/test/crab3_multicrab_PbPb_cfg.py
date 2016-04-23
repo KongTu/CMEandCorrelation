@@ -42,10 +42,10 @@ if __name__ == '__main__':
    
    for num in range(0,8):
 		
-	print 'double check that multiplicity range is fram %r to %r' % (ntrkRange[paths],ntrkRange[paths+1])
+	print 'double check that multiplicity range is fram %r to %r' % (ntrkRange[num],ntrkRange[num+1])
       		
-	process.ana.Nmin = ntrkRange[paths]
-	process.ana.Nmax = ntrkRange[paths+1]
+	process.ana.Nmin = ntrkRange[num]
+	process.ana.Nmax = ntrkRange[num+1]
        	RequestName = outputName + "_" + str(num)
        	DataSetName = '/HIMinBiasUPC/davidlw-PR2011_MBPPRereco_TRKANASKIM_v6-ccf03100d177f42de0f9cdc7627799d3/USER'
        	config.General.requestName = RequestName
