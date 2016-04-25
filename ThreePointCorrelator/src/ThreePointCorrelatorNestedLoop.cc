@@ -204,7 +204,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
   for(int i = 0; i < 8; i++){
     temp = temp + (real_term[i][1]/Npairs[i][1]) - (real_term[i][0]/Npairs[i][0]);
   }
-  if( temp/8.0 > 0.001 ){
+  if( temp/8.0 > 0.00001 ){
 
     for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
