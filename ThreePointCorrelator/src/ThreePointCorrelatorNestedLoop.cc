@@ -215,11 +215,26 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
       double genphi1 = genCand4.phi();
       int gencharge1 = genCand4.charge();
 
-      if( status1 != 1  || gencharge1 != 1 ) continue;
+      if( status1 != 1 ) continue;
       if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
       if( fabs(geneta1) < 2.4 ) continue;
 
-      chargePhi->Fill( genphi1 );
+      for(unsigned jt=0; jt<genParticleCollection->size(); ++jt) {
+
+        const reco::GenParticle & genCand5 = (*genParticleCollection)[jt];
+        int status2 = genCand5.status();
+        double genpt2 = genCand5.pt();
+        double geneta2 = genCand5.eta();
+        double genphi2 = genCand5.phi();
+        int gencharge2 = genCand5.charge();
+
+        if( status2 != 1 ) continue;
+        if(genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
+        if( fabs(geneta2)) < 2.4 ) continue;
+
+        chargePhi->Fill( genphi1 - genphi2 );
+      }
+
     }
 
   }
@@ -242,7 +257,7 @@ ThreePointCorrelatorNestedLoop::beginJob()
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
-  chargePhi = fs->make<TH1D>("chargePhi", "chargePhi", 7000,-3.5,3.5);
+  chargePhi = fs->make<TH1D>("chargePhi", "chargePhi", 14000,-7.0,7.0);
 
   const int NdEtaBins = dEtaBins_.size() - 1;
 
