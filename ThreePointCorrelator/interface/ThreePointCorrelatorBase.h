@@ -498,6 +498,8 @@ class ThreePointCorrelatorNestedLoop : public edm::EDAnalyzer {
       TH1D* trkPhi;
       TH1D* hfPhi;
       TH1D* cbinHist;
+
+      TH1D* chargePhi;
       
       TH1D* QvsdEta[48];
 
