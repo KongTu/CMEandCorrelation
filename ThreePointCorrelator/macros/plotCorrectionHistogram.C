@@ -49,23 +49,23 @@ void plotCorrectionHistogram(){
 
 	TFile* file[8];
 
-	// file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_1.root");
-	// file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_2.root");
-	// file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_3.root");
-	// file[3] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_4.root");
-	// file[4] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_1.root");
-	// file[5] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_2.root");
-	// file[6] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_3.root");
-	// file[7] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_4.root");
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_1.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_2.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_3.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_4.root");
+	file[4] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_1.root");
+	file[5] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_2.root");
+	file[6] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_3.root");
+	file[7] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_4.root");
 
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_1.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_2.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_3.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_4.root");
-	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_5.root");
-	file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_6.root");
-	file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_7.root");
-	file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_8.root");
+	// file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_1.root");
+	// file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_2.root");
+	// file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_3.root");
+	// file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_4.root");
+	// file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_5.root");
+	// file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_6.root");
+	// file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_7.root");
+	// file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_8.root");
 
 	TH1D* QvsdEta[8][48][3][2];
 	// TH1D* XY_real[48][3][2];TH1D* XY_imag[48][3][2];
@@ -208,19 +208,21 @@ void plotCorrectionHistogram(){
 	}
 	
 
-	TH1D* base3 = makeHist("base3","","#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}", 48,0,4.8);
+	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}#GT", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
     base3->GetYaxis()->SetRangeUser(-0.0015,0.002);
-    base3->GetYaxis()->SetTitleOffset(1.9);
+    base3->GetYaxis()->SetTitleOffset(2.2);
 
-    TH1D* base4 = (TH1D*) base3->Clone("base4");
+    TH1D* base4 = (TH1D*) base3->Clone("base4");base4->GetYaxis()->SetRangeUser(-0.002,0.02);
+    base4->GetYaxis()->SetTitle("#LTcos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}#GT (unlike-like sign)");
 
     TCanvas* c4 = makeMultiCanvas("c4","c4",4,2);
+
     for(int mult = 0; mult < 8; mult++){
     	
     	c4->cd(mult+1);
 		gPad->SetTicks();
-		gPad->SetLeftMargin(0.20);
+		gPad->SetLeftMargin(0.23);
 		gPad->SetBottomMargin(0.16);
 
 		base3->Draw();
@@ -252,7 +254,37 @@ void plotCorrectionHistogram(){
     w2->AddEntry(temp1, "like sign");
     w2->AddEntry(temp2, "unlike sign");
     w2->Draw("same");
+    
 
+    TCanvas* c5 = makeMultiCanvas("c5","c5",4,2);
+    for(int mult = 0; mult < 8; mult++){
+    	
+    	c5->cd(mult+1);
+		gPad->SetTicks();
+		gPad->SetLeftMargin(0.23);
+		gPad->SetBottomMargin(0.16);
+
+		base4->Draw();
+
+		TH1D* temp1 = (TH1D*)hist2[mult][0][0]->Clone("temp1");
+		temp1->Add(hist2[mult][1][0], +1);
+		temp1->Scale(0.5);
+
+		temp1->Scale( 1.0/v2[mult][0] );
+		temp1->SetMarkerColor(kRed);
+		temp1->SetLineColor(kRed);
+		temp1->SetMarkerStyle(20);
+
+		TH1D* temp2 = (TH1D*)hist2[mult][2][0]->Clone("temp2");
+		temp2->Scale( 1.0/v2[mult][0] );
+		temp2->SetMarkerColor(kBlue);
+		temp2->SetLineColor(kBlue);
+		temp2->SetMarkerStyle(24);
+
+		temp2->Add(temp1, -1);
+		temp2->Draw("Psame");
+
+    }
 
 
 }
