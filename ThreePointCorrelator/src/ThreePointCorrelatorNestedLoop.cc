@@ -128,12 +128,14 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
   edm::Handle<reco::GenParticleCollection> genParticleCollection;
   iEvent.getByLabel(genParticleSrc_, genParticleCollection);
 
-  double real_term[48];
-  int Npairs[48];
+  double real_term[48][2];
+  int Npairs[48][2];
 
   for(int eta = 0; eta < NdEtaBins; eta++){
-    real_term[eta] = 0.;
-    Npairs[eta] = 0;
+    for(int sign = 0; sign < 2; sign++){
+      real_term[eta][sign] = 0.;
+      Npairs[eta][sign] = 0;
+    }
   }
 
   for(unsigned it=0; it<genParticleCollection->size(); ++it) {
@@ -145,7 +147,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
     double genphi1 = genCand1.phi();
     int gencharge1 = genCand1.charge();
 
-    if( status1 != 1  || gencharge1 != 1 ) continue;
+    if( status1 != 1 ) continue;
     if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
 
       for(unsigned jt=0; jt<genParticleCollection->size(); ++jt) {
@@ -157,7 +159,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
         double genphi2 = genCand2.phi();
         int gencharge2 = genCand2.charge();
 
-        if( status2 != 1  || gencharge2 != 1 ) continue;//only plus sign
+        if( status2 != 1 ) continue;//only plus sign
         if( genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
         if( it == jt ) continue;
 
@@ -176,8 +178,15 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
             for(int deta = 0; deta < NdEtaBins; deta++){
               if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1]  ){
 
-                  real_term[deta] += cos( genphi1 + genphi2 - 2*genphi3 );
-                  Npairs[deta]++;
+                  if( gencharge1 == 1 && gencharge2 == 1){
+                    real_term[deta][0] += cos( genphi1 + genphi2 - 2*genphi3 );
+                    Npairs[deta][0]++;
+                  }
+                  if( gencharge1 == 1 && gencharge2 == -1){
+                    real_term[deta][1] += cos( genphi1 + genphi2 - 2*genphi3 );
+                    Npairs[deta][1]++;
+                  }
+                  
 
               }
             }
@@ -187,9 +196,34 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
 
   for(int deta = 0; deta < NdEtaBins; deta++){
 
-    QvsdEta[deta]->Fill( real_term[deta]/Npairs[deta], Npairs[deta]);
+    QvsdEta[deta]->Fill( real_term[deta][0]/Npairs[deta][0], Npairs[deta][0]);
 
   }
+
+  double temp = 0.0;
+  for(int i = 0; i < 8; i++){
+    temp = temp + (real_term[i][1]/Npairs[i][1]) - (real_term[i][0]/Npairs[i][0]);
+  }
+  if( temp/8.0 > 0.001 ){
+
+    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+
+      const reco::GenParticle & genCand4 = (*genParticleCollection)[it];
+      int status1 = genCand4.status();
+      double genpt1 = genCand4.pt();
+      double geneta1 = genCand4.eta();
+      double genphi1 = genCand4.phi();
+      int gencharge1 = genCand4.charge();
+
+      if( status1 != 1  || gencharge1 != 1 ) continue;
+      if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
+      if( fabs(geneta1) < 2.4 ) continue;
+
+      chargePhi->Fill( genphi1 );
+    }
+
+  }
+
 }
 // ------------ method called once each job just before starting event loop  ------------
 void 
@@ -208,6 +242,7 @@ ThreePointCorrelatorNestedLoop::beginJob()
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
+  chargePhi = fs->make<TH1D>("chargePhi", "chargePhi", 7000,-3.5,3.5);
 
   const int NdEtaBins = dEtaBins_.size() - 1;
 
