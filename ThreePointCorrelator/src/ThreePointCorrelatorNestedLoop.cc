@@ -213,7 +213,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
       double genpt1 = genCand4.pt();
       double geneta1 = genCand4.eta();
       double genphi1 = genCand4.phi();
-      int gencharge1 = genCand4.charge();
+      //int gencharge1 = genCand4.charge();
 
       if( status1 != 1 ) continue;
       if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
@@ -226,11 +226,11 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
         double genpt2 = genCand5.pt();
         double geneta2 = genCand5.eta();
         double genphi2 = genCand5.phi();
-        int gencharge2 = genCand5.charge();
+        //int gencharge2 = genCand5.charge();
 
         if( status2 != 1 ) continue;
         if(genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
-        if( fabs(geneta2)) < 2.4 ) continue;
+        if( fabs(geneta2) < 2.4 ) continue;
 
         chargePhi->Fill( genphi1 - genphi2 );
       }
