@@ -204,7 +204,7 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
   for(int i = 0; i < 8; i++){
     temp = temp + (real_term[i][1]/Npairs[i][1]) - (real_term[i][0]/Npairs[i][0]);
   }
-  if( temp/8.0 > 0.001 ){
+  if( temp/8.0 > 0.005 ){
 
     for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
@@ -213,9 +213,9 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
       double genpt1 = genCand4.pt();
       double geneta1 = genCand4.eta();
       double genphi1 = genCand4.phi();
-      //int gencharge1 = genCand4.charge();
+      int gencharge1 = genCand4.charge();
 
-      if( status1 != 1 ) continue;
+      if( status1 != 1 || gencharge1 != 1) continue;
       if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
       if( fabs(geneta1) < 2.4 ) continue;
 
@@ -226,9 +226,9 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
         double genpt2 = genCand5.pt();
         double geneta2 = genCand5.eta();
         double genphi2 = genCand5.phi();
-        //int gencharge2 = genCand5.charge();
+        int gencharge2 = genCand5.charge();
 
-        if( status2 != 1 ) continue;
+        if( status2 != 1 || gencharge2 != -1 ) continue;
         if(genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
         if( fabs(geneta2) < 2.4 ) continue;
 
