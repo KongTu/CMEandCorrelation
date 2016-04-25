@@ -211,7 +211,7 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
     }
   }
 
-  if( temp/count < 0.2 ) continue;
+  if( temp/count < 0.2 ) return;
 
 
   for(unsigned it=0; it<genParticleCollection->size(); ++it) {
