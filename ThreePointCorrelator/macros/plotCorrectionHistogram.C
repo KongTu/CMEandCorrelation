@@ -206,14 +206,23 @@ void plotCorrectionHistogram(){
 			}
 		}
 	}
-	
+
+   	TLatex* latex[8];
+    latex[0] = new TLatex(1,0.004,"0 #leq N^{offline}_{trk} < 35");
+    latex[1] = new TLatex(1,0.004,"35 #leq N^{offline}_{trk} < 60");
+    latex[2] = new TLatex(1,0.004,"60 #leq N^{offline}_{trk} < 90");
+    latex[3] = new TLatex(1,0.004,"90 #leq N^{offline}_{trk} < 120");
+    latex[4] = new TLatex(1,0.004,"120 #leq N^{offline}_{trk} < 150");
+    latex[5] = new TLatex(1,0.004,"150 #leq N^{offline}_{trk} < 185");
+    latex[6] = new TLatex(1,0.004,"185 #leq N^{offline}_{trk} < 220");
+    latex[7] = new TLatex(1,0.004,"220 #leq N^{offline}_{trk} < 260");	
 
 	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}#GT", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
-    base3->GetYaxis()->SetRangeUser(-0.0015,0.002);
+    base3->GetYaxis()->SetRangeUser(-0.002,0.005);
     base3->GetYaxis()->SetTitleOffset(2.2);
 
-    TH1D* base4 = (TH1D*) base3->Clone("base4");base4->GetYaxis()->SetRangeUser(-0.002,0.02);
+    TH1D* base4 = (TH1D*) base3->Clone("base4");base4->GetYaxis()->SetRangeUser(-0.002,0.005);
     base4->GetYaxis()->SetTitle("#LTcos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}#GT (unlike-like sign)");
 
     TCanvas* c4 = makeMultiCanvas("c4","c4",4,2);
@@ -243,6 +252,8 @@ void plotCorrectionHistogram(){
 		temp2->SetLineColor(kBlue);
 		temp2->SetMarkerStyle(24);
 		temp2->Draw("Psame");
+
+		latex[mult]->Draw("same");
 
     }
 
@@ -283,6 +294,9 @@ void plotCorrectionHistogram(){
 
 		temp2->Add(temp1, -1);
 		temp2->Draw("Psame");
+
+		latex[mult]->Draw("same");
+
 
     }
 
