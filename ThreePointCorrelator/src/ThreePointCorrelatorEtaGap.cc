@@ -376,9 +376,6 @@ calculate v2 using 3 sub-events method:
   aveQ3[1][0]->Fill( Q3[1][0]/ETT[1], ETT[1] );//HF- cos
   aveQ3[1][1]->Fill( Q3[1][1]/ETT[1], ETT[1] );//HF- sin
 
-  QcosTRK = QcosTRK/QcountsTrk;
-  QsinTRK = QsinTRK/QcountsTrk;
-
   double QaQc = get2Real(Q3[1][0]/ETT[1], QcosTRK/QcountsTrk, Q3[1][1]/ETT[1], QsinTRK/QcountsTrk );
   double QaQb = get2Real(Q3[1][0]/ETT[1], Q3[0][0]/ETT[0], Q3[1][1]/ETT[1], -Q3[0][1]/ETT[0]);//an extra minus sign 
   double QcQb = get2Real(QcosTRK/QcountsTrk, Q3[0][0]/ETT[0], QsinTRK/QcountsTrk, Q3[0][1]/ETT[0]);

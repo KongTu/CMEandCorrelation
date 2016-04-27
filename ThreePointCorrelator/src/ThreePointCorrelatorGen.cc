@@ -178,42 +178,6 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
   edm::Handle<reco::GenParticleCollection> genParticleCollection;
   iEvent.getByLabel(genParticleSrc_, genParticleCollection);
 
-  double temp = 0.0;
-  double count = 0.0;
-  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
-
-    const reco::GenParticle & genCand1 = (*genParticleCollection)[it];
-    int status1 = genCand1.status();
-    double genpt1 = genCand1.pt();
-    double geneta1 = genCand1.eta();
-    double genphi1 = genCand1.phi();
-    int gencharge1 = genCand1.charge();
-
-    if( status1 != 1 || gencharge1 != 1 ) continue;
-    if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
-    if( fabs(geneta1) < 2.4 ) continue;
-
-    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
-
-      const reco::GenParticle & genCand2 = (*genParticleCollection)[it];
-      int status2 = genCand2.status();
-      double genpt2 = genCand2.pt();
-      double geneta2 = genCand2.eta();
-      double genphi2 = genCand2.phi();
-      int gencharge2 = genCand2.charge();
-
-      if( status2 != 1 || gencharge2 != -1 ) continue;
-      if( genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
-      if( fabs(geneta2) < 2.4 ) continue;
-
-      temp += fabs(genphi1 - genphi2);
-      count++;
-    }
-  }
-
-  if( temp/count < 0.2 ) return;
-
-
   for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
     const reco::GenParticle & genCand = (*genParticleCollection)[it];
@@ -395,9 +359,6 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
 /*
 calculate v2 using 3 sub-events method:
  */
-
-  QcosTRK = QcosTRK/QcountsTrk;
-  QsinTRK = QsinTRK/QcountsTrk;
 
   double QaQc = get2Real(Q3[1][0]/ETT[1], QcosTRK/QcountsTrk, Q3[1][1]/ETT[1], QsinTRK/QcountsTrk );
   double QaQb = get2Real(Q3[1][0]/ETT[1], Q3[0][0]/ETT[0], Q3[1][1]/ETT[1], -Q3[0][1]/ETT[0]);//an extra minus sign 
