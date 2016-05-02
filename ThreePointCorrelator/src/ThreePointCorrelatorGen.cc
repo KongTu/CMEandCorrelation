@@ -290,6 +290,10 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
               double P_real_count = Q2_count[ieta][sign]*Q2_count[jeta][sign];
               P_real = P_real/P_real_count; //for COS(P1-P2) needs to minus the N.
 
+              if( deltaEta == 2.0 ){
+                cout << "P_real: " << P_real << endl;
+              }
+
               PvsdEta[deta][sign]->Fill( P_real, P_real_count  );
             }
 
