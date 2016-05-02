@@ -305,10 +305,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               double P_real_count = Q1_count[ieta][sign]*Q1_count[jeta][sign];
               P_real = P_real/P_real_count; 
 
-              if( deltaEta == 2.0 ){
-                cout << "P_real: " << P_real << endl;
-              }
-
               PvsdEta[deta][sign]->Fill( P_real, P_real_count  );
             }
 
