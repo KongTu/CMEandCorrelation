@@ -35,7 +35,9 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
-
+  do3pTracker_ = iConfig.getUntrackedParameter<bool>("do3pTracker");
+  
+  etaTracker_ = iConfig.getUntrackedParameter<double>("etaTracker");
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
   vzLow_ = iConfig.getUntrackedParameter<double>("vzLow");
@@ -164,7 +166,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nTracks++;}// NtrkOffline        
-        if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
+        if(fabs(trk.eta()) > etaTracker_ || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if(chi2n > offlineChi2_) continue;
         if(nhits < offlinenhits_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
@@ -236,34 +238,84 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
     }
   }
 
-  int HFside = 2;
-  if( useBothSide_ ) HFside = 1;
 
-  for(unsigned i = 0; i < towers->size(); ++i){
+  if( do3pTracker_ ){
 
-        const CaloTower & hit= (*towers)[i];
+    for(unsigned it = 0; it < tracks->size(); it++){
 
-        double caloEta = hit.eta();
-        double caloPhi = hit.phi();
-        double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+     const reco::Track & trk = (*tracks)[it];
+
+     math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
         
-        if( reverseBeam_ ) caloEta = -hit.eta();
-        if( messAcceptance_ ){if( caloPhi < holeRight_ && caloPhi > holeLeft_ ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
-        
-        if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
-          
-            Q3[0][0] += w*cos( -2*caloPhi );
-            Q3[0][1] += w*sin( -2*caloPhi );
-            ETT[0] += w;
+        double dzvtx = trk.dz(bestvtx);
+        double dxyvtx = trk.dxy(bestvtx);
+        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+        double nhits = trk.numberOfValidHits();
+        double chi2n = trk.normalizedChi2();
+        double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
+        chi2n = chi2n/nlayers;
+        double trkEta = trk.eta();
+
+        double weight = 1.0;
+
+        if(!trk.quality(reco::TrackBase::highPurity)) continue;
+        if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
+        if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
+        if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
+        if( trk.pt() < ptLow_ || trk.pt() > ptHigh_ ) continue;
+        if(chi2n > offlineChi2_) continue;
+        if(nhits < offlinenhits_) continue;
+        if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
+        if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
+        if( reverseBeam_ ) {trkEta = -trk.eta();}
+
+        if( trkEta > etaTracker_ && trkEta < 2.4 ){
+
+          Q3[0][0] += weight*cos( -2*trk.phi() );
+          Q3[0][1] += weight*sin( -2*trk.phi() );
+          ETT[0] += weight;
         }
-        else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
-
-            Q3[1][0] += w*cos( -2*caloPhi );
-            Q3[1][1] += w*sin( -2*caloPhi );
-            ETT[1] += w;
-
+        else if( trkEta > -2.4 && trkEta < -etaTracker_ ){
+              
+          Q3[1][0] += weight*cos( -2*trk.phi() );
+          Q3[1][1] += weight*sin( -2*trk.phi() );
+          ETT[1] += weight;
         }
         else{continue;}
+      }
+
+  }
+  else{
+    int HFside = 2;
+    if( useBothSide_ ) HFside = 1;
+
+    for(unsigned i = 0; i < towers->size(); ++i){
+
+          const CaloTower & hit= (*towers)[i];
+
+          double caloEta = hit.eta();
+          double caloPhi = hit.phi();
+          double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+          
+          if( reverseBeam_ ) caloEta = -hit.eta();
+          if( messAcceptance_ ){if( caloPhi < holeRight_ && caloPhi > holeLeft_ ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
+          
+          if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
+            
+              Q3[0][0] += w*cos( -2*caloPhi );
+              Q3[0][1] += w*sin( -2*caloPhi );
+              ETT[0] += w;
+          }
+          else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
+
+              Q3[1][0] += w*cos( -2*caloPhi );
+              Q3[1][1] += w*sin( -2*caloPhi );
+              ETT[1] += w;
+
+          }
+          else{continue;}
+    }
   }
 
 //2p correlators

@@ -209,6 +209,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       int Nmin_;
       int Nmax_;
 
+      double etaTracker_;
       double etaLowHF_;
       double etaHighHF_;
       double vzLow_;
@@ -228,6 +229,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       bool reverseBeam_;
       bool messAcceptance_;
       bool doEffCorrection_;
+      bool do3pTracker_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
