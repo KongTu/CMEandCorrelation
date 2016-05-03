@@ -287,8 +287,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
   }
   else{
-    int HFside = 2;
-    if( useBothSide_ ) HFside = 1;
 
     for(unsigned i = 0; i < towers->size(); ++i){
 
@@ -374,6 +372,9 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
       }
     }
   }
+
+  int HFside = 2;
+  if( useBothSide_ ) HFside = 1;
 
 //3p correlators
   for(int ieta = 0; ieta < NetaBins; ieta++){
