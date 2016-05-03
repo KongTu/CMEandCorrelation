@@ -188,10 +188,11 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
     int gencharge = genCand.charge();
 
     if( status != 1  || gencharge == 0 ) continue;
+    if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
 
-    if( fabs(geneta) < 2.4 ){
+    if( fabs(geneta) < 1.0 ){
 
-      if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
+      //if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
 
       QcosTRK += cos( 2*genphi );
       QsinTRK += sin( 2*genphi );
