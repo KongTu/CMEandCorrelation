@@ -156,7 +156,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         //double nhits = trk.numberOfValidHits();
         //double chi2 = trk.chi2();
         //double ndof = trk.ndof();
-        double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+        //double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
         //chi2n = chi2n/nlayers;
         double trkEta = trk.eta();
 
@@ -170,7 +170,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.eta()) > etaTracker_ || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         //if(chi2 > 5) continue;
         //if(ndof < 5) continue;
-        if(nlayers <= 0 ) continue;
+        //if(nlayers <= 0 ) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
         if( reverseBeam_ ) {trkEta = -trk.eta();}
