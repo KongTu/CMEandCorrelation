@@ -155,7 +155,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
         double nhits = trk.numberOfValidHits();
         double chi2n = trk.normalizedChi2();
-        double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
+        double nlayers = trk.hitPattern().pixelLayersWithMeasurement();
         chi2n = chi2n/nlayers;
         double trkEta = trk.eta();
 
