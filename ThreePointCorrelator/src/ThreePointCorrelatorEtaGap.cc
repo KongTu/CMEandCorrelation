@@ -462,9 +462,12 @@ ThreePointCorrelatorEtaGap::beginJob()
   if( useBothSide_ ) HFside = 1;
 
   //edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
+  // TFile f1(fip1.fullPath().c_str(),"READ");
+  // effTable = (TH2D*)f1.Get("rTotalEff3D");
+
   edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff.root");  
   TFile f1(fip1.fullPath().c_str(),"READ");
-  effTable = (TH2D*)f1.Get("rTotalEff3D");
+  effTable = (TH2D*)f1.Get("recoHist");
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
