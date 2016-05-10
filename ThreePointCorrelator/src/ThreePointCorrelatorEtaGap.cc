@@ -56,6 +56,7 @@ ThreePointCorrelatorEtaGap::ThreePointCorrelatorEtaGap(const edm::ParameterSet& 
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
+  ptBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ptBins");
 
 }
 
@@ -187,18 +188,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(nlayers <= 0 ) continue;
-
-        if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.2 && trk.pt() < 8.0){
-
-          trkPt->Fill( trk.pt(), weight);
-          trk_eta->Fill( trk.eta(), weight);
-        }
-        
         if(fabs(trk.eta()) > etaTracker_ || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         if( reverseBeam_ ) {trkEta = -trk.eta();}
 
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
+        trkPt->Fill( trk.pt(), weight);//single particle closure
+        trk_eta->Fill( trk.eta(), weight);
 
         QcosTRK += weight*cos( 2*trk.phi() );
         QsinTRK += weight*sin( 2*trk.phi() );
@@ -479,6 +475,20 @@ ThreePointCorrelatorEtaGap::beginJob()
 
     dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
   }
+  const int NetaBins = etaBins_.size() - 1;
+  double etaBinsArray[100];
+
+  for(unsigned i = 0; i < etaBins_.size(); i++){
+
+    etaBinsArray[i] = etaBins_[i];
+  }
+  const int Nptbins = ptBins_.size() - 1;
+  double ptBinsArray[100];
+
+  for(unsigned i = 0; i < ptBins_.size(); i++){
+
+    ptBinsArray[i] = ptBins_[i];
+  }
   int HFside = 2;
   if( useBothSide_ ) HFside = 1;
 
@@ -494,8 +504,8 @@ ThreePointCorrelatorEtaGap::beginJob()
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
-  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", 1000,0,10);
-  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", 700,-3.0,3.0);
+  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
   for(int sign = 0; sign < 3; sign++){
 

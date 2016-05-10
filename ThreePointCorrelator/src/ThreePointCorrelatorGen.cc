@@ -52,6 +52,7 @@ ThreePointCorrelatorGen::ThreePointCorrelatorGen(const edm::ParameterSet& iConfi
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
+  ptBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ptBins");
 
 }
 
@@ -189,18 +190,12 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
 
     if( status != 1  || gencharge == 0 ) continue;
     
-    if( fabs(geneta) < 2.4 && genpt > 0.2 && genpt < 8.0 ){
-
-      trkPt->Fill( genpt );
-      trk_eta->Fill( geneta );
-    }
-    
-
-    if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
-
     if( fabs(geneta) < 2.4 ){
 
       if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
+
+      trkPt->Fill( genpt );
+      trk_eta->Fill( geneta );
 
       QcosTRK += cos( 2*genphi );
       QsinTRK += sin( 2*genphi );
@@ -387,20 +382,31 @@ ThreePointCorrelatorGen::beginJob()
     
   TH1D::SetDefaultSumw2();
 
-  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
-  TFile f1(fip1.fullPath().c_str(),"READ");
-  effTable = (TH2D*)f1.Get("rTotalEff3D");
+  const int NdEtaBins = dEtaBins_.size() - 1;
+  const int NetaBins = etaBins_.size() - 1;
+  double etaBinsArray[100];
+
+  for(unsigned i = 0; i < etaBins_.size(); i++){
+
+    etaBinsArray[i] = etaBins_[i];
+  }
+  const int Nptbins = ptBins_.size() - 1;
+  double ptBinsArray[100];
+
+  for(unsigned i = 0; i < ptBins_.size(); i++){
+
+    ptBinsArray[i] = ptBins_[i];
+  }
+  int HFside = 2;
+  if( useBothSide_ ) HFside = 1;
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
-  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", 1000,0,10);
-  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", 700,-3.0,3.0);
+  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
-  const int NdEtaBins = dEtaBins_.size() - 1;
-  int HFside = 2;
-  if( useBothSide_ ) HFside = 1;
 //HF:
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
@@ -416,9 +422,6 @@ ThreePointCorrelatorGen::beginJob()
       }
     }
   }
-
-
-
 
 
 }

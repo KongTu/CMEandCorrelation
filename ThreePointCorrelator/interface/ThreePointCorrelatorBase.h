@@ -235,6 +235,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
+      std::vector<double> ptBins_;
 
 };
 
@@ -386,6 +387,7 @@ class ThreePointCorrelatorEtaGapNestedLoop : public edm::EDAnalyzer {
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
+      std::vector<double> ptBins_;
 
 };
 
@@ -464,6 +466,7 @@ class ThreePointCorrelatorGen : public edm::EDAnalyzer {
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
+      std::vector<double> ptBins_;
 
 };
 
@@ -534,6 +537,7 @@ class ThreePointCorrelatorNestedLoop : public edm::EDAnalyzer {
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
+      std::vector<double> ptBins_;
 
 };
 
