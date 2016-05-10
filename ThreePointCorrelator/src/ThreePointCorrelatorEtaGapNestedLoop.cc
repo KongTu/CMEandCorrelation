@@ -34,6 +34,7 @@ ThreePointCorrelatorEtaGapNestedLoop::ThreePointCorrelatorEtaGapNestedLoop(const
   useBothSide_ = iConfig.getUntrackedParameter<bool>("useBothSide");  
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
+  doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
@@ -53,6 +54,7 @@ ThreePointCorrelatorEtaGapNestedLoop::ThreePointCorrelatorEtaGapNestedLoop(const
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
+  ptBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ptBins");
 
 }
 
@@ -120,7 +122,6 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
 
-
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
@@ -134,14 +135,14 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
   Ntrk->Fill(nTracks);
 
   double real_term[48][3][2];
-  int Npairs[48][3][2];
+  double Npairs[48][3][2];
 
   for(int eta = 0; eta < NdEtaBins; eta++){
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
         
         real_term[eta][sign][HF] = 0.;
-        Npairs[eta][sign][HF] = 0;
+        Npairs[eta][sign][HF] = 0.;
       }
     } 
   }
@@ -156,19 +157,21 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
-        double nhits = trk.numberOfValidHits();
-        double chi2n = trk.normalizedChi2();
-        double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
-        chi2n = chi2n/nlayers;
+        double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+
+        double weight = 1.0;
+        if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
 
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) > 2.4 || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
-        if(chi2n > offlineChi2_) continue;
-        if(nhits < offlinenhits_) continue;
+        if(nlayers <= 0 ) continue;
+
         trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
+        trkPt->Fill( trk.pt(), weight);//single particle closure
+        trk_eta->Fill( trk.eta(), weight);
 
         for(unsigned jt = 0; jt < tracks->size(); jt++){
 
@@ -180,18 +183,17 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
           double dxyvtx = trk1.dxy(bestvtx);
           double dzerror = sqrt(trk1.dzError()*trk1.dzError()+bestvzError*bestvzError);
           double dxyerror = sqrt(trk1.d0Error()*trk1.d0Error()+bestvxError*bestvyError);
-          double nhits = trk1.numberOfValidHits();
-          double chi2n = trk1.normalizedChi2();
-          double nlayers = trk1.hitPattern().trackerLayersWithMeasurement();
-          chi2n = chi2n/nlayers;
+          double nlayers = trk1.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+
+          double weight = 1.0;
+          if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk1.eta(), trk1.pt()) );}
 
           if(!trk1.quality(reco::TrackBase::highPurity)) continue;
           if(fabs(trk1.ptError())/trk1.pt() > offlineptErr_ ) continue;
           if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
           if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
           if(fabs(trk1.eta()) > 2.4 || trk1.pt() < ptLow_ || trk1.pt() > ptHigh_) continue;
-          if(chi2n > offlineChi2_) continue;
-          if(nhits < offlinenhits_) continue;
+          if(nlayers <= 0 ) continue;
 
           if(it == jt ) continue;
 
@@ -270,16 +272,38 @@ ThreePointCorrelatorEtaGapNestedLoop::beginJob()
     
   TH1D::SetDefaultSumw2();
 
-  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
+  const int NdEtaBins = dEtaBins_.size() - 1;
+
+  const int NetaBins = etaBins_.size() - 1;
+  double etaBinsArray[100];
+
+  for(unsigned i = 0; i < etaBins_.size(); i++){
+
+    etaBinsArray[i] = etaBins_[i];
+  }
+  const int Nptbins = ptBins_.size() - 1;
+  double ptBinsArray[100];
+
+  for(unsigned i = 0; i < ptBins_.size(); i++){
+
+    ptBinsArray[i] = ptBins_[i];
+  }
+
+  // edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
+  // TFile f1(fip1.fullPath().c_str(),"READ");
+  // effTable = (TH2D*)f1.Get("rTotalEff3D");
+
+  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff.root");  
   TFile f1(fip1.fullPath().c_str(),"READ");
-  effTable = (TH2D*)f1.Get("rTotalEff3D");
+  effTable = (TH2D*)f1.Get("recoHist");
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
+  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
-  const int NdEtaBins = dEtaBins_.size() - 1;
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
@@ -288,10 +312,10 @@ ThreePointCorrelatorEtaGapNestedLoop::beginJob()
       }
     }
   }
-  
+ 
+
+
 }
-
-
 double 
 ThreePointCorrelatorEtaGapNestedLoop::get3Real(double R1, double R2, double R3, double I1, double I2, double I3) 
 {
