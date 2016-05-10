@@ -153,6 +153,29 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+
+        if(!trk.quality(reco::TrackBase::highPurity)) continue;
+        if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
+        if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
+        if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
+        if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nTracks++;}// NtrkOffline
+
+  }
+
+  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
+  
+  Ntrk->Fill(nTracks);
+
+  for(unsigned it = 0; it < tracks->size(); it++){
+
+     const reco::Track & trk = (*tracks)[it];
+
+     math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+        
+        double dzvtx = trk.dz(bestvtx);
+        double dxyvtx = trk.dxy(bestvtx);
+        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
         //double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
         double trkEta = trk.eta();
 
@@ -163,7 +186,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-        if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nTracks++;}// NtrkOffline
         //if(nlayers <= 0 ) continue;
 
         if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.2 && trk.pt() < 8.0){
@@ -171,7 +193,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           trk_eta->Fill( trk.eta(), weight);
         }
         
-
         if(fabs(trk.eta()) > etaTracker_ || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         if( reverseBeam_ ) {trkEta = -trk.eta();}
@@ -224,10 +245,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           }
         }     
   } 
-
-  if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
-  
-  Ntrk->Fill(nTracks);
 
 //loop over calo towers (HF)
 
