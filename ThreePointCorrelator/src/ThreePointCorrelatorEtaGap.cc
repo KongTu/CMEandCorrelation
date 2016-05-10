@@ -166,7 +166,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nTracks++;}// NtrkOffline
         //if(nlayers <= 0 ) continue;
 
-        if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.1 ){
+        if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.2 ){
           trkPt->Fill( trk.pt(), weight);
           trk_eta->Fill( trk.eta(), weight);
         }
