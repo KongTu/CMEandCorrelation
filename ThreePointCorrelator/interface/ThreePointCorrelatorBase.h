@@ -360,6 +360,11 @@ class ThreePointCorrelatorEtaGapNestedLoop : public edm::EDAnalyzer {
       TH1D* trkPt;
       TH1D* trk_eta;
 
+      //v2
+      TH1D* c2_ab;
+      TH1D* c2_ac;
+      TH1D* c2_cb;
+
       TH1D* QvsdEta[48][3][2];
 
 
