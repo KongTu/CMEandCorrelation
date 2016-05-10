@@ -153,7 +153,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
-        double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+        //double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
         double trkEta = trk.eta();
 
         double weight = 1.0;
