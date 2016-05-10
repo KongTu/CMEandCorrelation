@@ -188,9 +188,13 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
     int gencharge = genCand.charge();
 
     if( status != 1  || gencharge == 0 ) continue;
+    
+    if( fabs(geneta) < 2.4 && genpt > 0.2 && genpt < 8.0 ){
 
-    trkPt->Fill( genpt );
-    trk_eta->Fill( geneta );
+      trkPt->Fill( genpt );
+      trk_eta->Fill( geneta );
+    }
+    
 
     if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
 

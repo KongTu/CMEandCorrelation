@@ -190,7 +190,6 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
         if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.2 && trk.pt() < 8.0){
 
-          cout << "particle pt " << trk.pt() << " and eta " << trk.eta() << " with weight: " << weight << endl;
           trkPt->Fill( trk.pt(), weight);
           trk_eta->Fill( trk.eta(), weight);
         }
