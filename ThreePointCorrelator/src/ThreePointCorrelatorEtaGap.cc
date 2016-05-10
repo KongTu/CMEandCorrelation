@@ -153,7 +153,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
-        //double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+        double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
         double trkEta = trk.eta();
 
         double weight = 1.0;
@@ -164,7 +164,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nTracks++;}// NtrkOffline
-        //if(nlayers <= 0 ) continue;
+        if(nlayers <= 0 ) continue;
 
         if(fabs(trk.eta()) < 2.4 && trk.pt() > 0.2 && trk.pt() < 8.0){
           trkPt->Fill( trk.pt(), weight);
@@ -464,13 +464,13 @@ ThreePointCorrelatorEtaGap::beginJob()
   int HFside = 2;
   if( useBothSide_ ) HFside = 1;
 
-  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
-  TFile f1(fip1.fullPath().c_str(),"READ");
-  effTable = (TH2D*)f1.Get("rTotalEff3D");
-
-  // edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff.root");  
+  // edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
   // TFile f1(fip1.fullPath().c_str(),"READ");
-  // effTable = (TH2D*)f1.Get("recoHist");
+  // effTable = (TH2D*)f1.Get("rTotalEff3D");
+
+  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff.root");  
+  TFile f1(fip1.fullPath().c_str(),"READ");
+  effTable = (TH2D*)f1.Get("recoHist");
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
