@@ -169,14 +169,14 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
     
     if( geneta1 < etaHighHF_ && geneta1 > etaLowHF_ ){
         
-          Q3[0][0] += cos( -2*genphi );
-          Q3[0][1] += sin( -2*genphi );
+          Q3[0][0] += cos( -2*genphi1 );
+          Q3[0][1] += sin( -2*genphi1 );
           ETT[0]++;
     }
     if( geneta1 < -etaLowHF_ && geneta1 > -etaHighHF_ ){
 
-          Q3[1][0] += cos( -2*genphi );
-          Q3[1][1] += sin( -2*genphi );
+          Q3[1][0] += cos( -2*genphi1 );
+          Q3[1][1] += sin( -2*genphi1 );
           ETT[1]++;
 
     }
@@ -187,8 +187,8 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
     trkPt->Fill( genpt1 );
     trk_eta->Fill( geneta1 );
 
-    QcosTRK += cos( 2*genphi );
-    QsinTRK += sin( 2*genphi );
+    QcosTRK += cos( 2*genphi1 );
+    QsinTRK += sin( 2*genphi1 );
     QcountsTrk++ ;
 
       for(unsigned jt=0; jt<genParticleCollection->size(); ++jt) {
