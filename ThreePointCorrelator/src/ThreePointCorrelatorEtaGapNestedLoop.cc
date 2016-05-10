@@ -134,6 +134,20 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
   
   Ntrk->Fill(nTracks);
 
+  double QcosTRK = 0.;
+  double QsinTRK = 0.;
+  double QcountsTrk = 0;
+
+  double Q3[2][2];
+  double ETT[2];
+
+  for(int i = 0; i < 2; i++){
+    ETT[i] = 0.;
+    for(int j = 0; j < 2; j++){
+      Q3[i][j] = 0.;
+    }
+  }
+
   double real_term[48][3][2];
   double Npairs[48][3][2];
 
@@ -173,6 +187,10 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
         trkPt->Fill( trk.pt(), weight);//single particle closure
         trk_eta->Fill( trk.eta(), weight);
 
+        QcosTRK += weight*cos( 2*trk.phi() );
+        QsinTRK += weight*sin( 2*trk.phi() );
+        QcountsTrk += weight;
+
         for(unsigned jt = 0; jt < tracks->size(); jt++){
 
           const reco::Track & trk1 = (*tracks)[jt];
@@ -206,8 +224,6 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
               double caloEt  = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
 
               double totalWeight = weight*weight1*caloEt;
-
-              cout << "total weight: " << totalWeight << endl;
               
               if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
                 double deltaEta = fabs( trk.eta() - trk1.eta() );
@@ -267,6 +283,38 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
     }
   }
 
+  for(unsigned i = 0; i < towers->size(); ++i){
+
+    const CaloTower & hit= (*towers)[i];
+
+    double caloEta = hit.eta();
+    double caloPhi = hit.phi();
+    double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+    
+    if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
+      
+        Q3[0][0] += w*cos( -2*caloPhi );
+        Q3[0][1] += w*sin( -2*caloPhi );
+        ETT[0] += w;
+    }
+    else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
+
+        Q3[1][0] += w*cos( -2*caloPhi );
+        Q3[1][1] += w*sin( -2*caloPhi );
+        ETT[1] += w;
+
+    }
+    else{continue;}
+  }
+
+  double QaQc = get2Real(Q3[1][0]/ETT[1], QcosTRK/QcountsTrk, Q3[1][1]/ETT[1], QsinTRK/QcountsTrk );
+  double QcQb = get2Real(QcosTRK/QcountsTrk, Q3[0][0]/ETT[0], QsinTRK/QcountsTrk, Q3[0][1]/ETT[0]);
+  double QaQb = get2Real(Q3[1][0]/ETT[1], Q3[0][0]/ETT[0], Q3[1][1]/ETT[1], -Q3[0][1]/ETT[0]);//an extra minus sign 
+
+  c2_ac->Fill( QaQc, ETT[1]*QcountsTrk );
+  c2_cb->Fill( QcQb, ETT[0]*QcountsTrk  );
+  c2_ab->Fill( QaQb, ETT[1]*ETT[0] );
+
 }
 // ------------ method called once each job just before starting event loop  ------------
 void 
@@ -309,6 +357,9 @@ ThreePointCorrelatorEtaGapNestedLoop::beginJob()
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
