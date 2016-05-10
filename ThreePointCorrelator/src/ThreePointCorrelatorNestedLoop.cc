@@ -52,6 +52,7 @@ ThreePointCorrelatorNestedLoop::ThreePointCorrelatorNestedLoop(const edm::Parame
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
+  ptBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ptBins");
 
 }
 
@@ -128,13 +129,30 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
   edm::Handle<reco::GenParticleCollection> genParticleCollection;
   iEvent.getByLabel(genParticleSrc_, genParticleCollection);
 
-  double real_term[48][2];
-  int Npairs[48][2];
+  double real_term[48][3][2];
+  double Npairs[48][3][2];
 
   for(int eta = 0; eta < NdEtaBins; eta++){
-    for(int sign = 0; sign < 2; sign++){
-      real_term[eta][sign] = 0.;
-      Npairs[eta][sign] = 0;
+    for(int sign = 0; sign < 3; sign++){
+      for(int HF = 0; HF < 2; HF++){
+        
+        real_term[eta][sign][HF] = 0.;
+        Npairs[eta][sign][HF] = 0.;
+      }
+    } 
+  }
+
+  double QcosTRK = 0.;
+  double QsinTRK = 0.;
+  double QcountsTrk = 0;
+
+  double Q3[2][2];
+  double ETT[2];
+
+  for(int i = 0; i < 2; i++){
+    ETT[i] = 0.;
+    for(int j = 0; j < 2; j++){
+      Q3[i][j] = 0.;
     }
   }
 
@@ -147,8 +165,31 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
     double genphi1 = genCand1.phi();
     int gencharge1 = genCand1.charge();
 
-    if( status1 != 1 ) continue;
+    if( status1 != 1 || gencharge1 == 0 ) continue;
+    
+    if( geneta1 < etaHighHF_ && geneta1 > etaLowHF_ ){
+        
+          Q3[0][0] += cos( -2*genphi );
+          Q3[0][1] += sin( -2*genphi );
+          ETT[0]++;
+    }
+    if( geneta1 < -etaLowHF_ && geneta1 > -etaHighHF_ ){
+
+          Q3[1][0] += cos( -2*genphi );
+          Q3[1][1] += sin( -2*genphi );
+          ETT[1]++;
+
+    }
+
     if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
+    if( fabs(geneta1) > 2.4 ) continue;
+
+    trkPt->Fill( genpt1 );
+    trk_eta->Fill( geneta1 );
+
+    QcosTRK += cos( 2*genphi );
+    QsinTRK += sin( 2*genphi );
+    QcountsTrk++ ;
 
       for(unsigned jt=0; jt<genParticleCollection->size(); ++jt) {
 
@@ -159,8 +200,10 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
         double genphi2 = genCand2.phi();
         int gencharge2 = genCand2.charge();
 
-        if( status2 != 1 ) continue;//only plus sign
+        if( status2 != 1 || gencharge2 == 0) continue;//only plus sign
         if( genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
+        if( fabs(geneta2) > 2.4 ) continue;
+
         if( it == jt ) continue;
 
           for(unsigned kt=0; kt<genParticleCollection->size(); ++kt) {
@@ -172,72 +215,66 @@ ThreePointCorrelatorNestedLoop::analyze(const edm::Event& iEvent, const edm::Eve
             int gencharge3 = genCand3.charge();
 
             if( status3 != 1  || gencharge3 == 0 ) continue;
-            if( geneta3 < etaLowHF_ || geneta3 > etaHighHF_ ) continue;
+            
+            if( geneta3 < etaHighHF_ && geneta3 > etaLowHF_ ){
+              double deltaEta = fabs(geneta1 - geneta2);
+              for(int deta = 0; deta < NdEtaBins; deta++){
+                if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1]  ){
 
-            double deltaEta = fabs(geneta1 - geneta2);
-            for(int deta = 0; deta < NdEtaBins; deta++){
-              if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1]  ){
-
-                  if( gencharge1 == 1 && gencharge2 == 1){
-                    real_term[deta][0] += cos( genphi1 + genphi2 - 2*genphi3 );
-                    Npairs[deta][0]++;
-                  }
-                  if( gencharge1 == 1 && gencharge2 == -1){
-                    real_term[deta][1] += cos( genphi1 + genphi2 - 2*genphi3 );
-                    Npairs[deta][1]++;
-                  }
-                  
-
+                    if( gencharge1 == 1 && gencharge2 == 1){
+                      real_term[deta][0][0] += cos( genphi1 + genphi2 - 2*genphi3 );
+                      Npairs[deta][0][0]++;
+                    }
+                    if( gencharge1 == -1 && gencharge2 == -1){
+                      real_term[deta][1][0] += cos( genphi1 + genphi2 - 2*genphi3 );
+                      Npairs[deta][1][0]++;
+                    }
+                    if( gencharge1 == 1 && gencharge2 == -1){
+                      real_term[deta][2][0] += cos( genphi1 + genphi2 - 2*genphi3 );
+                      Npairs[deta][2][0]++;
+                    }
+                }
               }
             }
+            if( geneta3 < -etaLowHF_ && geneta3 > -etaHighHF_ ){
+              double deltaEta = fabs(geneta1 - geneta2);
+              for(int deta = 0; deta < NdEtaBins; deta++){
+                if( deltaEta > dEtaBins_[deta] && deltaEta < dEtaBins_[deta+1]  ){
+
+                    if( gencharge1 == 1 && gencharge2 == 1){
+                      real_term[deta][0][1] += cos( genphi1 + genphi2 - 2*genphi3 );
+                      Npairs[deta][0][1]++;
+                    }
+                    if( gencharge1 == -1 && gencharge2 == -1){
+                      real_term[deta][1][1] += cos( genphi1 + genphi2 - 2*genphi3 );
+                      Npairs[deta][1][1]++;
+                    }
+                    if( gencharge1 == 1 && gencharge2 == -1){
+                      real_term[deta][2][1] += cos( genphi1 + genphi2 - 2*genphi3 );
+                      Npairs[deta][2][1]++;
+                    }
+                }
+              }
+            }   
           }
       }
   }
 
   for(int deta = 0; deta < NdEtaBins; deta++){
-
-    QvsdEta[deta]->Fill( real_term[deta][0]/Npairs[deta][0], Npairs[deta][0]);
-
-  }
-
-  double temp = 0.0;
-  for(int i = 0; i < 8; i++){
-    temp = temp + (real_term[i][1]/Npairs[i][1]) - (real_term[i][0]/Npairs[i][0]);
-  }
-  if( temp/8.0 > 0.00001 ){
-
-    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
-
-      const reco::GenParticle & genCand4 = (*genParticleCollection)[it];
-      int status1 = genCand4.status();
-      double genpt1 = genCand4.pt();
-      double geneta1 = genCand4.eta();
-      double genphi1 = genCand4.phi();
-      int gencharge1 = genCand4.charge();
-
-      if( status1 != 1 || gencharge1 != 1) continue;
-      if( genpt1 < ptLow_ || genpt1 > ptHigh_ ) continue;
-      if( fabs(geneta1) < 2.4 ) continue;
-
-      for(unsigned jt=0; jt<genParticleCollection->size(); ++jt) {
-
-        const reco::GenParticle & genCand5 = (*genParticleCollection)[jt];
-        int status2 = genCand5.status();
-        double genpt2 = genCand5.pt();
-        double geneta2 = genCand5.eta();
-        double genphi2 = genCand5.phi();
-        int gencharge2 = genCand5.charge();
-
-        if( status2 != 1 || gencharge2 != -1 ) continue;
-        if(genpt2 < ptLow_ || genpt2 > ptHigh_ ) continue;
-        if( fabs(geneta2) < 2.4 ) continue;
-
-        chargePhi->Fill( genphi1 - genphi2 );
+    for(int sign = 0; sign < 3; sign++){
+      for(int HF = 0; HF < 2; HF++){
+        QvsdEta[deta][sign][HF]->Fill( real_term[deta][sign][HF]/Npairs[deta][sign][HF], Npairs[deta][sign][HF]);
       }
-
     }
-
   }
+
+  double QaQc = get2Real(Q3[1][0]/ETT[1], QcosTRK/QcountsTrk, Q3[1][1]/ETT[1], QsinTRK/QcountsTrk );
+  double QcQb = get2Real(QcosTRK/QcountsTrk, Q3[0][0]/ETT[0], QsinTRK/QcountsTrk, Q3[0][1]/ETT[0]);
+  double QaQb = get2Real(Q3[1][0]/ETT[1], Q3[0][0]/ETT[0], Q3[1][1]/ETT[1], -Q3[0][1]/ETT[0]);//an extra minus sign 
+
+  c2_ac->Fill( QaQc, ETT[1]*QcountsTrk );
+  c2_cb->Fill( QcQb, ETT[0]*QcountsTrk  );
+  c2_ab->Fill( QaQb, ETT[1]*ETT[0] );
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -248,24 +285,42 @@ ThreePointCorrelatorNestedLoop::beginJob()
   edm::Service<TFileService> fs;
     
   TH1D::SetDefaultSumw2();
+  
+  const int NdEtaBins = dEtaBins_.size() - 1;
+  const int NetaBins = etaBins_.size() - 1;
+  double etaBinsArray[100];
 
-  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
-  TFile f1(fip1.fullPath().c_str(),"READ");
-  effTable = (TH2D*)f1.Get("rTotalEff3D");
+  for(unsigned i = 0; i < etaBins_.size(); i++){
+
+    etaBinsArray[i] = etaBins_[i];
+  }
+  const int Nptbins = ptBins_.size() - 1;
+  double ptBinsArray[100];
+
+  for(unsigned i = 0; i < ptBins_.size(); i++){
+
+    ptBinsArray[i] = ptBins_[i];
+  }
+  int HFside = 2;
+  if( useBothSide_ ) HFside = 1;
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
-  chargePhi = fs->make<TH1D>("chargePhi", "chargePhi", 14000,-7.0,7.0);
+  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
-  const int NdEtaBins = dEtaBins_.size() - 1;
-
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
 
   for(int deta = 0; deta < NdEtaBins; deta++){
-      
-    QvsdEta[deta] = fs->make<TH1D>(Form("QvsdEta_%d",deta), "", 20000,-1.0-0.00005,1.0-0.00005);
-  
+    for(int sign = 0; sign < 3; sign++){
+      for(int HF = 0; HF < HFside; HF++){       
+        QvsdEta[deta][sign][HF] = fs->make<TH1D>(Form("QvsdEta_%d_%d_%d",deta,sign,HF), "", 20000,-1.0-0.00005, 1.0-0.00005);
+      }
+    }
   }
 
 }
