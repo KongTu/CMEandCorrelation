@@ -167,7 +167,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(nlayers <= 0 ) continue;
 
         trkPt->Fill( trk.pt(), weight);
-        trkEta->Fill( trk.eta(), weight);
+        trk_eta->Fill( trk.eta(), weight);
 
         if(fabs(trk.eta()) > etaTracker_ || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
@@ -474,7 +474,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", 1000,0,10);
-  trkEta = fs->make<TH1D>("trkEta", ";#eta", 700,-3.0,3.0);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", 700,-3.0,3.0);
 
   for(int sign = 0; sign < 3; sign++){
 

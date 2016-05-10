@@ -184,7 +184,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       TH1D* trkPhi;
       TH1D* hfPhi;
       TH1D* trkPt;
-      TH1D* trkEta;
+      TH1D* trk_eta;
       TH1D* cbinHist;
       TH1D* delEta3p[3][2];
       TH1D* delEta2p[3];
@@ -429,7 +429,7 @@ class ThreePointCorrelatorGen : public edm::EDAnalyzer {
       TH1D* hfPhi;
       TH1D* cbinHist;
       TH1D* trkPt;
-      TH1D* trkEta;
+      TH1D* trk_eta;
 
 //v2
       TH1D* c2_ab;

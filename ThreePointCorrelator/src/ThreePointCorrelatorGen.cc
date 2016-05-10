@@ -190,7 +190,7 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
     if( status != 1  || gencharge == 0 ) continue;
 
     trkPt->Fill( genpt );
-    trkEta->Fill( geneta );
+    trk_eta->Fill( geneta );
 
     if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
 
@@ -392,7 +392,7 @@ ThreePointCorrelatorGen::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", 1000,0,10);
-  trkEta = fs->make<TH1D>("trkEta", ";#eta", 700,-3.0,3.0);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", 700,-3.0,3.0);
 
   const int NdEtaBins = dEtaBins_.size() - 1;
   int HFside = 2;
