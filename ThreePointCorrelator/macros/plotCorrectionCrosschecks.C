@@ -188,19 +188,22 @@ void plotCorrectionCrosschecks(){
 
 	TH1D* base3 = makeHist("base3","","#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
-    base3->GetYaxis()->SetRangeUser(-0.0015,0.009);
+    base3->GetYaxis()->SetRangeUser(-0.0006,0.0003);
+    base3->GetXaxis()->SetRangeUser(0,2.0);
     base3->GetYaxis()->SetTitleOffset(1.9);
 
     TH1D* base4 = (TH1D*) base3->Clone("base4");
 
-    TCanvas* c4 = makeMultiCanvas("c4","c4",2,1);
+    TCanvas* c4 = makeCanvas("c4","c4");
+
+    //TCanvas* c4 = makeMultiCanvas("c4","c4",2,1);
     for(int HF = 0; HF < 1; HF++){
 		c4->cd(HF+1);
 		gPad->SetTicks();
 		gPad->SetLeftMargin(0.20);
 		gPad->SetBottomMargin(0.16);
 		
-		if(HF == 0) {base3->SetTitle("Pb-going");base3->Draw();}
+		if(HF == 0) {base3->SetTitle("PbPb 30-40%");base3->Draw();}
 		if(HF == 1) {base4->SetTitle("p-going");base4->Draw();}
 
 		TH1D* temp = (TH1D*)hist1[0][HF]->Clone("temp");
