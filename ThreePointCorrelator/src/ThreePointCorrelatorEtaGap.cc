@@ -502,7 +502,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   // TFile f1(fip1.fullPath().c_str(),"READ");
   // effTable = (TH2D*)f1.Get("rTotalEff3D");
 
-  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff_tight.root");  
+  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff.root");  
   TFile f1(fip1.fullPath().c_str(),"READ");
   effTable = (TH2D*)f1.Get("recoHist");
 
