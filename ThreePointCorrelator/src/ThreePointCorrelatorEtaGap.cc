@@ -86,6 +86,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
   
   //first selection; vertices
   if( fabs(bestvz) < vzLow_ || fabs(bestvz) > vzHigh_ ) return;
+
+  vtxZ->Fill( bestvz );
   
   Handle<CaloTowerCollection> towers;
   iEvent.getByLabel(towerSrc_, towers);
@@ -505,6 +507,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   effTable = (TH2D*)f1.Get("recoHist");
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
+  vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
