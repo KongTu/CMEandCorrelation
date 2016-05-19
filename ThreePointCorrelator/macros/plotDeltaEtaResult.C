@@ -8,11 +8,38 @@ double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1
 const int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
 double dEtaBins[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
 const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
+//rebin option:
+double dEtaReBins[] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.4,2.8,3.4,4.2,4.8};
+const int NdEtaReBins = sizeof(dEtaReBins) / sizeof(dEtaReBins[0]) - 1;
+
 double ntrkBins[] = {0,35,60,90,120,150,185,220,260};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 const int Nmults = 2;
 
+double weightedAverage(double a1, double a2, double eta1, double eta2){
+
+	double temp1 = a1*eta1 + a2*eta2;
+	double temp2 = (a1+a2);
+
+	return temp1/temp2;
+}
+
+double weightedAverageError(double a1, double a2, double etaError1, double etaError2){
+
+	double temp1 = (a1/(a1+a2))*(a1/(a1+a2));
+	double temp2 = etaError1*etaError1;
+	double temp3 = (a2/(a1+a2))*(a2/(a1+a2));
+	double temp4 = etaError2*etaError2;
+
+	double total = temp1*temp2 + temp3*temp4;
+
+	return sqrt(total);
+
+}
+
 void plotDeltaEtaResult(){
+
+	gStyle->SetErrorX(0);
 
 	TFile* file[16];
 
@@ -25,6 +52,15 @@ void plotDeltaEtaResult(){
 	TH1D* QvsdEta[16][48][3][2];
 
 	TH1D* delEta3p[16][3][2];
+
+	for(int mult = 0; mult < Nmults; mult++){
+		for(int sign = 0; sign < 3; sign++){
+			for(int HF = 0; HF < 2; HF++){
+
+				delEta3p[mult][sign][HF] = (TH1D*) file[mult]->Get(Form("ana/delEta3p_%d_%d",sign,HF));
+			}
+		}
+	}
 
 	TH1D* QaQb[16]; TH1D* QaQc[16]; TH1D* QcQb[16];
 	TH1D* aveQ3[16][2][2];
@@ -86,22 +122,45 @@ void plotDeltaEtaResult(){
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
 			for(int HF = 0; HF < 2; HF++){
-				hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaBins, dEtaBins);
-				hist2[mult][sign][HF] = new TH1D(Form("hist2_%d_%d_%d",mult,sign,HF),"test", NdEtaBins, dEtaBins);
+				hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
+				hist2[mult][sign][HF] = new TH1D(Form("hist2_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
 			}
 		}
 	}
 
 	for(int mult = 0; mult < Nmults; mult++){
-		for(int deta = 0; deta < NdEtaBins; deta++){
+		for(int deta = 0; deta < NdEtaReBins; deta++){
 			for(int sign = 0; sign < 3; sign++){
 				for(int HF = 0; HF < 2; HF++){
 
-					double Q_total_real_dEta = QvsdEta[mult][deta][sign][HF]->GetMean();
-					double Q_total_real_dEta_error = QvsdEta[mult][deta][sign][HF]->GetMeanError();
-					
-					hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
-					hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
+					if(deta < 14){
+						
+						double Q_total_real_dEta1 = QvsdEta[mult][2*deta][sign][HF]->GetMean();
+						double Q_total_real_dEta_error1 = QvsdEta[mult][2*deta][sign][HF]->GetMeanError();
+
+						double Q_total_real_dEta2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMean();
+						double Q_total_real_dEta_error2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMeanError();
+
+						double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+1 );
+						double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+2 );
+
+						double value = weightedAverage(weight1, weight2, Q_total_real_dEta1, Q_total_real_dEta2);
+						double error = weightedAverageError(weight1, weight2, Q_total_real_dEta_error1, Q_total_real_dEta_error2 );
+						
+						hist1[mult][sign][HF]->SetBinContent(deta+1, value );
+						hist1[mult][sign][HF]->SetBinError(deta+1, error );
+
+					}
+					else{
+
+						double Q_total_real_dEta = QvsdEta[mult][deta+14][sign][HF]->GetMean();
+						double Q_total_real_dEta_error = QvsdEta[mult][deta+14][sign][HF]->GetMeanError();
+						
+						hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
+						hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
+					}
+
+
 				}
 			}
 		}
@@ -112,10 +171,10 @@ void plotDeltaEtaResult(){
 	TH1D* base1 = makeHist("base1", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8,kBlack);
 	TH1D* base2 = makeHist("base2", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8,kBlack);
 
-	base1->GetYaxis()->SetRangeUser(-0.0014, 0.0018);
+	base1->GetYaxis()->SetRangeUser(-0.00115, 0.0013);
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	
-	base2->GetYaxis()->SetRangeUser(-0.0014, 0.0018);
+	base2->GetYaxis()->SetRangeUser(-0.00115, 0.0013);
 	base2->GetXaxis()->SetTitleColor(kBlack);
 	
 	fixedFontHist1D(base1,1.1,1.25);
@@ -135,14 +194,14 @@ void plotDeltaEtaResult(){
 	
 	TH1D* base3 = (TH1D*) base1->Clone("base3");
 	base3->GetYaxis()->SetTitle("#Delta#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT");
-	base3->GetYaxis()->SetRangeUser(-0.001,0.002);
+	base3->GetYaxis()->SetRangeUser(-0.0007,0.0018);
 	base3->GetYaxis()->SetTitleOffset(1.9);
 	base3->GetXaxis()->SetTitleOffset(3.1);
 	base3->GetYaxis()->SetTitleSize(base3->GetYaxis()->GetTitleSize()*1.0);
 	base3->GetYaxis()->SetNdivisions(6);
 	
 	TH1D* base4 = (TH1D*) base2->Clone("base4");
-	base4->GetYaxis()->SetRangeUser(-0.001,0.002);
+	base4->GetYaxis()->SetRangeUser(-0.0007,0.0018);
 	base4->GetYaxis()->SetTitleOffset(1.9);
 	base4->GetXaxis()->SetTitleOffset(3.1);
 	base4->GetYaxis()->SetTitleSize(base4->GetYaxis()->GetTitleSize()*1.0);
@@ -181,8 +240,8 @@ void plotDeltaEtaResult(){
 	pad2[2]->SetBottomMargin(0.28);
 	pad2[3]->SetBottomMargin(0.28);
 
-	pad2[2]->SetTopMargin(0.1);
-	pad2[3]->SetTopMargin(0.1);
+	pad2[2]->SetTopMargin(0.13);
+	pad2[3]->SetTopMargin(0.13);
 
 	pad2[0]->cd();
 	pad2[0]->SetTicks();
