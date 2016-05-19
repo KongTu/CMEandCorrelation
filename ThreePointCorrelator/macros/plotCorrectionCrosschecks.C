@@ -73,7 +73,7 @@ void plotCorrectionCrosschecks(){
 
 	for(int deta = 0; deta < NdEtaBins; deta++){
 		for(int sign = 0; sign < 3; sign++){
-			for(int HF = 0; HF < 1; HF++){
+			for(int HF = 0; HF < 2; HF++){
 		  
 			  QvsdEta[deta][sign][HF] = (TH1D*) file->Get( Form("ana/QvsdEta_%d_%d_%d",deta,sign,HF) );
 			  
@@ -129,7 +129,7 @@ void plotCorrectionCrosschecks(){
 	TH1D* hist1[3][1];
 	TH1D* hist2[3][1];
 	for(int sign = 0; sign < 3; sign++){
-		for(int HF = 0; HF < 1; HF++){
+		for(int HF = 0; HF < 2; HF++){
 			hist1[sign][HF] = new TH1D(Form("hist1_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
 			hist2[sign][HF] = new TH1D(Form("hist2_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
 		}
@@ -137,7 +137,7 @@ void plotCorrectionCrosschecks(){
 
 	for(int deta = 0; deta < NdEtaBins; deta++){
 		for(int sign = 0; sign < 3; sign++){
-			for(int HF = 0; HF < 1; HF++){
+			for(int HF = 0; HF < 2; HF++){
 
 				double Q_total_real_dEta = QvsdEta[deta][sign][HF]->GetMean();
 				double Q_total_real_dEta_error = QvsdEta[deta][sign][HF]->GetMeanError();
@@ -189,7 +189,7 @@ void plotCorrectionCrosschecks(){
 	TH1D* base3 = makeHist("base3","","#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
     base3->GetYaxis()->SetRangeUser(-0.0006,0.0003);
-    base3->GetXaxis()->SetRangeUser(0,2.0);
+    base3->GetXaxis()->SetRangeUser(0.1,2.0);
     base3->GetYaxis()->SetTitleOffset(1.9);
 
     TH1D* base4 = (TH1D*) base3->Clone("base4");
@@ -206,22 +206,32 @@ void plotCorrectionCrosschecks(){
 		if(HF == 0) {base3->SetTitle("PbPb 30-40%");base3->Draw();}
 		if(HF == 1) {base4->SetTitle("p-going");base4->Draw();}
 
-		TH1D* temp = (TH1D*)hist1[0][HF]->Clone("temp");
-		temp->Add(hist1[1][HF], +1);
-		temp->Scale(0.5);
+		TH1D* temp1 = (TH1D*)hist1[0][0]->Clone("temp1");
+		TH1D* temp2 = (TH1D*)hist1[0][1]->Clone("temp2");
+		TH1D* temp3 = (TH1D*)hist1[1][0]->Clone("temp3");
+		TH1D* temp4 = (TH1D*)hist1[1][1]->Clone("temp4");
 
-		temp->Scale( 1.0/v2[HF] );
-		temp->SetMarkerColor(kRed);
-		temp->SetLineColor(kRed);
-		temp->SetMarkerStyle(20);
-		temp->Draw("Psame");
+		temp1->Add(hist1[0][1], +1);
+		temp1->Add(hist1[1][0], +1);
+		temp1->Add(hist1[1][1], +1);
 
-		TH1D* temp2 = (TH1D*)hist1[2][HF]->Clone("temp2");
-		temp2->Scale( 1.0/v2[HF] );
-		temp2->SetMarkerColor(kBlue);
-		temp2->SetLineColor(kBlue);
-		temp2->SetMarkerStyle(24);
-		temp2->Draw("Psame");
+		temp1->Scale(0.25);
+
+		temp1->Scale( 1.0/v2[2] );
+		temp1->SetMarkerColor(kRed);
+		temp1->SetLineColor(kRed);
+		temp1->SetMarkerStyle(20);
+		temp1->Draw("Psame");
+
+		TH1D* temp5 = (TH1D*)hist1[2][0]->Clone("temp5");
+		TH1D* temp6 = (TH1D*)hist1[2][1]->Clone("temp6");
+		temp5->Add(temp6, +1);
+		temp5->Scale(0.5);
+		temp5->Scale( 1.0/v2[2] );
+		temp5->SetMarkerColor(kBlue);
+		temp5->SetLineColor(kBlue);
+		temp5->SetMarkerStyle(24);
+		temp5->Draw("Psame");
 
 	}
 
@@ -230,8 +240,8 @@ void plotCorrectionCrosschecks(){
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(43);
-    w2->AddEntry(temp, "like sign");
-    w2->AddEntry(temp2, "unlike sign");
+    w2->AddEntry(temp1, "like sign");
+    w2->AddEntry(temp5, "unlike sign");
     w2->Draw("same");
 
 
