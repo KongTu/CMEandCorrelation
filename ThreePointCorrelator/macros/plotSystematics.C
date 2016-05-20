@@ -17,7 +17,7 @@ const int NdEtaBinsShortRange = sizeof(dEtaBinsShortRange) / sizeof(dEtaBinsShor
 
 double ntrkBins[] = {0,35,60,90,120,150,185,220,260};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
-const int Nmults = 2;
+const int Nmults = 4;
 
 bool doShortRange_ = false;
 
@@ -47,13 +47,23 @@ void plotSystematics(){
 	gStyle->SetErrorX(0);
 	TGaxis::SetMaxDigits(3);
 
+	string Label1; 
+	string Label2;
+	string Label3;
+	string Label4; 
+
+	Label1 = "pPb default";
+	Label2 = "pPb 3 < |vz| < 15 ";
+	Label3 = "PbPb default";
+	Label4 = "PbPb 3 < |vz| < 15 ";
+
+
 	TFile* file[16];
 
-	// file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	// file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v6.root");
-
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_Systematics_v7.root");
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v2.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_Systematics_v2.root");
 
 	TH1D* QvsdEta[16][48][3][2];
 
@@ -220,7 +230,7 @@ void plotSystematics(){
 	temp1->Scale(1.0/v2[0][0]);
 	temp1->SetMarkerColor(kRed);
 	temp1->SetLineColor(kRed);
-	temp1->SetMarkerStyle(24);
+	temp1->SetMarkerStyle(20);
 
 	//like sign p-going 
 	TH1D* temp3 = (TH1D*) hist1[0][0][1]->Clone("temp3");
@@ -238,7 +248,7 @@ void plotSystematics(){
 	temp5->Scale(1.0/v2[0][0]);
 	temp5->SetMarkerColor(kBlue);
 	temp5->SetLineColor(kBlue);
-	temp5->SetMarkerStyle(25);
+	temp5->SetMarkerStyle(21);
 
 	//unlike sign p-going
 	TH1D* temp6 = (TH1D*) hist1[0][2][1]->Clone("temp6");
@@ -246,6 +256,30 @@ void plotSystematics(){
 	temp6->SetMarkerColor(kBlue);
 	temp6->SetLineColor(kBlue);
 	temp6->SetMarkerStyle(21);
+
+	//like sign PbPb
+	TH1D* temp7 = (TH1D*) hist1[2][0][0]->Clone("temp7");
+	TH1D* temp8 = (TH1D*) hist1[2][0][1]->Clone("temp8");
+	TH1D* temp9 = (TH1D*) hist1[2][1][0]->Clone("temp9");
+	TH1D* temp10 = (TH1D*) hist1[2][1][1]->Clone("temp10");
+	temp7->Add(temp8, +1);
+	temp7->Add(temp9, +1);
+	temp7->Add(temp10, +1);
+	temp7->Scale(0.25);
+	temp7->Scale(1.0/v2[2][2]);
+	temp7->SetMarkerColor(kRed);
+	temp7->SetLineColor(kRed);
+	temp7->SetMarkerStyle(20);
+
+	//unlike sign PbPb
+	TH1D* temp10_1 = (TH1D*) hist1[2][2][0]->Clone("temp10_1");
+	TH1D* temp10_2 = (TH1D*) hist1[2][2][1]->Clone("temp10_2");
+	temp10_1->Add(temp10_2, +1);
+	temp10_1->Scale(0.5);
+	temp10_1->Scale(1.0/v2[2][2]);
+	temp10_1->SetMarkerColor(kBlue);
+	temp10_1->SetLineColor(kBlue);
+	temp10_1->SetMarkerStyle(21);
 
 //systematics:
 
@@ -258,7 +292,7 @@ void plotSystematics(){
 	temp11->Scale(1.0/v2[1][0]);
 	temp11->SetMarkerColor(kBlack);
 	temp11->SetLineColor(kBlack);
-	temp11->SetMarkerStyle(24);
+	temp11->SetMarkerStyle(20);
 
 	//like sign p-going 
 	TH1D* temp33 = (TH1D*) hist1[1][0][1]->Clone("temp33");
@@ -276,7 +310,7 @@ void plotSystematics(){
 	temp55->Scale(1.0/v2[1][0]);
 	temp55->SetMarkerColor(kGreen+3);
 	temp55->SetLineColor(kGreen+3);
-	temp55->SetMarkerStyle(25);
+	temp55->SetMarkerStyle(21);
 
 	//unlike sign p-going
 	TH1D* temp66 = (TH1D*) hist1[1][2][1]->Clone("temp66");
@@ -285,9 +319,33 @@ void plotSystematics(){
 	temp66->SetLineColor(kGreen+3);
 	temp66->SetMarkerStyle(21);
 
+	//like sign PbPb
+	TH1D* temp77 = (TH1D*) hist1[3][0][0]->Clone("temp77");
+	TH1D* temp88 = (TH1D*) hist1[3][0][1]->Clone("temp88");
+	TH1D* temp99 = (TH1D*) hist1[3][1][0]->Clone("temp99");
+	TH1D* temp100 = (TH1D*) hist1[3][1][1]->Clone("temp100");
+	temp77->Add(temp88, +1);
+	temp77->Add(temp99, +1);
+	temp77->Add(temp100, +1);
+	temp77->Scale(0.25);
+	temp77->Scale(1.0/v2[3][2]);
+	temp77->SetMarkerColor(kBlack);
+	temp77->SetLineColor(kBlack);
+	temp77->SetMarkerStyle(20);
+
+	//unlike sign PbPb
+	TH1D* temp10_11 = (TH1D*) hist1[3][2][0]->Clone("temp10_11");
+	TH1D* temp10_22 = (TH1D*) hist1[3][2][1]->Clone("temp10_22");
+	temp10_11->Add(temp10_22, +1);
+	temp10_11->Scale(0.5);
+	temp10_11->Scale(1.0/v2[3][2]);
+	temp10_11->SetMarkerColor(kGreen+3);
+	temp10_11->SetLineColor(kGreen+3);
+	temp10_11->SetMarkerStyle(21);
+
 
 //Canvas:
-	TCanvas* c1 = makeMultiCanvas("c1","c1",2,2);
+	TCanvas* c1 = makeMultiCanvas("c1","c1",3,2);
 	c1->cd(1);
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.15);
@@ -296,13 +354,13 @@ void plotSystematics(){
 	temp1->Draw("Psame");
 	temp11->Draw("Psame");
 
-	TLegend *w1 = new TLegend(0.55,0.2,0.7,0.4);
+	TLegend *w1 = new TLegend(0.35,0.2,0.5,0.4);
     w1->SetLineColor(kWhite);
     w1->SetFillColor(0);
     w1->SetTextSize(20);
     w1->SetTextFont(43);
-    w1->AddEntry(temp1, "default");
-    w1->AddEntry(temp11, "tight");
+    w1->AddEntry(temp1, Label1.c_str());
+    w1->AddEntry(temp11, Label2.c_str());
     w1->Draw("same");
 
 	c1->cd(2);
@@ -315,16 +373,35 @@ void plotSystematics(){
 	temp3->Draw("Psame");
 	temp33->Draw("Psame");
 
-	TLegend *w2 = new TLegend(0.55,0.2,0.7,0.4);
+	TLegend *w2 = new TLegend(0.35,0.2,0.5,0.4);
     w2->SetLineColor(kWhite);
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(43);
-    w2->AddEntry(temp3, "default");
-    w2->AddEntry(temp33, "tight");
+    w2->AddEntry(temp3, Label1.c_str());
+    w2->AddEntry(temp33, Label2.c_str());
     w2->Draw("same");
 
-	c1->cd(3);
+    c1->cd(3);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.15);
+	gPad->SetBottomMargin(0.14);
+	TH1D* base_PbPb = (TH1D*)base1->Clone("base_PbPb");
+	base_PbPb->SetTitle("like-sign, PbPb");
+	base_PbPb->Draw();
+	temp7->Draw("Psame");
+	temp77->Draw("Psame");
+
+	TLegend *w3 = new TLegend(0.35,0.2,0.5,0.4);
+    w3->SetLineColor(kWhite);
+    w3->SetFillColor(0);
+    w3->SetTextSize(20);
+    w3->SetTextFont(43);
+    w3->AddEntry(temp7, Label3.c_str());
+    w3->AddEntry(temp77, Label4.c_str());
+    w3->Draw("same");
+
+	c1->cd(4);
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
@@ -334,16 +411,16 @@ void plotSystematics(){
 	temp5->Draw("Psame");
 	temp55->Draw("Psame");
 
-	TLegend *w3 = new TLegend(0.55,0.2,0.7,0.4);
-    w3->SetLineColor(kWhite);
-    w3->SetFillColor(0);
-    w3->SetTextSize(20);
-    w3->SetTextFont(43);
-    w3->AddEntry(temp5, "default");
-    w3->AddEntry(temp55, "tight");
-    w3->Draw("same");
+	TLegend *w4 = new TLegend(0.35,0.2,0.5,0.4);
+    w4->SetLineColor(kWhite);
+    w4->SetFillColor(0);
+    w4->SetTextSize(20);
+    w4->SetTextFont(43);
+    w4->AddEntry(temp5, Label1.c_str());
+    w4->AddEntry(temp55, Label2.c_str());
+    w4->Draw("same");
 
-	c1->cd(4);
+	c1->cd(5);
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
@@ -352,17 +429,35 @@ void plotSystematics(){
 	base4->Draw();
 	temp6->Draw("Psame");
 	temp66->Draw("Psame");
+
+	TLegend *w5 = new TLegend(0.35,0.2,0.5,0.4);
+    w5->SetLineColor(kWhite);
+    w5->SetFillColor(0);
+    w5->SetTextSize(20);
+    w5->SetTextFont(43);
+    w5->AddEntry(temp6, Label1.c_str());
+    w5->AddEntry(temp66, Label2.c_str());
+    w5->Draw("same");
+
+	c1->cd(6);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.15);
+	gPad->SetBottomMargin(0.14);
+	TH1D* base_PbPb_unlike = (TH1D*)base1->Clone("base_PbPb_unlike");
+	base_PbPb_unlike->SetTitle("unlike-sign, PbPb");
+	base_PbPb_unlike->Draw();
+	temp10_1->Draw("Psame");
+	temp10_11->Draw("Psame");
+
+	TLegend *w6 = new TLegend(0.35,0.2,0.5,0.4);
+    w6->SetLineColor(kWhite);
+    w6->SetFillColor(0);
+    w6->SetTextSize(20);
+    w6->SetTextFont(43);
+    w6->AddEntry(temp10_1, Label3.c_str());
+    w6->AddEntry(temp10_11, Label4.c_str());
+    w6->Draw("same");
 	
-	TLegend *w4 = new TLegend(0.55,0.2,0.7,0.4);
-    w4->SetLineColor(kWhite);
-    w4->SetFillColor(0);
-    w4->SetTextSize(20);
-    w4->SetTextFont(43);
-    w4->AddEntry(temp6, "default");
-    w4->AddEntry(temp66, "tight");
-    w4->Draw("same");
-
-
 	TH1D* base5 = makeHist("base5","like-sign, Pb-going","#Delta#eta", "default - systematic checks", 48,0,4.8);
     base5->GetXaxis()->SetTitleColor(kBlack);
     base5->GetYaxis()->SetRangeUser(-0.0005, 0.0005);
@@ -380,7 +475,13 @@ void plotSystematics(){
     TH1D* ratio6 = (TH1D*)temp6->Clone("ratio6");
     TH1D* ratio66 = (TH1D*)temp66->Clone("ratio66");
 
-   	TCanvas* c2 = makeMultiCanvas("c2","c2",2,2);
+    TH1D* ratio7 = (TH1D*)temp7->Clone("ratio7");
+    TH1D* ratio77 = (TH1D*)temp77->Clone("ratio77");
+
+    TH1D* ratio8 = (TH1D*)temp10_1->Clone("ratio8");
+    TH1D* ratio88 = (TH1D*)temp10_11->Clone("ratio88");
+
+   	TCanvas* c2 = makeMultiCanvas("c2","c2",3,2);
 	c2->cd(1);
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.15);
@@ -403,13 +504,23 @@ void plotSystematics(){
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
+	TH1D* base6_PbPb = (TH1D*)base5->Clone("base6_PbPb");
+	base6_PbPb->SetTitle("like-sign, PbPb");
+	base6_PbPb->Draw();
+	ratio7->Add( ratio77, -1 );
+	ratio7->Draw("Psame");
+
+	c2->cd(4);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.15);
+	gPad->SetBottomMargin(0.14);
 	TH1D* base7 = (TH1D*)base5->Clone("base7");
 	base7->SetTitle("unlike-sign, Pb-going");
 	base7->Draw();
 	ratio5->Add( ratio55, -1 );	
 	ratio5->Draw("Psame");
 
-	c2->cd(4);
+	c2->cd(5);
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
@@ -418,5 +529,21 @@ void plotSystematics(){
 	base8->Draw();
 	ratio6->Add( ratio66, -1 );
 	ratio6->Draw("Psame");
+
+	c2->cd(6);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.15);
+	gPad->SetBottomMargin(0.14);
+	TH1D* base8_PbPb = (TH1D*)base5->Clone("base8_PbPb");
+	base8_PbPb->SetTitle("unlike-sign, PbPb");
+	base8_PbPb->Draw();
+	ratio8->Add( ratio88, -1 );
+	ratio8->Draw("Psame");
+
+
+	c1->Print("../systematics/systematics_v2.pdf");
+	c2->Print("../systematics/systematics_diff_v2.pdf");
+
+
 
 }
