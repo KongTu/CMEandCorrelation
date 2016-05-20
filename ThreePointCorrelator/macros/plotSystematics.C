@@ -45,7 +45,7 @@ void plotSystematics(){
 	TFile* file[16];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v2.root");
 
 	TH1D* QvsdEta[16][48][3][2];
 
@@ -322,10 +322,10 @@ void plotSystematics(){
     w4->Draw("same");
 
 
-	TH1D* base5 = makeHist("base5","like-sign, Pb-going","#Delta#eta", "Ratio", 48,0,4.8);
+	TH1D* base5 = makeHist("base5","like-sign, Pb-going","#Delta#eta", "default - systematic checks", 48,0,4.8);
     base5->GetXaxis()->SetTitleColor(kBlack);
-    base5->GetYaxis()->SetRangeUser(-10, 10);
-    base5->GetYaxis()->SetTitleOffset(1.0);
+    base5->GetYaxis()->SetRangeUser(-0.0005, 0.0005);
+    base5->GetYaxis()->SetTitleOffset(1.5);
 
     TH1D* ratio1 = (TH1D*)temp1->Clone("ratio1");
     TH1D* ratio11 = (TH1D*)temp11->Clone("ratio11");
@@ -345,7 +345,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	base5->Draw();
-	ratio1->Divide( ratio11 );
+	ratio1->Add( ratio11, -1 );
 	ratio1->Draw("Psame");
 
 	c2->cd(2);
@@ -355,7 +355,7 @@ void plotSystematics(){
 	TH1D* base6 = (TH1D*)base5->Clone("base6");
 	base6->SetTitle("like-sign, p-going");
 	base6->Draw();
-	ratio3->Divide( ratio33 );
+	ratio3->Add( ratio33, -1 );
 	ratio3->Draw("Psame");
 
 	c2->cd(3);
@@ -365,7 +365,7 @@ void plotSystematics(){
 	TH1D* base7 = (TH1D*)base5->Clone("base7");
 	base7->SetTitle("unlike-sign, Pb-going");
 	base7->Draw();
-	ratio5->Divide( ratio55 );	
+	ratio5->Add( ratio55, -1 );	
 	ratio5->Draw("Psame");
 
 	c2->cd(4);
@@ -375,7 +375,7 @@ void plotSystematics(){
 	TH1D* base8 = (TH1D*)base5->Clone("base8");
 	base8->SetTitle("unlike-sign, p-going");
 	base8->Draw();
-	ratio6->Divide( ratio66 );
+	ratio6->Add( ratio66, -1 );
 	ratio6->Draw("Psame");
 
 }
