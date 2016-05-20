@@ -11,10 +11,15 @@ const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
 //rebin option:
 double dEtaReBins[] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.4,2.8,3.4,4.2,4.8};
 const int NdEtaReBins = sizeof(dEtaReBins) / sizeof(dEtaReBins[0]) - 1;
+//short range:
+double dEtaBinsShortRange[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0};
+const int NdEtaBinsShortRange = sizeof(dEtaBinsShortRange) / sizeof(dEtaBinsShortRange[0]) - 1;
 
 double ntrkBins[] = {0,35,60,90,120,150,185,220,260};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 const int Nmults = 2;
+
+bool doShortRange_ = false;
 
 double weightedAverage(double a1, double a2, double eta1, double eta2){
 
@@ -44,8 +49,11 @@ void plotSystematics(){
 
 	TFile* file[16];
 
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v2.root");
+	// file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
+	// file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v6.root");
+
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_Systematics_v7.root");
 
 	TH1D* QvsdEta[16][48][3][2];
 
@@ -115,50 +123,83 @@ void plotSystematics(){
 		v2[mult][2] = sqrt(c2_ab - abCorr );
 	}
 
-	TH1D* hist1[8][3][2];
-	TH1D* hist2[8][3][2];
-	for(int mult = 0; mult < Nmults; mult++){
-		for(int sign = 0; sign < 3; sign++){
-			for(int HF = 0; HF < 2; HF++){
-				hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
-				hist2[mult][sign][HF] = new TH1D(Form("hist2_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
-			}
-		}
-	}
+	if( !doShortRange_ ){
 
-	for(int mult = 0; mult < Nmults; mult++){
-		for(int deta = 0; deta < NdEtaReBins; deta++){
+		TH1D* hist1[8][3][2];
+		TH1D* hist2[8][3][2];
+		for(int mult = 0; mult < Nmults; mult++){
 			for(int sign = 0; sign < 3; sign++){
 				for(int HF = 0; HF < 2; HF++){
+					hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
+					hist2[mult][sign][HF] = new TH1D(Form("hist2_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
+				}
+			}
+		}
 
-					if(deta < 14){
-						
-						double Q_total_real_dEta1 = QvsdEta[mult][2*deta][sign][HF]->GetMean();
-						double Q_total_real_dEta_error1 = QvsdEta[mult][2*deta][sign][HF]->GetMeanError();
+		for(int mult = 0; mult < Nmults; mult++){
+			for(int deta = 0; deta < NdEtaReBins; deta++){
+				for(int sign = 0; sign < 3; sign++){
+					for(int HF = 0; HF < 2; HF++){
 
-						double Q_total_real_dEta2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMean();
-						double Q_total_real_dEta_error2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMeanError();
+						if(deta < 14){
+							
+							double Q_total_real_dEta1 = QvsdEta[mult][2*deta][sign][HF]->GetMean();
+							double Q_total_real_dEta_error1 = QvsdEta[mult][2*deta][sign][HF]->GetMeanError();
 
-						double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+1 );
-						double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+2 );
+							double Q_total_real_dEta2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMean();
+							double Q_total_real_dEta_error2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMeanError();
 
-						double value = weightedAverage(weight1, weight2, Q_total_real_dEta1, Q_total_real_dEta2);
-						double error = weightedAverageError(weight1, weight2, Q_total_real_dEta_error1, Q_total_real_dEta_error2 );
-						
-						hist1[mult][sign][HF]->SetBinContent(deta+1, value );
-						hist1[mult][sign][HF]->SetBinError(deta+1, error );
+							double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+1 );
+							double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+2 );
+
+							double value = weightedAverage(weight1, weight2, Q_total_real_dEta1, Q_total_real_dEta2);
+							double error = weightedAverageError(weight1, weight2, Q_total_real_dEta_error1, Q_total_real_dEta_error2 );
+							
+							hist1[mult][sign][HF]->SetBinContent(deta+1, value );
+							hist1[mult][sign][HF]->SetBinError(deta+1, error );
+
+						}
+						else{
+
+							double Q_total_real_dEta = QvsdEta[mult][deta+14][sign][HF]->GetMean();
+							double Q_total_real_dEta_error = QvsdEta[mult][deta+14][sign][HF]->GetMeanError();
+							
+							hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
+							hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
+						}
+
 
 					}
-					else{
+				}
+			}
+		}
+	
+	}
+	else{
+	 
+		TH1D* hist1[8][3][2];
+		TH1D* hist2[8][3][2];
+		for(int mult = 0; mult < Nmults; mult++){
+			for(int sign = 0; sign < 3; sign++){
+				for(int HF = 0; HF < 2; HF++){
+					hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaBinsShortRange, dEtaBinsShortRange);
+					hist2[mult][sign][HF] = new TH1D(Form("hist2_%d_%d_%d",mult,sign,HF),"test", NdEtaBinsShortRange, dEtaBinsShortRange);
+				}
+			}
+		}
 
-						double Q_total_real_dEta = QvsdEta[mult][deta+14][sign][HF]->GetMean();
-						double Q_total_real_dEta_error = QvsdEta[mult][deta+14][sign][HF]->GetMeanError();
+		for(int mult = 0; mult < Nmults; mult++){
+			for(int deta = 0; deta < NdEtaBinsShortRange; deta++){
+				for(int sign = 0; sign < 3; sign++){
+					for(int HF = 0; HF < 2; HF++){
+
+					double Q_total_real_dEta = QvsdEta[mult][deta][sign][HF]->GetMean();
+					double Q_total_real_dEta_error = QvsdEta[mult][deta][sign][HF]->GetMeanError();
+					
+					hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
+					hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
 						
-						hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
-						hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
 					}
-
-
 				}
 			}
 		}
