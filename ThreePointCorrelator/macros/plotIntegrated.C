@@ -74,8 +74,6 @@ void plotIntegrated(){
 		}
 	}
 
-
-
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int deta = 0; deta < NdEtaBins; deta++){
 			for(int sign = 0; sign < 3; sign++){
@@ -201,14 +199,14 @@ void plotIntegrated(){
 	base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.4);
 	
 	TH1D* base3 = (TH1D*) base1->Clone("base3");
-	base3->GetYaxis()->SetRangeUser(-0.0006,0.0011);
+	base3->GetYaxis()->SetRangeUser(-0.0006,0.0012);
 	base3->GetYaxis()->SetTitleOffset(1.9);
 	base3->GetXaxis()->SetTitleOffset(3.1);
 	base3->GetYaxis()->SetTitleSize(base3->GetYaxis()->GetTitleSize()*1.0);
 	base3->GetYaxis()->SetNdivisions(6);
 	
 	TH1D* base4 = (TH1D*) base2->Clone("base4");
-	base4->GetYaxis()->SetRangeUser(-0.0006,0.0011);
+	base4->GetYaxis()->SetRangeUser(-0.0006,0.0012);
 	base4->GetYaxis()->SetTitleOffset(1.9);
 	base4->GetXaxis()->SetTitleOffset(3.1);
 	base4->GetYaxis()->SetTitleSize(base4->GetYaxis()->GetTitleSize()*1.0);
@@ -368,19 +366,19 @@ void plotIntegrated(){
     	box2[mult]->SetLineColor(kBlue);
         box2[mult]->Draw("SAME");
 
-    	box1[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value3[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value3[mult]+ye);
-		box1[mult]->SetFillColor(kRed);
-        box1[mult]->SetFillStyle(0);
-    	box1[mult]->SetLineWidth(1);
-    	box1[mult]->SetLineColor(kRed);
-        box1[mult]->Draw("SAME");
+    	box3[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value3[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value3[mult]+ye);
+		box3[mult]->SetFillColor(kRed);
+        box3[mult]->SetFillStyle(0);
+    	box3[mult]->SetLineWidth(1);
+    	box3[mult]->SetLineColor(kRed);
+        box3[mult]->Draw("SAME");
 
-		box2[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value4[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value4[mult]+ye);
-		box2[mult]->SetFillColor(kBlue);
-        box2[mult]->SetFillStyle(0);
-    	box2[mult]->SetLineWidth(1);
-    	box2[mult]->SetLineColor(kBlue);
-        box2[mult]->Draw("SAME");
+		box4[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value4[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value4[mult]+ye);
+		box4[mult]->SetFillColor(kBlue);
+        box4[mult]->SetFillStyle(0);
+    	box4[mult]->SetLineWidth(1);
+    	box4[mult]->SetLineColor(kBlue);
+        box4[mult]->Draw("SAME");
     }
 
 	pad2[1]->cd();
@@ -487,7 +485,7 @@ void plotIntegrated(){
 	gr3->Draw("Psame");
 	gr4->Draw("Psame");
 
-    for(int mult = 0; mult < 8; mult++){
+    for(int mult = 1; mult < 8; mult++){
 
     	double xe = 2;
     	double ye = total_systematics_pPb;
@@ -499,35 +497,42 @@ void plotIntegrated(){
     	box1[mult]->SetLineColor(kRed);
         box1[mult]->Draw("SAME");
 
-		box2[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value2[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value2[mult]+ye);
-		box2[mult]->SetFillColor(kBlue);
-        box2[mult]->SetFillStyle(0);
-    	box2[mult]->SetLineWidth(1);
-    	box2[mult]->SetLineColor(kBlue);
-        box2[mult]->Draw("SAME");
-
-    	box1[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value3[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value3[mult]+ye);
-		box1[mult]->SetFillColor(kRed);
-        box1[mult]->SetFillStyle(0);
-    	box1[mult]->SetLineWidth(1);
-    	box1[mult]->SetLineColor(kRed);
-        box1[mult]->Draw("SAME");
-
-		box2[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value4[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value4[mult]+ye);
-		box2[mult]->SetFillColor(kBlue);
-        box2[mult]->SetFillStyle(0);
-    	box2[mult]->SetLineWidth(1);
-    	box2[mult]->SetLineColor(kBlue);
-        box2[mult]->Draw("SAME");
+        if( mult >= 2){
+	    	box2[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value2[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value2[mult]+ye);
+			box2[mult]->SetFillColor(kBlue);
+	        box2[mult]->SetFillStyle(0);
+	    	box2[mult]->SetLineWidth(1);
+	    	box2[mult]->SetLineColor(kBlue);
+	        box2[mult]->Draw("SAME");
+        }
+		
+        if( mult>= 3 ){
+        	box3[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value3[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value3[mult]+ye);
+			box3[mult]->SetFillColor(kRed);
+	        box3[mult]->SetFillStyle(0);
+	    	box3[mult]->SetLineWidth(1);
+	    	box3[mult]->SetLineColor(kRed);
+	        box3[mult]->Draw("SAME");
+        }
+    	
+    	if( mult>= 3){
+    		box4[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value4[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value4[mult]+ye);
+			box4[mult]->SetFillColor(kBlue);
+	        box4[mult]->SetFillStyle(0);
+	    	box4[mult]->SetLineWidth(1);
+	    	box4[mult]->SetLineColor(kBlue);
+	        box4[mult]->Draw("SAME");
+    	}
     }
 
 	pad2[3]->cd();
 	pad2[3]->SetTicks();
 	base4->Draw();
+
 	gr5->Draw("Psame");
 	gr6->Draw("Psame");
 
-    for(int mult = 0; mult < 8; mult++){
+    for(int mult = 1; mult < 8; mult++){
 
     	double xe = 2;
     	double ye = total_systematics_PbPb;
@@ -539,12 +544,15 @@ void plotIntegrated(){
     	box5[mult]->SetLineColor(kRed);
         box5[mult]->Draw("SAME");
 
-		box6[mult] = new TBox(PbPb_ntrkBinCenter[mult]-xe,value6[mult]-ye,PbPb_ntrkBinCenter[mult]+xe,value6[mult]+ye);
+        if( mult >= 2 ){
+    	box6[mult] = new TBox(PbPb_ntrkBinCenter[mult]-xe,value6[mult]-ye,PbPb_ntrkBinCenter[mult]+xe,value6[mult]+ye);
 		box6[mult]->SetFillColor(kBlue);
         box6[mult]->SetFillStyle(0);
     	box6[mult]->SetLineWidth(1);
     	box6[mult]->SetLineColor(kBlue);
         box6[mult]->Draw("SAME");
+        }
+		
 
     }
 
