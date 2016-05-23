@@ -42,8 +42,19 @@ double get2Imag( double R1, double R2, double I1, double I2){
 
 void plotCorrectionCrosschecks(){
 
+	gStyle->SetErrorX(0);
+	TGaxis::SetMaxDigits(3);
+
 	for(int deta = 0; deta < NdEtaBins+1; deta++){
 		dEtaBins[deta] = dEtaBins[deta] - 0.00001;//fix bin boundary
+	}
+
+	double dEtaBinsCenter[50];
+	for(int deta = 0; deta < NdEtaBins; deta++){
+
+		double bincenter = (dEtaBins[deta+1] - dEtaBins[deta])/2.0 + dEtaBins[deta];
+		dEtaBinsCenter[deta] = bincenter;
+
 	}
 
 
@@ -185,11 +196,10 @@ void plotCorrectionCrosschecks(){
 		}
 	}
 
-
-	TH1D* base3 = makeHist("base3","","#Delta#eta", "cos(#phi_{1}+#phi_{2}-2#phi_{3})/v2_{3}", 48,0,4.8);
+	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{3})#GT", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
-    base3->GetYaxis()->SetRangeUser(-0.0006,0.0003);
-    base3->GetXaxis()->SetRangeUser(0.1,2.0);
+    base3->GetYaxis()->SetRangeUser(-0.0007,0.0005);
+    base3->GetXaxis()->SetRangeUser(0,1.6);
     base3->GetYaxis()->SetTitleOffset(1.9);
 
     TH1D* base4 = (TH1D*) base3->Clone("base4");
@@ -203,7 +213,7 @@ void plotCorrectionCrosschecks(){
 		gPad->SetLeftMargin(0.20);
 		gPad->SetBottomMargin(0.16);
 		
-		if(HF == 0) {base3->SetTitle("PbPb 30-40%");base3->Draw();}
+		if(HF == 0) {base3->SetTitle("");base3->Draw();}
 		if(HF == 1) {base4->SetTitle("p-going");base4->Draw();}
 
 		TH1D* temp1 = (TH1D*)hist1[0][0]->Clone("temp1");
@@ -218,6 +228,7 @@ void plotCorrectionCrosschecks(){
 		temp1->Scale(0.25);
 
 		temp1->Scale( 1.0/v2[2] );
+		temp1->SetBinContent(1,100);
 		temp1->SetMarkerColor(kRed);
 		temp1->SetLineColor(kRed);
 		temp1->SetMarkerStyle(20);
@@ -228,6 +239,7 @@ void plotCorrectionCrosschecks(){
 		temp5->Add(temp6, +1);
 		temp5->Scale(0.5);
 		temp5->Scale( 1.0/v2[2] );
+		temp5->SetBinContent(1,100);
 		temp5->SetMarkerColor(kBlue);
 		temp5->SetLineColor(kBlue);
 		temp5->SetMarkerStyle(24);
@@ -235,14 +247,6 @@ void plotCorrectionCrosschecks(){
 
 	}
 
-	TLegend *w2 = new TLegend(0.50,0.65,0.8,0.80);
-    w2->SetLineColor(kWhite);
-    w2->SetFillColor(0);
-    w2->SetTextSize(20);
-    w2->SetTextFont(43);
-    w2->AddEntry(temp1, "like sign");
-    w2->AddEntry(temp5, "unlike sign");
-    w2->Draw("same");
 
 
 	TLegend *w1 = new TLegend(0.50,0.65,0.8,0.80);
@@ -253,5 +257,133 @@ void plotCorrectionCrosschecks(){
     w1->AddEntry(hist2[0][0],"corrected","P");
     w1->AddEntry(hist1[0][0],"uncorrected","P");
 
+    double value1[50];
+    double value1_error[50];
+    double value2[50];
+    double value2_error[50];
 
+    for(int deta = 0; deta < NdEtaBins; deta++){
+
+
+    	value1[deta] = temp1->GetBinContent(deta+1);
+    	value1_error[deta] = temp1->GetBinContent(deta+1);
+
+    	value2[deta] = temp5->GetBinContent(deta+1);
+    	value2_error[deta] = temp5->GetBinContent(deta+1);
+    }
+
+    TBox *box1[50];
+    TBox *box2[50];
+
+    for(int deta = 1; deta < 16; deta++){
+
+    	double xe = 0.005;
+    	double ye = 0.0001;
+
+    	box1[deta] = new TBox(dEtaBinsCenter[deta]-xe,value1[deta]-ye,dEtaBinsCenter[deta]+xe,value1[deta]+ye);
+		box1[deta]->SetFillColor(kRed);
+        box1[deta]->SetFillStyle(0);
+    	box1[deta]->SetLineWidth(1);
+    	box1[deta]->SetLineColor(kRed);
+        box1[deta]->Draw("SAME");
+
+		box2[deta] = new TBox(dEtaBinsCenter[deta]-xe,value2[deta]-ye,dEtaBinsCenter[deta]+xe,value2[deta]+ye);
+		box2[deta]->SetFillColor(kBlue);
+        box2[deta]->SetFillStyle(0);
+    	box2[deta]->SetLineWidth(1);
+    	box2[deta]->SetLineColor(kBlue);
+        box2[deta]->Draw("SAME");
+    }
+
+	double alicebins[] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6};
+	double aliceBincenter[] = {0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5};
+	double y1[] = {0.000013,-0.000044,-0.000037,-0.000033, -0.000025,-0.000063,-0.000011,-0.000208};
+	double y1_error[] = {0.000023, 0.000024, 0.000026, 0.000029,0.000033,0.000039,0.000051,0.000101};
+	double y2[] = {-0.000270, -0.000245, -0.000198, -0.000138, -0.000070, -0.000047,-0.000064, 0.000018 };
+	double y2_error[] = {0.000016, 0.000017, 0.000019, 0.000021, 0.000023, 0.000028, 0.000037, 0.000073 };
+
+
+	TH1D* alice1 = new TH1D("alice1", "alice1", 8, alicebins );
+	TH1D* alice2 = new TH1D("alice2", "alice2", 8, alicebins );
+
+	for(int deta = 0; deta < 8; deta++){
+
+		alice1->SetBinContent(deta+1, y1[deta]);
+		alice1->SetBinError(deta+1, y1_error[deta]);
+		
+		alice2->SetBinContent(deta+1, y2[deta]);
+		alice2->SetBinError(deta+1, y2_error[deta]);
+
+	}
+
+	alice1->SetMarkerColor(kGreen+3);
+	alice1->SetLineColor(kGreen+3);
+	alice1->SetMarkerStyle(21);
+
+	alice2->SetMarkerColor(kBlack);
+	alice2->SetLineColor(kBlack);
+	alice2->SetMarkerStyle(21);
+
+	alice1->Draw("Psame");
+	alice2->Draw("Psame");
+
+
+    TBox *box3[50];
+    TBox *box4[50];
+
+    for(int deta = 0; deta < 8; deta++){
+
+    	double xe = 0.005;
+    	double ye = 0.0001;
+
+    	box3[deta] = new TBox(aliceBincenter[deta]-xe,y1[deta]-ye,aliceBincenter[deta]+xe,y1[deta]+ye);
+		box3[deta]->SetFillColor(kGreen+3);
+        box3[deta]->SetFillStyle(0);
+    	box3[deta]->SetLineWidth(1);
+    	box3[deta]->SetLineColor(kGreen+3);
+        box3[deta]->Draw("SAME");
+
+		box4[deta] = new TBox(aliceBincenter[deta]-xe,y2[deta]-ye,aliceBincenter[deta]+xe,y2[deta]+ye);
+		box4[deta]->SetFillColor(kBlack);
+        box4[deta]->SetFillStyle(0);
+    	box4[deta]->SetLineWidth(1);
+    	box4[deta]->SetLineColor(kBlack);
+        box4[deta]->Draw("SAME");
+    }
+
+	TLegend *w2 = new TLegend(0.50,0.2,0.8,0.40);
+    w2->SetLineColor(kWhite);
+    w2->SetFillColor(0);
+    w2->SetTextSize(20);
+    w2->SetTextFont(43);
+    w2->AddEntry(temp1, "CMS like sign");
+    w2->AddEntry(temp5, "CMS unlike sign");
+ 	w2->AddEntry(alice2, "ALICE like sign");
+    w2->AddEntry(alice1, "ALICE unlike sign");   
+    w2->Draw("same");
+
+	TLatex* r4 = new TLatex(0.24, 0.82, "PbPb #sqrt{s_{NN}} = 2.76 TeV");
+	r4->SetNDC();
+	r4->SetTextSize(23);
+	r4->SetTextFont(43);
+	r4->SetTextColor(kBlack);
+	r4->Draw("same");
+
+	TLatex* r5 = new TLatex(0.74, 0.82, "30-40%");
+	r5->SetNDC();
+	r5->SetTextSize(23);
+	r5->SetTextFont(43);
+	r5->SetTextColor(kBlack);
+	r5->Draw("same");
+
+   	TLatex* r1 = new TLatex(0.60,0.92, "CMS");
+    r1->SetNDC();
+    r1->SetTextSize(0.05);
+    r1->Draw("same");
+
+    TLatex* r2 = new TLatex(0.73,0.92, "Preliminary");
+    r2->SetNDC();
+    r2->SetTextSize(22);
+    r2->SetTextFont(53);
+    r2->Draw("same");
 }

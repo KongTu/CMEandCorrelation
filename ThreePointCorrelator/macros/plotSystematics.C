@@ -53,17 +53,17 @@ void plotSystematics(){
 	string Label4; 
 
 	Label1 = "pPb default";
-	Label2 = "pPb 3 < |vz| < 15 ";
+	Label2 = "pPb smaller gap ";
 	Label3 = "PbPb default";
-	Label4 = "PbPb 3 < |vz| < 15 ";
+	Label4 = "PbPb smaller gap ";
 
 
 	TFile* file[16];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v2.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_Systematics_v2.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v4.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v7.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_Systematics_v4.root");
 
 	TH1D* QvsdEta[16][48][3][2];
 
@@ -391,6 +391,13 @@ void plotSystematics(){
 	base_PbPb->Draw();
 	temp7->Draw("Psame");
 	temp77->Draw("Psame");
+	
+	TLatex* PbPb_sign = new TLatex(0.2, 0.6, "No HM trigger in PbPb");
+    PbPb_sign->SetNDC();
+    PbPb_sign->SetTextSize(23);
+    PbPb_sign->SetTextFont(43);
+    PbPb_sign->SetTextColor(kBlack);
+    //PbPb_sign->Draw("same");
 
 	TLegend *w3 = new TLegend(0.35,0.2,0.5,0.4);
     w3->SetLineColor(kWhite);
@@ -448,6 +455,7 @@ void plotSystematics(){
 	base_PbPb_unlike->Draw();
 	temp10_1->Draw("Psame");
 	temp10_11->Draw("Psame");
+    //PbPb_sign->Draw("same");
 
 	TLegend *w6 = new TLegend(0.35,0.2,0.5,0.4);
     w6->SetLineColor(kWhite);
@@ -509,6 +517,7 @@ void plotSystematics(){
 	base6_PbPb->Draw();
 	ratio7->Add( ratio77, -1 );
 	ratio7->Draw("Psame");
+    //PbPb_sign->Draw("same");
 
 	c2->cd(4);
 	gPad->SetTicks();
@@ -539,10 +548,11 @@ void plotSystematics(){
 	base8_PbPb->Draw();
 	ratio8->Add( ratio88, -1 );
 	ratio8->Draw("Psame");
+    //PbPb_sign->Draw("same");
 
 
-	c1->Print("../systematics/systematics_v2.pdf");
-	c2->Print("../systematics/systematics_diff_v2.pdf");
+	c1->Print("../systematics/systematics_v4.pdf");
+	c2->Print("../systematics/systematics_diff_v4.pdf");
 
 
 
