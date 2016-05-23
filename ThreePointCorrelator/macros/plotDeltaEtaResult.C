@@ -12,9 +12,14 @@ const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
 double dEtaReBins[] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.4,2.8,3.4,4.2,4.8};
 const int NdEtaReBins = sizeof(dEtaReBins) / sizeof(dEtaReBins[0]) - 1;
 
+double dEtaReBinCenter[] = {0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5,1.7,1.9,2.2,2.6,3.1,3.8,4.5};
+
 double ntrkBins[] = {0,35,60,90,120,150,185,220,260};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 const int Nmults = 2;
+
+double total_systematics_pPb = 0.00015;
+double total_systematics_PbPb = 0.00014;
 
 double weightedAverage(double a1, double a2, double eta1, double eta2){
 
@@ -171,10 +176,10 @@ void plotDeltaEtaResult(){
 	TH1D* base1 = makeHist("base1", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8,kBlack);
 	TH1D* base2 = makeHist("base2", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8,kBlack);
 
-	base1->GetYaxis()->SetRangeUser(-0.00115, 0.0013);
+	base1->GetYaxis()->SetRangeUser(-0.0012, 0.0013);
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	
-	base2->GetYaxis()->SetRangeUser(-0.00115, 0.0013);
+	base2->GetYaxis()->SetRangeUser(-0.0012, 0.0013);
 	base2->GetXaxis()->SetTitleColor(kBlack);
 	
 	fixedFontHist1D(base1,1.1,1.25);
@@ -310,6 +315,70 @@ void plotDeltaEtaResult(){
     w1->AddEntry(temp4, "p-going, unlike sign");
     w1->Draw("same");
 
+    double value1[50];
+    double value1_error[50];
+    double value2[50];
+    double value2_error[50];
+    double value3[50];
+    double value3_error[50];
+    double value4[50];
+    double value4_error[50];
+
+    for(int deta = 0; deta < NdEtaReBins; deta++){
+
+    	value1[deta] = temp1->GetBinContent(deta+1);
+    	value1_error[deta] = temp1->GetBinError(deta+1);
+
+    	value2[deta] = temp2->GetBinContent(deta+1);
+    	value2_error[deta] = temp2->GetBinError(deta+1);
+
+    	value3[deta] = temp3->GetBinContent(deta+1);
+    	value3_error[deta] = temp3->GetBinError(deta+1);
+
+    	value4[deta] = temp4->GetBinContent(deta+1);
+    	value4_error[deta] = temp4->GetBinError(deta+1);
+    }
+
+    TBox *box1[50];
+    TBox *box2[50];
+    TBox *box3[50];
+    TBox *box4[50];
+
+    for(int deta = 0; deta < NdEtaReBins; deta++){
+
+    	double xe = 0.02;
+    	double ye = total_systematics_pPb;
+
+    	box1[deta] = new TBox(dEtaReBinCenter[deta]-xe,value1[deta]-ye,dEtaReBinCenter[deta]+xe,value1[deta]+ye);
+		box1[deta]->SetFillColor(kRed);
+        box1[deta]->SetFillStyle(0);
+    	box1[deta]->SetLineWidth(1);
+    	box1[deta]->SetLineColor(kRed);
+        box1[deta]->Draw("SAME");
+
+		box2[deta] = new TBox(dEtaReBinCenter[deta]-xe,value2[deta]-ye,dEtaReBinCenter[deta]+xe,value2[deta]+ye);
+		box2[deta]->SetFillColor(kBlue);
+        box2[deta]->SetFillStyle(0);
+    	box2[deta]->SetLineWidth(1);
+    	box2[deta]->SetLineColor(kBlue);
+        box2[deta]->Draw("SAME");
+
+    	box1[deta] = new TBox(dEtaReBinCenter[deta]-xe,value3[deta]-ye,dEtaReBinCenter[deta]+xe,value3[deta]+ye);
+		box1[deta]->SetFillColor(kRed);
+        box1[deta]->SetFillStyle(0);
+    	box1[deta]->SetLineWidth(1);
+    	box1[deta]->SetLineColor(kRed);
+        box1[deta]->Draw("SAME");
+
+		box2[deta] = new TBox(dEtaReBinCenter[deta]-xe,value4[deta]-ye,dEtaReBinCenter[deta]+xe,value4[deta]+ye);
+		box2[deta]->SetFillColor(kBlue);
+        box2[deta]->SetFillStyle(0);
+    	box2[deta]->SetLineWidth(1);
+    	box2[deta]->SetLineColor(kBlue);
+        box2[deta]->Draw("SAME");
+    }
+
+//PAD1:
 	pad2[1]->cd();
 	pad2[1]->SetTicks();
 	base2->Draw();
@@ -367,8 +436,49 @@ void plotDeltaEtaResult(){
     r4->SetTextSize(23);
     r4->SetTextFont(43);
     r4->SetTextColor(kBlack);
-    r4->Draw("same");	
+    r4->Draw("same");
 
+    double value5[50];
+    double value5_error[50];
+    double value6[50];
+    double value6_error[50];
+
+    for(int deta = 0; deta < NdEtaReBins; deta++){
+
+    	value5[deta] = temp5->GetBinContent(deta+1);
+    	value5_error[deta] = temp5->GetBinError(deta+1);
+
+    	value6[deta] = temp9->GetBinContent(deta+1);
+    	value6_error[deta] = temp9->GetBinError(deta+1);
+
+    }	
+
+    TBox *box5[50];
+    TBox *box6[50];
+
+    for(int deta = 0; deta < NdEtaReBins; deta++){
+
+    	double xe = 0.02;
+    	double ye = total_systematics_PbPb;
+
+    	box5[deta] = new TBox(dEtaReBinCenter[deta]-xe,value5[deta]-ye,dEtaReBinCenter[deta]+xe,value5[deta]+ye);
+		box5[deta]->SetFillColor(kRed);
+        box5[deta]->SetFillStyle(0);
+    	box5[deta]->SetLineWidth(1);
+    	box5[deta]->SetLineColor(kRed);
+        box5[deta]->Draw("SAME");
+
+		box6[deta] = new TBox(dEtaReBinCenter[deta]-xe,value6[deta]-ye,dEtaReBinCenter[deta]+xe,value6[deta]+ye);
+		box6[deta]->SetFillColor(kBlue);
+        box6[deta]->SetFillStyle(0);
+    	box6[deta]->SetLineWidth(1);
+    	box6[deta]->SetLineColor(kBlue);
+        box6[deta]->Draw("SAME");
+    }
+
+
+
+//PAD3
 	pad2[2]->cd();
 	pad2[2]->SetTicks();
 	base3->Draw();
@@ -401,6 +511,7 @@ void plotDeltaEtaResult(){
 
 	diff3->Draw("Psame");
 
+	c2->Print("../results/deltaEtaResults.pdf");
 
 	return;
 
