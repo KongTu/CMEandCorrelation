@@ -47,8 +47,8 @@ void plotGenCorrelation(){
 	}
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v4.root");
-	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v29.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v5.root");
+	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v46.root");
 
 
 	TH1D* QvsdEta1[48][3][2];
@@ -226,7 +226,7 @@ void plotGenCorrelation(){
 
 	}
 
-	TLegend *w2 = new TLegend(0.50,0.65,0.8,0.80);
+	TLegend *w2 = new TLegend(0.30,0.55,0.7,0.80);
     w2->SetLineColor(kWhite);
     w2->SetFillColor(0);
     w2->SetTextSize(20);
@@ -244,9 +244,8 @@ void plotGenCorrelation(){
 		gPad->SetLeftMargin(0.20);
 		gPad->SetBottomMargin(0.16);
 		
-		if(HF == 0) {TH1D* base5 = (TH1D*) base3->Clone();base5->GetYaxis()->SetRangeUser(0,10);base5->SetTitle("Pb-going");base5->Draw();}
-		if(HF == 1) {TH1D* base6 = (TH1D*) base4->Clone();base6->GetYaxis()->SetRangeUser(0,10);base6->SetTitle("p-going");base6->Draw();}
-
+		if(HF == 0) {TH1D* base5 = (TH1D*) base3->Clone();base5->GetYaxis()->SetRangeUser(-0.002, 0.002);base5->SetTitle("Pb-going");base5->Draw();base5->GetYaxis()->SetTitle("RECO - GEN");}
+		if(HF == 1) {TH1D* base6 = (TH1D*) base4->Clone();base6->GetYaxis()->SetRangeUser(-0.002, 0.002);base6->SetTitle("p-going");base6->Draw();base6->GetYaxis()->SetTitle("RECO - GEN");}
 
 		TH1D* ratio3 = (TH1D*)hist2[0][HF]->Clone("ratio3");
 		ratio3->Add(hist2[1][HF], +1);
@@ -264,7 +263,7 @@ void plotGenCorrelation(){
 		ratio->SetLineColor(kRed);
 		ratio->SetMarkerStyle(20);
 		
-		ratio3->Divide(ratio);
+		ratio3->Add(ratio, -1);
 		ratio3->Draw("Psame");
 
 		TH1D* ratio4 = (TH1D*)hist2[2][HF]->Clone("ratio4");
@@ -279,7 +278,7 @@ void plotGenCorrelation(){
 		ratio2->SetLineColor(kBlue);
 		ratio2->SetMarkerStyle(21);
 		
-		ratio4->Divide(ratio2);
+		ratio4->Add(ratio2, -1);
 		ratio4->Draw("Psame");
 
 	}    
@@ -332,5 +331,8 @@ void plotGenCorrelation(){
 	temp4->Draw("Psame");
 	
 	w2->Draw("same");
+
+    c1->Print("../systematics/closure_40_1000_cumulant.pdf");
+    c3->Print("../systematics/closure_40_1000_diff_cumulant.pdf");
 
 }
