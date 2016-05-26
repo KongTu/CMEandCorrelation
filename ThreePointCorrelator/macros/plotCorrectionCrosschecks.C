@@ -58,7 +58,7 @@ void plotCorrectionCrosschecks(){
 	}
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_PbPb_30_40_v31.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_PbPb_30_40_v37.root");
 
 	TH1D* QvsdEta[48][3][2];
 	// TH1D* XY_real[48][3][2];TH1D* XY_imag[48][3][2];
@@ -247,8 +247,6 @@ void plotCorrectionCrosschecks(){
 
 	}
 
-
-
 	TLegend *w1 = new TLegend(0.50,0.65,0.8,0.80);
     w1->SetLineColor(kWhite);
     w1->SetFillColor(0);
@@ -285,14 +283,14 @@ void plotCorrectionCrosschecks(){
         box1[deta]->SetFillStyle(0);
     	box1[deta]->SetLineWidth(1);
     	box1[deta]->SetLineColor(kRed);
-        box1[deta]->Draw("SAME");
+        //box1[deta]->Draw("SAME");
 
 		box2[deta] = new TBox(dEtaBinsCenter[deta]-xe,value2[deta]-ye,dEtaBinsCenter[deta]+xe,value2[deta]+ye);
 		box2[deta]->SetFillColor(kBlue);
         box2[deta]->SetFillStyle(0);
     	box2[deta]->SetLineWidth(1);
     	box2[deta]->SetLineColor(kBlue);
-        box2[deta]->Draw("SAME");
+        //box2[deta]->Draw("SAME");
     }
 
 	double alicebins[] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6};
@@ -341,14 +339,14 @@ void plotCorrectionCrosschecks(){
         box3[deta]->SetFillStyle(0);
     	box3[deta]->SetLineWidth(1);
     	box3[deta]->SetLineColor(kGreen+3);
-        box3[deta]->Draw("SAME");
+        //box3[deta]->Draw("SAME");
 
 		box4[deta] = new TBox(aliceBincenter[deta]-xe,y2[deta]-ye,aliceBincenter[deta]+xe,y2[deta]+ye);
 		box4[deta]->SetFillColor(kBlack);
         box4[deta]->SetFillStyle(0);
     	box4[deta]->SetLineWidth(1);
     	box4[deta]->SetLineColor(kBlack);
-        box4[deta]->Draw("SAME");
+        //box4[deta]->Draw("SAME");
     }
 
 	TLegend *w2 = new TLegend(0.50,0.2,0.8,0.40);

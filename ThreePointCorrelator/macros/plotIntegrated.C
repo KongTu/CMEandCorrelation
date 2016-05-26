@@ -15,7 +15,9 @@ int ntrkBinCenter[] = {17.5, 47.5, 75, 105, 135, 167.5, 202.5, 240};
 double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
-const int Nmults = 16;
+
+double PbPb_ntrkCentralityBinCenter[] = {686.2, 1021, 1376, 1720, 10000,20000,30000,40000};
+const int Nmults = 20;
 
 double total_systematics_pPb = 0.00015;
 double total_systematics_PbPb = 0.00014;
@@ -24,7 +26,7 @@ void plotIntegrated(){
 
 	gStyle->SetErrorX(0);
 
-	TFile* file[16];
+	TFile* file[30];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
 	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_2.root");
@@ -43,10 +45,16 @@ void plotIntegrated(){
 	file[13] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_6.root");
 	file[14] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
 	file[15] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_8.root");
+	
+	file[16] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v1_20_30.root");
+	file[17] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v1_10_20.root");
+	file[18] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v1_5_10.root");
+	file[19] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v1_0_5.root");
 
-	TH1D* QvsdEta[16][48][3][2];
 
-	TH1D* delEta3p[16][3][2];
+	TH1D* QvsdEta[30][48][3][2];
+
+	TH1D* delEta3p[30][3][2];
 
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
@@ -57,8 +65,8 @@ void plotIntegrated(){
 		}
 	}
 
-	TH1D* QaQb[16]; TH1D* QaQc[16]; TH1D* QcQb[16];
-	TH1D* aveQ3[16][2][2];
+	TH1D* QaQb[30]; TH1D* QaQc[30]; TH1D* QcQb[30];
+	TH1D* aveQ3[30][2][2];
 
 	for(int mult = 0; mult < Nmults; mult++){
 
@@ -86,7 +94,7 @@ void plotIntegrated(){
 		}
 	}
 
-	double v2[16][3];//get corrected v2_3
+	double v2[30][3];//get corrected v2_3
 
 	for(int mult = 0; mult < Nmults; mult++){
 		
@@ -114,25 +122,27 @@ void plotIntegrated(){
 
 	TH1D* hist1[3][2];
 	TH1D* hist2[3][2];
+	TH1D* hist3[3][2];
 
 	for(int sign = 0; sign < 3; sign++){
 		for(int HF = 0; HF < 2; HF++){
 
 			hist1[sign][HF] = new TH1D(Form("hist1_%d_%d",sign,HF), "", NntrkBins, ntrkBins);
 			hist2[sign][HF] = new TH1D(Form("hist2_%d_%d",sign,HF), "", NntrkBins, ntrkBins);
+			hist3[sign][HF] = new TH1D(Form("hist3_%d_%d",sign,HF), "", 4, 0,1800);
 
 		}
 	}
 
-	double threeParticleNtrk[16][3][2];
-	double threeParticleNtrkError[16][3][2];
-	double totalWeight[16][3][2];
+	double threeParticleNtrk[20][3][2];
+	double threeParticleNtrkError[20][3][2];
+	double totalWeight[20][3][2];
 
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
 			for(int HF = 0; HF < 2; HF++){
 
-				for(int deta = 0; deta < NdEtaBins; deta++){
+				for(int deta = 0; deta < 15; deta++){
 
 					double Q_total_real_dEta = QvsdEta[mult][deta][sign][HF]->GetMean();
 					double Q_total_real_dEta_error = QvsdEta[mult][deta][sign][HF]->GetMeanError();
@@ -166,18 +176,34 @@ void plotIntegrated(){
 				double error = threeParticleNtrkError[mult+8][sign][HF]/(totalWeight[mult+8][sign][HF]*totalWeight[mult+8][sign][HF]);
 				hist2[sign][HF]->SetBinError( mult+1, sqrt(error));
 			}
+
+			for(int mult = 0; mult < 8; mult++){
+				
+				//PbPb centrality
+				if( mult >= 4 ){
+					hist3[sign][HF]->SetBinContent( mult+1, 0);
+					hist3[sign][HF]->SetBinError( mult+1, 0);
+
+				}
+				else{
+					double value = threeParticleNtrk[mult+16][sign][HF]/totalWeight[mult+16][sign][HF];
+					value = value/v2[mult+16][HF];
+					hist3[sign][HF]->SetBinContent( mult+1, value);
+					double error = threeParticleNtrkError[mult+16][sign][HF]/(totalWeight[mult+16][sign][HF]*totalWeight[mult+16][sign][HF]);
+					hist3[sign][HF]->SetBinError( mult+1, sqrt(error));
+				}
+			}
 		}
 	}
-
 
 //start plotting
 
 	TGaxis::SetMaxDigits(3);
 
-	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 500,-8,280,kBlack);
-	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 500,-8,280,kBlack);
+	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 500,-8,2000,kBlack);
+	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 500,-8,2000,kBlack);
 
-	base1->GetYaxis()->SetRangeUser(-0.001, 0.015);
+	base1->GetYaxis()->SetRangeUser(-0.0007, 0.0006);
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	
 	base2->GetYaxis()->SetRangeUser(-0.001, 0.015);
@@ -211,6 +237,180 @@ void plotIntegrated(){
 	base4->GetXaxis()->SetTitleOffset(3.1);
 	base4->GetYaxis()->SetTitleSize(base4->GetYaxis()->GetTitleSize()*1.0);
 	base4->GetYaxis()->SetNdivisions(6);
+
+	TH1D* temp1 = (TH1D*)hist1[0][0]->Clone("temp1");
+	temp1->Add(hist1[1][0], +1);
+	temp1->Scale(0.5);
+	temp1->SetMarkerStyle(24);
+	temp1->SetMarkerColor(kRed);
+	temp1->SetLineColor(kRed);
+
+	TH1D* temp2 = (TH1D*) hist1[2][0]->Clone("temp2");
+	temp2->SetMarkerStyle(25);
+	temp2->SetMarkerColor(kBlue);
+	temp2->SetLineColor(kBlue);
+
+	TH1D* temp3 = (TH1D*)hist1[0][1]->Clone("temp3");
+	temp3->Add(hist1[1][1], +1);
+	temp3->Scale(0.5);
+	temp3->SetMarkerStyle(20);
+	temp3->SetMarkerColor(kRed);
+	temp3->SetLineColor(kRed);
+
+	TH1D* temp4 = (TH1D*) hist1[2][1]->Clone("temp4");
+	temp4->SetMarkerStyle(21);
+	temp4->SetMarkerColor(kBlue);
+	temp4->SetLineColor(kBlue);
+
+	TH1D* temp5 = (TH1D*)hist2[0][0]->Clone("temp5");
+	TH1D* temp6 = (TH1D*)hist2[0][1]->Clone("temp6");
+	TH1D* temp7 = (TH1D*)hist2[1][0]->Clone("temp7");
+	TH1D* temp8 = (TH1D*)hist2[1][1]->Clone("temp8");
+
+	temp5->Add(temp6, +1);
+	temp5->Add(temp7, +1);
+	temp5->Add(temp8, +1);
+
+	temp5->Scale(0.25);
+	temp5->SetMarkerStyle(24);
+	temp5->SetMarkerColor(kRed);
+	temp5->SetLineColor(kRed);
+
+	TH1D* temp9 = (TH1D*) hist2[2][1]->Clone("temp9");
+	TH1D* temp10 = (TH1D*) hist2[2][0]->Clone("temp10");
+	temp9->Add(temp10, +1);
+	temp9->Scale(0.5);
+	temp9->SetMarkerStyle(25);
+	temp9->SetMarkerColor(kBlue);
+	temp9->SetLineColor(kBlue);
+
+	TH1D* temp11 = (TH1D*)hist3[0][0]->Clone("temp11");
+	TH1D* temp12 = (TH1D*)hist3[0][1]->Clone("temp12");
+	TH1D* temp13 = (TH1D*)hist3[1][0]->Clone("temp13");
+	TH1D* temp14 = (TH1D*)hist3[1][1]->Clone("temp14");
+
+	temp11->Add(temp12, +1);
+	temp11->Add(temp13, +1);
+	temp11->Add(temp14, +1);
+
+	temp11->Scale(0.25);
+	temp11->SetMarkerStyle(24);
+	temp11->SetMarkerColor(kRed);
+	temp11->SetLineColor(kRed);
+
+	TH1D* temp15 = (TH1D*) hist3[2][1]->Clone("temp15");
+	TH1D* temp16 = (TH1D*) hist3[2][0]->Clone("temp16");
+	temp15->Add(temp16, +1);
+	temp15->Scale(0.5);
+	temp15->SetMarkerStyle(25);
+	temp15->SetMarkerColor(kBlue);
+	temp15->SetLineColor(kBlue);
+
+    double value1[8];
+    double value1_error[8];
+    double value2[8];
+    double value2_error[8];
+    double value3[8];
+    double value3_error[8];
+    double value4[8];
+    double value4_error[8];
+    double value5[8];
+    double value5_error[8];
+    double value6[8];
+    double value6_error[8];
+    double value7[8];
+    double value7_error[8];
+    double value8[8];
+    double value8_error[8];
+
+    for(int mult = 0; mult < 8; mult++){
+
+    	value1[mult] = temp1->GetBinContent(mult+1);
+    	value1_error[mult] = temp1->GetBinError(mult+1);
+
+    	value2[mult] = temp2->GetBinContent(mult+1);
+    	value2_error[mult] = temp2->GetBinError(mult+1);
+
+    	value3[mult] = temp3->GetBinContent(mult+1);
+    	value3_error[mult] = temp3->GetBinError(mult+1);
+
+    	value4[mult] = temp4->GetBinContent(mult+1);
+    	value4_error[mult] = temp4->GetBinError(mult+1);
+
+    	value5[mult] = temp5->GetBinContent(mult+1);
+    	value5_error[mult] = temp5->GetBinError(mult+1);
+
+    	value6[mult] = temp9->GetBinContent(mult+1);
+    	value6_error[mult] = temp9->GetBinError(mult+1);
+
+    	value7[mult] = temp11->GetBinContent(mult+1);
+    	value7_error[mult] = temp11->GetBinError(mult+1);
+
+    	value8[mult] = temp15->GetBinContent(mult+1);
+    	value8_error[mult] = temp15->GetBinError(mult+1);
+    }
+
+    TGraphErrors* gr1 = new TGraphErrors(8, pPb_ntrkBinCenter, value1, xbinwidth, value1_error);
+    TGraphErrors* gr2 = new TGraphErrors(8, pPb_ntrkBinCenter, value2, xbinwidth, value2_error);
+    TGraphErrors* gr3 = new TGraphErrors(8, pPb_ntrkBinCenter, value3, xbinwidth, value3_error);
+    TGraphErrors* gr4 = new TGraphErrors(8, pPb_ntrkBinCenter, value4, xbinwidth, value4_error);
+	TGraphErrors* gr5 = new TGraphErrors(8, PbPb_ntrkBinCenter, value5, xbinwidth, value5_error);
+    TGraphErrors* gr6 = new TGraphErrors(8, PbPb_ntrkBinCenter, value6, xbinwidth, value6_error);
+   	TGraphErrors* gr7 = new TGraphErrors(8, PbPb_ntrkCentralityBinCenter, value7, xbinwidth, value7_error);
+    TGraphErrors* gr8 = new TGraphErrors(8, PbPb_ntrkCentralityBinCenter, value8, xbinwidth, value8_error); 
+
+	TCanvas* c1 = new TCanvas("c1","c1",1,1,650,650);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.22);
+	gPad->SetBottomMargin(0.13);
+	gStyle->SetPadBorderMode(0.1);
+	gStyle->SetOptTitle(0);
+
+	base1->Draw();
+
+	gr1->SetMarkerStyle(24);
+	gr1->SetMarkerColor(kRed);
+	gr1->SetLineColor(kRed);
+	gr1->Draw("Psame");
+
+	gr2->SetMarkerStyle(25);
+	gr2->SetMarkerColor(kBlue);
+	gr2->SetLineColor(kBlue);
+	gr2->Draw("Psame");
+
+	// gr3->SetMarkerStyle(20);
+	// gr3->SetMarkerColor(kRed);
+	// gr3->SetLineColor(kRed);
+	// gr3->Draw("Psame");
+
+	// gr4->SetMarkerStyle(21);
+	// gr4->SetMarkerColor(kBlue);
+	// gr4->SetLineColor(kBlue);
+	// gr4->Draw("Psame");
+
+
+	gr5->SetMarkerStyle(20);
+	gr5->SetMarkerColor(kRed);
+	gr5->SetLineColor(kRed);
+	gr5->Draw("Psame");
+
+	gr6->SetMarkerStyle(21);
+	gr6->SetMarkerColor(kBlue);
+	gr6->SetLineColor(kBlue);
+	gr6->Draw("Psame");
+
+
+	gr7->SetMarkerStyle(34);
+	gr7->SetMarkerColor(kBlack);
+	gr7->SetLineColor(kBlack);
+	gr7->Draw("Psame");
+
+	gr8->SetMarkerStyle(28);
+	gr8->SetMarkerColor(kGreen+3);
+	gr8->SetLineColor(kGreen+3);
+	gr8->Draw("Psame");
+
+	return;
 
 	TCanvas *c2 = new TCanvas("c2","c2",1,1,1000,800);
 	c2->Range(0,0,1,1);
@@ -251,65 +451,12 @@ void plotIntegrated(){
 	gStyle->SetOptTitle(0);
 	base1->Draw();
 
-	TH1D* temp1 = (TH1D*)hist1[0][0]->Clone("temp1");
-	temp1->Add(hist1[1][0], +1);
-	temp1->Scale(0.5);
-	temp1->SetMarkerStyle(24);
-	temp1->SetMarkerColor(kRed);
-	temp1->SetLineColor(kRed);
-
-	TH1D* temp2 = (TH1D*) hist1[2][0]->Clone("temp2");
-	temp2->SetMarkerStyle(25);
-	temp2->SetMarkerColor(kBlue);
-	temp2->SetLineColor(kBlue);
-
-	TH1D* temp3 = (TH1D*)hist1[0][1]->Clone("temp3");
-	temp3->Add(hist1[1][1], +1);
-	temp3->Scale(0.5);
-	temp3->SetMarkerStyle(20);
-	temp3->SetMarkerColor(kRed);
-	temp3->SetLineColor(kRed);
-
-	TH1D* temp4 = (TH1D*) hist1[2][1]->Clone("temp4");
-	temp4->SetMarkerStyle(21);
-	temp4->SetMarkerColor(kBlue);
-	temp4->SetLineColor(kBlue);
-
     TLatex* r3 = new TLatex(0.6, 0.82, "pPb #sqrt{s_{NN}} = 5.02 TeV");
     r3->SetNDC();
     r3->SetTextSize(23);
     r3->SetTextFont(43);
     r3->SetTextColor(kBlack);
     r3->Draw("same");
-
-    double value1[50];
-    double value1_error[50];
-    double value2[50];
-    double value2_error[50];
-    double value3[50];
-    double value3_error[50];
-    double value4[50];
-    double value4_error[50];
-
-    for(int mult = 0; mult < 8; mult++){
-
-    	value1[mult] = temp1->GetBinContent(mult+1);
-    	value1_error[mult] = temp1->GetBinError(mult+1);
-
-    	value2[mult] = temp2->GetBinContent(mult+1);
-    	value2_error[mult] = temp2->GetBinError(mult+1);
-
-    	value3[mult] = temp3->GetBinContent(mult+1);
-    	value3_error[mult] = temp3->GetBinError(mult+1);
-
-    	value4[mult] = temp4->GetBinContent(mult+1);
-    	value4_error[mult] = temp4->GetBinError(mult+1);
-    }
-
-    TGraphErrors* gr1 = new TGraphErrors(8, pPb_ntrkBinCenter, value1, xbinwidth, value1_error);
-    TGraphErrors* gr2 = new TGraphErrors(8, pPb_ntrkBinCenter, value2, xbinwidth, value2_error);
-    TGraphErrors* gr3 = new TGraphErrors(8, pPb_ntrkBinCenter, value3, xbinwidth, value3_error);
-    TGraphErrors* gr4 = new TGraphErrors(8, pPb_ntrkBinCenter, value4, xbinwidth, value4_error);
 
 	gr1->SetMarkerStyle(24);
 	gr1->SetMarkerColor(kRed);
@@ -385,18 +532,6 @@ void plotIntegrated(){
 	pad2[1]->SetTicks();
 	base2->Draw();
 
-	TH1D* temp5 = (TH1D*)hist2[0][1]->Clone("temp5");
-	temp5->Add(hist2[1][1], +1);
-	temp5->Scale(0.5);
-	temp5->SetMarkerStyle(24);
-	temp5->SetMarkerColor(kRed);
-	temp5->SetLineColor(kRed);
-
-	TH1D* temp6 = (TH1D*) hist2[2][1]->Clone("temp6");
-	temp6->SetMarkerStyle(25);
-	temp6->SetMarkerColor(kBlue);
-	temp6->SetLineColor(kBlue);
-
    	TLatex* r1 = new TLatex(0.56,0.92, "CMS");
     r1->SetNDC();
     r1->SetTextSize(0.05);
@@ -415,23 +550,14 @@ void plotIntegrated(){
     r4->SetTextColor(kBlack);
     r4->Draw("same");
 
-    double value5[50];
-    double value5_error[50];
-    double value6[50];
-    double value6_error[50];
-
-    for(int mult = 0; mult < 8; mult++){
-
-    	value5[mult] = temp5->GetBinContent(mult+1);
-    	value5_error[mult] = temp5->GetBinError(mult+1);
-
-    	value6[mult] = temp6->GetBinContent(mult+1);
-    	value6_error[mult] = temp6->GetBinError(mult+1);
-
-    }
-
-    TGraphErrors* gr5 = new TGraphErrors(8, PbPb_ntrkBinCenter, value5, xbinwidth, value5_error);
-    TGraphErrors* gr6 = new TGraphErrors(8, PbPb_ntrkBinCenter, value6, xbinwidth, value6_error);
+	TLegend *w2 = new TLegend(0.55,0.4,0.7,0.7);
+    w2->SetLineColor(kWhite);
+    w2->SetFillColor(0);
+    w2->SetTextSize(20);
+    w2->SetTextFont(43);
+    w2->AddEntry(temp5, "like sign");
+    w2->AddEntry(temp6, "unlike sign");
+    w2->Draw("same");
 
 	gr5->SetMarkerStyle(24);
 	gr5->SetMarkerColor(kRed);
@@ -442,15 +568,6 @@ void plotIntegrated(){
 	gr6->SetMarkerColor(kBlue);
 	gr6->SetLineColor(kBlue);
 	gr6->Draw("Psame");
-
-	TLegend *w2 = new TLegend(0.55,0.4,0.7,0.7);
-    w2->SetLineColor(kWhite);
-    w2->SetFillColor(0);
-    w2->SetTextSize(20);
-    w2->SetTextFont(43);
-    w2->AddEntry(temp5, "like sign");
-    w2->AddEntry(temp6, "unlike sign");
-    w2->Draw("same");
 
     TBox *box5[50];
     TBox *box6[50];
@@ -556,7 +673,7 @@ void plotIntegrated(){
 
     }
 
-    c2->Print("../results/IntegratedResults.pdf");
+    //c2->Print("../results/IntegratedResults.pdf");
 
 	return;
 
