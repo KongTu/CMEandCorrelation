@@ -391,6 +391,8 @@ class ThreePointCorrelatorEtaGapNestedLoop : public edm::EDAnalyzer {
       bool reverseBeam_;
       bool messAcceptance_;
       bool doEffCorrection_;
+      bool do3pTracker_;
+
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;

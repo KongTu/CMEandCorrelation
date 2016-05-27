@@ -35,6 +35,7 @@ ThreePointCorrelatorEtaGapNestedLoop::ThreePointCorrelatorEtaGapNestedLoop(const
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
+  do3pTracker_ = iConfig.getUntrackedParameter<bool>("do3pTracker");
 
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
@@ -215,7 +216,37 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
 
           if(it == jt ) continue;
 
-           for(unsigned i = 0; i < towers->size(); ++i){
+          if( do3pTracker_ ){
+
+            for(unsigned kt = 0; kt < tracks->size(); kt++){
+
+            const reco::Track & trk2 = (*tracks)[kt];
+
+            math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+
+            double dzvtx = trk2.dz(bestvtx);
+            double dxyvtx = trk2.dxy(bestvtx);
+            double dzerror = sqrt(trk2.dzError()*trk2.dzError()+bestvzError*bestvzError);
+            double dxyerror = sqrt(trk2.d0Error()*trk2.d0Error()+bestvxError*bestvyError);
+            double nlayers = trk2.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+
+            double weight1 = 1.0;
+            if( doEffCorrection_ ) { weight1 = 1.0/effTable->GetBinContent( effTable->FindBin(trk2.eta(), trk2.pt()) );}
+
+            if(!trk2.quality(reco::TrackBase::highPurity)) continue;
+            if(fabs(trk2.ptError())/trk2.pt() > offlineptErr_ ) continue;
+            if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
+            if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
+            if(fabs(trk2.eta()) > 2.4) continue;
+            if(nlayers <= 0 ) continue;
+
+
+            //stop here, and this is c particle and the v2 has to be taken from here. 
+
+            }
+          }
+          else{
+            for(unsigned i = 0; i < towers->size(); ++i){
 
               const CaloTower & hit= (*towers)[i];
 
@@ -272,6 +303,7 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
               }
               else{continue;}
            }
+          }
         }
   } 
 
