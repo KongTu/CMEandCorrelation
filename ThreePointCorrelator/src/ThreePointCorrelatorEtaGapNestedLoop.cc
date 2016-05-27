@@ -188,9 +188,11 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
         trkPt->Fill( trk.pt(), weight);//single particle closure
         trk_eta->Fill( trk.eta(), weight);
 
-        QcosTRK += weight*cos( 2*trk.phi() );
-        QsinTRK += weight*sin( 2*trk.phi() );
-        QcountsTrk += weight;
+        if( !do3pTracker_ ){
+          QcosTRK += weight*cos( 2*trk.phi() );
+          QsinTRK += weight*sin( 2*trk.phi() );
+          QcountsTrk += weight;
+        }
 
         for(unsigned jt = 0; jt < tracks->size(); jt++){
 
@@ -230,7 +232,7 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
             double dxyerror = sqrt(trk2.d0Error()*trk2.d0Error()+bestvxError*bestvyError);
             double nlayers = trk2.hitPattern().pixelLayersWithMeasurement();//only pixel layers
 
-            double weight1 = 1.0;
+            double weight2 = 1.0;
             if( doEffCorrection_ ) { weight1 = 1.0/effTable->GetBinContent( effTable->FindBin(trk2.eta(), trk2.pt()) );}
 
             if(!trk2.quality(reco::TrackBase::highPurity)) continue;
@@ -240,9 +242,35 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
             if(fabs(trk2.eta()) > 2.4) continue;
             if(nlayers <= 0 ) continue;
 
+            double totalWeight = weight*weight1*weight2;
 
-            //stop here, and this is c particle and the v2 has to be taken from here. 
+            if( fabs(trk2.eta()- trk.eta()) < 2.0 || fabs(trk2.eta() - trk1.eta()) < 2.0 ) continue;
+            
+            QcosTRK += weight2*cos( 2*trk2.phi() );
+            QsinTRK += weight2*sin( 2*trk2.phi() );
+            QcountsTrk += weight2;
 
+              double deltaEta = fabs( trk.eta() - trk1.eta() );
+              for(int deta = 0; deta < NdEtaBins; deta++){
+                if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+
+                    if( trk.charge() == 1 && trk1.charge() == 1){
+                      
+                      real_term[deta][0][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*trk2.phi() );
+                      Npairs[deta][0][0] += totalWeight;
+                    }
+                    if( trk.charge() == -1 && trk1.charge() == -1){
+                      real_term[deta][1][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*trk2.phi() );
+                      Npairs[deta][1][0] += totalWeight;
+                    }
+                    if( trk.charge() == 1 && trk1.charge() == -1 ){
+
+                      real_term[deta][2][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*trk2.phi() );
+                      Npairs[deta][2][0] += totalWeight;
+                    }
+                    
+                }
+              }  
             }
           }
           else{
@@ -401,8 +429,6 @@ ThreePointCorrelatorEtaGapNestedLoop::beginJob()
     }
   }
  
-
-
 }
 double 
 ThreePointCorrelatorEtaGapNestedLoop::get3Real(double R1, double R2, double R3, double I1, double I2, double I3) 
