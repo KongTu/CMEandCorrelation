@@ -256,16 +256,16 @@ ThreePointCorrelatorEtaGapNestedLoop::analyze(const edm::Event& iEvent, const ed
 
                     if( trk.charge() == 1 && trk1.charge() == 1){
                       
-                      real_term[deta][0][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                      real_term[deta][0][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*trk2.phi() );
                       Npairs[deta][0][0] += totalWeight;
                     }
                     if( trk.charge() == -1 && trk1.charge() == -1){
-                      real_term[deta][1][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                      real_term[deta][1][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*trk2.phi() );
                       Npairs[deta][1][0] += totalWeight;
                     }
                     if( trk.charge() == 1 && trk1.charge() == -1 ){
 
-                      real_term[deta][2][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*caloPhi );
+                      real_term[deta][2][0] += totalWeight*cos( trk.phi() + trk1.phi() - 2*trk2.phi() );
                       Npairs[deta][2][0] += totalWeight;
                     }
                     
