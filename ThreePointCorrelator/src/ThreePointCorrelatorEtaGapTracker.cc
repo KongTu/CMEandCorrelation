@@ -357,9 +357,6 @@ ThreePointCorrelatorEtaGapTracker::analyze(const edm::Event& iEvent, const edm::
     }
   }
 
-  int HFside = 2;
-  if( useBothSide_ ) HFside = 1;
-
 //3p correlators
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
@@ -463,8 +460,6 @@ ThreePointCorrelatorEtaGapTracker::beginJob()
 
     ptBinsArray[i] = ptBins_[i];
   }
-  int HFside = 2;
-  if( useBothSide_ ) HFside = 1;
 
   // edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/TrackCorrections_HIJING_538_OFFICIAL_Mar24.root");
   // TFile f1(fip1.fullPath().c_str(),"READ");
