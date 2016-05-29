@@ -240,6 +240,100 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
 };
 
+class ThreePointCorrelatorEtaGapTracker : public edm::EDAnalyzer {
+   public:
+      explicit ThreePointCorrelatorEtaGapTracker(const edm::ParameterSet&);
+      ~ThreePointCorrelatorEtaGapTracker();
+
+      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+
+   private:
+      virtual void beginJob() ;
+      virtual void analyze(const edm::Event&, const edm::EventSetup&);
+      virtual void endJob() ;
+
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      virtual void endRun(edm::Run const&, edm::EventSetup const&);
+      virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual double get3Real(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual double get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N2, double N3);
+      virtual double get3Imag(double R1, double R2, double R3, double I1, double I2, double I3);
+      virtual double get3ImagOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N2, double N3);
+      virtual double get2Real( double R1, double R2, double I1, double I2);
+      virtual double get2RealOverlap( double R1, double R2, double I1, double I2);
+      virtual double get2Imag( double R1, double R2, double I1, double I2);
+      virtual double get2ImagOverlap( double R1, double R2, double I1, double I2);
+
+      // ----------member data ---------------------------
+      edm::InputTag trackSrc_;
+      edm::InputTag towerSrc_;
+      std::string vertexSrc_;
+
+      //correction table
+      TH2D* effTable;
+
+      TH1D* Ntrk;
+      TH1D* vtxZ;
+      TH1D* trkPhi;
+      TH1D* hfPhi;
+      TH1D* trkPt;
+      TH1D* trk_eta;
+      TH1D* cbinHist;
+      TH1D* delEta3p[3];
+      TH1D* delEta2p[3];
+
+//v2
+      TH1D* c2_ab;
+      TH1D* c2_ac;
+      TH1D* c2_cb;
+
+      TH1D* aveQ3[2][2];//calculate the correction on v2
+
+//end v2
+
+      TH1D* QvsdEta[48][3];
+      TH1D* PvsdEta[48][3];
+
+      TH1D* XY_real[48][3][2];TH1D* XY_imag[48][3][2];
+      TH1D* XZ_real[48][3][2];TH1D* XZ_imag[48][3][2];
+      TH1D* YZ_real[48][3][2];TH1D* YZ_imag[48][3][2];
+      TH1D* X_real[48][3][2]; TH1D* X_imag[48][3][2];
+      TH1D* Y_real[48][3][2]; TH1D* Y_imag[48][3][2];
+      TH1D* Z_real[48][3][2]; TH1D* Z_imag[48][3][2];
+
+      int Nmin_;
+      int Nmax_;
+
+      double etaTracker_;
+      double etaLowHF_;
+      double etaHighHF_;
+      double vzLow_;
+      double vzHigh_;
+      double ptLow_;
+      double ptHigh_;
+      double offlineptErr_;
+      double offlineDCA_;
+      double offlineChi2_;
+      double offlinenhits_;
+      double holeLeft_;
+      double holeRight_;
+      double holesize_;
+
+      bool useCentrality_;
+      bool useBothSide_;
+      bool reverseBeam_;
+      bool messAcceptance_;
+      bool doEffCorrection_;
+      bool do3pTracker_;
+
+      std::vector<double> etaBins_;
+      std::vector<double> dEtaBins_;
+      std::vector<double> ptBins_;
+
+};
+
 class ThreePointCorrelatorEtaTest : public edm::EDAnalyzer {
    public:
       explicit ThreePointCorrelatorEtaTest(const edm::ParameterSet&);
