@@ -69,6 +69,12 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 
 }
 
+double fRand(double fMin, double fMax)
+{
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
+
 // ------------ method called for each event  ------------
 void
 ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -206,10 +212,14 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QsinTRK += weight*sin( 2*trk.phi() );
         QcountsTrk += weight;
 
+        double num = fRand(0.0,1.0);
+
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
-            if( trk.charge() == 1){
+            //if( trk.charge() == 1){
+            if( num > 0.5 )
+
               Q1[eta][0][0] += weight*cos( trk.phi() );
               Q1[eta][0][1] += weight*sin( trk.phi() );
 
@@ -227,7 +237,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               Q2_count[eta][0] += weight*weight;
 
             }
-            else if( trk.charge() == -1){
+            //else if( trk.charge() == -1){
+            if( num < 0.5 ){
               Q1[eta][1][0] += weight*cos( trk.phi() );
               Q1[eta][1][1] += weight*sin( trk.phi() );
 
