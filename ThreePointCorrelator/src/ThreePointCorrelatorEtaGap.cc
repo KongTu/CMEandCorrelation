@@ -69,12 +69,6 @@ ThreePointCorrelatorEtaGap::~ThreePointCorrelatorEtaGap()
 
 }
 
-double fRand(double fMin, double fMax)
-{
-    double f = (double)rand() / RAND_MAX;
-    return fMin + f * (fMax - fMin);
-}
-
 // ------------ method called for each event  ------------
 void
 ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -624,6 +618,12 @@ double ThreePointCorrelatorEtaGap::get2ImagOverlap( double R1, double R2, double
       double imag = (2*R1*I1-I2);
       return imag;
 } 
+
+double ThreePointCorrelatorEtaGap::fRand(double fMin, double fMax)
+{
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 ThreePointCorrelatorEtaGap::endJob() 

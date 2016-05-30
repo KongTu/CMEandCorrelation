@@ -171,6 +171,7 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
       virtual double get2RealOverlap( double R1, double R2, double I1, double I2);
       virtual double get2Imag( double R1, double R2, double I1, double I2);
       virtual double get2ImagOverlap( double R1, double R2, double I1, double I2);
+      virtual double fRand(double fMin, double fMax);
 
       // ----------member data ---------------------------
       edm::InputTag trackSrc_;
