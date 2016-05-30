@@ -179,7 +179,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
         double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
-        double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+        //double nlayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
         double chi2n = trk.normalizedChi2();
         double nlayersTracker = trk.hitPattern().trackerLayersWithMeasurement();
         chi2n = chi2n/nlayersTracker;
@@ -192,7 +192,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
         if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-        if(nlayers <= 0 ) continue;
+        //if(nlayers <= 0 ) continue;
         if(chi2n > offlineChi2_ ) continue;
         if(fabs(trk.eta()) > etaTracker_ || trk.pt() < ptLow_ || trk.pt() > ptHigh_) continue;
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
