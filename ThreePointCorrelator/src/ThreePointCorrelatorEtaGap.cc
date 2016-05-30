@@ -212,7 +212,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
             //if( trk.charge() == 1){
-            if( num > 0.5 )
+            if( num > 0.5 ){
 
               Q1[eta][0][0] += weight*cos( trk.phi() );
               Q1[eta][0][1] += weight*sin( trk.phi() );
