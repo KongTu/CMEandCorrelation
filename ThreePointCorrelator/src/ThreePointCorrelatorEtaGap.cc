@@ -206,13 +206,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         QsinTRK += weight*sin( 2*trk.phi() );
         QcountsTrk += weight;
 
-        double num = fRand(0.0,1.0);
-
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
-            //if( trk.charge() == 1){
-            if( num > 0.5 ){
+            if( trk.charge() == 1){
 
               Q1[eta][0][0] += weight*cos( trk.phi() );
               Q1[eta][0][1] += weight*sin( trk.phi() );
@@ -231,8 +228,8 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
               Q2_count[eta][0] += weight*weight;
 
             }
-            //else if( trk.charge() == -1){
-            if( num < 0.5 ){
+            else if( trk.charge() == -1){
+              
               Q1[eta][1][0] += weight*cos( trk.phi() );
               Q1[eta][1][1] += weight*sin( trk.phi() );
 
@@ -339,6 +336,29 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
           else{continue;}
     }
   }
+
+//randomly rotate the reaction plane:
+
+  double num1 = fRand(-3.14,3.14);
+  double num2 = fRand(-3.14,3.14);
+
+  double constant1 = Q3[0][0]*Q3[0][0] + Q3[0][1]*Q3[0][1];
+  double d1 = 1 + tan(num1)*tan(num1);
+
+  double x1 = sqrt( constant1/d1 );
+  double y1 = tan(num1) * x1;
+
+  double constant2 = Q3[1][0]*Q3[1][0] + Q3[1][1]*Q3[1][1];
+  double d2 = 1 + tan(num2)*tan(num2);
+
+  double x2 = sqrt( constant2/d2 );
+  double y2 = tan(num2) * x2;
+
+  Q3[0][0] = x1;
+  Q3[0][1] = y1;
+
+  Q3[1][0] = x2;
+  Q3[1][1] = y2;
 
 //2p correlators
   for(int ieta = 0; ieta < NetaBins; ieta++){
