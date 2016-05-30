@@ -339,26 +339,26 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
 //randomly rotate the reaction plane:
 
-  double num1 = fRand(-3.14,3.14);
-  double num2 = fRand(-3.14,3.14);
+  // double num1 = fRand(-3.14,3.14);
+  // double num2 = fRand(-3.14,3.14);
 
-  double constant1 = Q3[0][0]*Q3[0][0] + Q3[0][1]*Q3[0][1];
-  double d1 = 1 + tan(num1)*tan(num1);
+  // double constant1 = Q3[0][0]*Q3[0][0] + Q3[0][1]*Q3[0][1];
+  // double d1 = 1 + tan(num1)*tan(num1);
 
-  double x1 = sqrt( constant1/d1 );
-  double y1 = tan(num1) * x1;
+  // double x1 = sqrt( constant1/d1 );
+  // double y1 = tan(num1) * x1;
 
-  double constant2 = Q3[1][0]*Q3[1][0] + Q3[1][1]*Q3[1][1];
-  double d2 = 1 + tan(num2)*tan(num2);
+  // double constant2 = Q3[1][0]*Q3[1][0] + Q3[1][1]*Q3[1][1];
+  // double d2 = 1 + tan(num2)*tan(num2);
 
-  double x2 = sqrt( constant2/d2 );
-  double y2 = tan(num2) * x2;
+  // double x2 = sqrt( constant2/d2 );
+  // double y2 = tan(num2) * x2;
 
-  Q3[0][0] = x1;
-  Q3[0][1] = y1;
+  // Q3[0][0] = x1;
+  // Q3[0][1] = y1;
 
-  Q3[1][0] = x2;
-  Q3[1][1] = y2;
+  // Q3[1][0] = x2;
+  // Q3[1][1] = y2;
 
 //2p correlators
   for(int ieta = 0; ieta < NetaBins; ieta++){
@@ -527,7 +527,7 @@ ThreePointCorrelatorEtaGap::beginJob()
   // TFile f1(fip1.fullPath().c_str(),"READ");
   // effTable = (TH2D*)f1.Get("rTotalEff3D");
 
-  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff.root");  
+  edm::FileInPath fip1("CMEandCorrelation/ThreePointCorrelator/data/EPOS_eff_v8.root");  
   TFile f1(fip1.fullPath().c_str(),"READ");
   effTable = (TH2D*)f1.Get("recoHist");
 
