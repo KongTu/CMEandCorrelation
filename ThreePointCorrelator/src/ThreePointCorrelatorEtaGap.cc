@@ -185,10 +185,7 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         chi2n = chi2n/nlayersTracker;
         double trkEta = trk.eta();
         double phiangle = trk.phi();
-
-        double num = fRand(0.0,1.0);
-        if(num > 0.5) {phiangle = -trk.phi();}
-
+        
         double weight = 1.0;
         if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
 
