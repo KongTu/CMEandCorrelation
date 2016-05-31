@@ -245,8 +245,8 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
             }
             if( gencharge == 1 || gencharge == -1 ){
 
-              Qrp[eta][0] += cos( -2*trk.phi() );
-              Qrp[eta][1] += sin( -2*trk.phi() );
+              Qrp[eta][0] += cos( -2*genphi );
+              Qrp[eta][1] += sin( -2*genphi );
 
               Qrp_count[eta] ++;
             }
