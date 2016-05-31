@@ -178,9 +178,6 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
     }
   }
 
-  int HFside = 2;
-  if( useBothSide_ ) HFside = 1;
-
   edm::Handle<reco::GenParticleCollection> genParticleCollection;
   iEvent.getByLabel(genParticleSrc_, genParticleCollection);
 
@@ -413,8 +410,6 @@ ThreePointCorrelatorGenTracker::beginJob()
 
     ptBinsArray[i] = ptBins_[i];
   }
-  int HFside = 2;
-  if( useBothSide_ ) HFside = 1;
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
