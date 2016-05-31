@@ -187,11 +187,10 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
     double geneta = genCand.eta();
     double genphi = genCand.phi();
     int gencharge = genCand.charge();
-
-    if( status != 1  || gencharge == 0 ) continue;
     
     if( fabs(geneta) < 2.4 ){
 
+      if( status != 1  || gencharge == 0 ) continue;
       if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
 
       trkPt->Fill( genpt );
@@ -242,6 +241,9 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
           }
       }
     }
+
+    if( status != 1 ) continue;
+
     if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
         
           Q3[0][0] += cos( -2*genphi );
