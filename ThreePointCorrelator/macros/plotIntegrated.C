@@ -72,7 +72,7 @@ void plotIntegrated(){
 	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 5000,0.1,10000,kBlack);
 	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 5000,0.1,10000,kBlack);
 
-	base1->GetYaxis()->SetRangeUser(-0.0015, 0.0006);
+	base1->GetYaxis()->SetRangeUser(-0.0013, 0.0007);
 	base1->GetXaxis()->SetRangeUser(70, 4000);
 
 	base1->GetXaxis()->SetTitleColor(kBlack);
@@ -141,17 +141,17 @@ void plotIntegrated(){
 	// gr1[3]->SetLineColor(kBlue);
 	// gr1[3]->Draw("Psame");
 
-	// gr2[0]->SetMarkerStyle(28);
-	// gr2[0]->SetMarkerSize(1.4);
-	// gr2[0]->SetMarkerColor(kRed);
-	// gr2[0]->SetLineColor(kRed);
-	// gr2[0]->Draw("Psame");
+	gr2[0]->SetMarkerStyle(28);
+	gr2[0]->SetMarkerSize(1.4);
+	gr2[0]->SetMarkerColor(kRed);
+	gr2[0]->SetLineColor(kRed);
+	gr2[0]->Draw("Psame");
 
-	// gr2[1]->SetMarkerStyle(28);
-	// gr2[1]->SetMarkerSize(1.4);
-	// gr2[1]->SetMarkerColor(kBlue);
-	// gr2[1]->SetLineColor(kBlue);
-	// gr2[1]->Draw("Psame");
+	gr2[1]->SetMarkerStyle(28);
+	gr2[1]->SetMarkerSize(1.4);
+	gr2[1]->SetMarkerColor(kBlue);
+	gr2[1]->SetLineColor(kBlue);
+	gr2[1]->Draw("Psame");
 
 	gr3[0]->SetMarkerStyle(24);
 	gr3[0]->SetMarkerSize(1.4);
@@ -245,8 +245,8 @@ void plotIntegrated(){
 	}
 
 
-	TGraphErrors* gr4 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_same1, xbinwidth, alice_centrality_same1_error);
-	TGraphErrors* gr5 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_oppo1, xbinwidth, alice_centrality_oppo1_error);
+	TGraphErrors* gr4 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_same2, xbinwidth, alice_centrality_same2_error);
+	TGraphErrors* gr5 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_oppo2, xbinwidth, alice_centrality_oppo2_error);
 
 
 	gr4->SetMarkerStyle(27);
@@ -275,6 +275,17 @@ void plotIntegrated(){
     w1->AddEntry(gr4, "ALICE PbPb, like sign", "P");
     w1->AddEntry(gr5, "ALICE PbPb, unlike sign", "P");
     w1->Draw("same");
+
+   	TLatex* r11 = new TLatex(0.62,0.91, "CMS");
+    r11->SetNDC();
+    r11->SetTextSize(0.04);
+    r11->Draw("same");
+
+    TLatex* r22 = new TLatex(0.71,0.91, "Preliminary");
+    r22->SetNDC();
+    r22->SetTextSize(24);
+    r22->SetTextFont(53);
+    r22->Draw("same");
 
 	return;
 

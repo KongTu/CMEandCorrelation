@@ -59,8 +59,8 @@ void plotDeltaEtaResult(){
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3and4.root");
 	//file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
 
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7and8.root");
-	//file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_1.root");
+	//file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7and8.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v1.root");
 	
 	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
 
@@ -492,7 +492,7 @@ void plotDeltaEtaResult(){
     r2->SetTextFont(53);
     r2->Draw("same");
 
-    TLatex* r4 = new TLatex(0.11, 0.84, "PbPb #sqrt{s_{NN}} = 2.76 TeV");
+    TLatex* r4 = new TLatex(0.11, 0.84, "PbPb #sqrt{s_{NN}} = 5.02 TeV");
     r4->SetNDC();
     r4->SetTextSize(23);
     r4->SetTextFont(43);
@@ -604,7 +604,7 @@ void plotDeltaEtaResult(){
     w3->SetTextFont(43);
     w3->AddEntry(diff1, "pPb #sqrt{s_{NN}} = 5.02 TeV, Pb-going");
     w3->AddEntry(diff2, "pPb #sqrt{s_{NN}} = 5.02 TeV, p-going");
-    w3->AddEntry(diff3, "PbPb #sqrt{s_{NN}} = 2.76 TeV");
+    w3->AddEntry(diff3, "PbPb #sqrt{s_{NN}} = 5.02 TeV");
     w3->Draw("same");
 
 	TH1D* base5 = (TH1D*) base1->Clone("base3");
@@ -617,7 +617,7 @@ void plotDeltaEtaResult(){
 	base5->GetXaxis()->SetNdivisions(5,6,0);
 
 	TH1D* base6 = (TH1D*) base5->Clone("base6");
-	base6->GetYaxis()->SetRangeUser(-0.0012, 0.04);
+	base6->GetYaxis()->SetRangeUser(-0.01, 0.04);
 	base6->GetXaxis()->SetRangeUser(-0.2, 4.8);
 
     TLatex* r41 = new TLatex(0.24, 0.85, "pPb #sqrt{s_{NN}} = 5.02 TeV, Pb-going");
@@ -626,7 +626,7 @@ void plotDeltaEtaResult(){
     r41->SetTextFont(43);
     r41->SetTextColor(kBlack);
 
-    TLatex* r42 = new TLatex(0.05, 0.85, "PbPb #sqrt{s_{NN}} = 2.76 TeV");
+    TLatex* r42 = new TLatex(0.05, 0.85, "PbPb #sqrt{s_{NN}} = 5.02 TeV");
     r42->SetNDC();
     r42->SetTextSize(23);
     r42->SetTextFont(43);
@@ -724,6 +724,27 @@ void plotDeltaEtaResult(){
     w4->AddEntry(temp9, "  unlike sign");
     w4->Draw("same");
 
+    TLatex* r433 = new TLatex(0.55,0.95, "CMS");
+    r433->SetNDC();
+    r433->SetTextSize(0.052);
+    
+    TLatex* r444 = new TLatex(0.69,0.95, "Preliminary");
+    r444->SetNDC();
+    r444->SetTextSize(24);
+    r444->SetTextFont(53);
+    
+    TLatex* r333 = new TLatex(0.25, 0.87, "pPb #sqrt{s_{NN}} = 5.02 TeV");
+    r333->SetNDC();
+    r333->SetTextSize(23);
+    r333->SetTextFont(43);
+    r333->SetTextColor(kBlack);
+
+    TLatex* r455 = new TLatex(0.25, 0.80, "0 #leq N^{offline}_{trk} < 35");
+    r455->SetNDC();
+    r455->SetTextSize(23);
+    r455->SetTextFont(43);
+    r455->SetTextColor(kBlack);
+
     TCanvas* c5 = new TCanvas("c5","c5",1000,600);
 	c5->Divide(2,1,0,0);
 	c5->cd(1);
@@ -734,6 +755,9 @@ void plotDeltaEtaResult(){
 	base6->Draw();
 	temp11->Draw("Psame");
 	temp12->Draw("Psame");
+	r455->Draw("same");
+	r333->Draw("same");
+    r6->Draw("same");
 
 	c5->cd(2);
 	gPad->SetBottomMargin(0.13);
@@ -743,6 +767,30 @@ void plotDeltaEtaResult(){
 	base6->Draw();
 	temp13->Draw("Psame");
 	temp14->Draw("Psame");
+	r433->Draw("same");
+	r444->Draw("same");
+    r62->Draw("same");
+
+	TLegend *w5 = new TLegend(0.60,0.60,0.75,0.80);
+    w5->SetLineColor(kWhite);
+    w5->SetFillColor(0);
+    w5->SetTextSize(23);
+    w5->SetTextFont(45);
+    w5->AddEntry(temp5, "  like sign");
+    w5->AddEntry(temp9, "  unlike sign");
+    w5->Draw("same");
+
+	TFile t1("../dataPoints/diff.root","RECREATE");
+	diff1->Write();
+	diff2->Write();
+	diff3->Write();
+	temp1->Write();
+	temp2->Write();
+	temp3->Write();
+	temp4->Write();
+	temp5->Write();
+	temp9->Write();
+
 
 
 	//c2->Print("../results/deltaEtaResults.pdf");

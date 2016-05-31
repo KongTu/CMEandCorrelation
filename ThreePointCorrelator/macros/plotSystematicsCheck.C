@@ -42,7 +42,7 @@ double weightedAverageError(double a1, double a2, double etaError1, double etaEr
 
 }
 
-void plotSystematics(){
+void plotSystematicsCheck(){
 
 	gStyle->SetErrorX(0);
 	TGaxis::SetMaxDigits(3);
@@ -131,6 +131,7 @@ void plotSystematics(){
 		v2[mult][0] = sqrt(c2_b - bCorr);
 		v2[mult][1] = sqrt(c2_a - aCorr );
 		v2[mult][2] = sqrt(c2_ab - abCorr );
+
 	}
 
 	if( !doShortRange_ ){
@@ -173,7 +174,7 @@ void plotSystematics(){
 
 							double Q_total_real_dEta = QvsdEta[mult][deta+14][sign][HF]->GetMean();
 							double Q_total_real_dEta_error = QvsdEta[mult][deta+14][sign][HF]->GetMeanError();
-							
+
 							hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
 							hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
 						}
@@ -205,7 +206,7 @@ void plotSystematics(){
 
 					double Q_total_real_dEta = QvsdEta[mult][deta][sign][HF]->GetMean();
 					double Q_total_real_dEta_error = QvsdEta[mult][deta][sign][HF]->GetMeanError();
-					
+
 					hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
 					hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
 						
@@ -215,10 +216,10 @@ void plotSystematics(){
 		}
 	}
 
-	TH1D* base1 = makeHist("base1","like-sign, Pb-going","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{3})#GT", 48,0,4.8);
+	TH1D* base1 = makeHist("base1","Pb-going","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8);
     base1->GetXaxis()->SetTitleColor(kBlack);
     base1->GetYaxis()->SetRangeUser(-0.002, 0.002);
-    base1->GetYaxis()->SetTitleOffset(1.0);
+    base1->GetYaxis()->SetTitleOffset(1.2);
 
 //default:
 	//like sign Pb-going
@@ -345,126 +346,50 @@ void plotSystematics(){
 
 
 //Canvas:
-	TCanvas* c1 = makeMultiCanvas("c1","c1",3,2);
+	TCanvas* c1 = makeMultiCanvas("c1","c1",2,1);
 	c1->cd(1);
+	gPad->SetLeftMargin(0.20);
+	gPad->SetBottomMargin(0.13);
+	gPad->SetTopMargin(0.06);
 	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
 	base1->Draw();
-	temp1->Draw("Psame");
 	temp11->Draw("Psame");
-
-	TLegend *w1 = new TLegend(0.35,0.2,0.5,0.4);
-    w1->SetLineColor(kWhite);
-    w1->SetFillColor(0);
-    w1->SetTextSize(20);
-    w1->SetTextFont(43);
-    w1->AddEntry(temp1, Label1.c_str());
-    w1->AddEntry(temp11, Label2.c_str());
-    w1->Draw("same");
-
-	c1->cd(2);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base2 = (TH1D*)base1->Clone("base2");
-	base2->SetTitle("like-sign, p-going");
-	base2->Draw();
-	temp3->Draw("Psame");
-	temp33->Draw("Psame");
-
-	TLegend *w2 = new TLegend(0.35,0.2,0.5,0.4);
-    w2->SetLineColor(kWhite);
-    w2->SetFillColor(0);
-    w2->SetTextSize(20);
-    w2->SetTextFont(43);
-    w2->AddEntry(temp3, Label1.c_str());
-    w2->AddEntry(temp33, Label2.c_str());
-    w2->Draw("same");
-
-    c1->cd(3);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base_PbPb = (TH1D*)base1->Clone("base_PbPb");
-	base_PbPb->SetTitle("like-sign, PbPb");
-	base_PbPb->Draw();
-	temp7->Draw("Psame");
-	temp77->Draw("Psame");
-	
-	TLatex* PbPb_sign = new TLatex(0.2, 0.6, "No HM trigger in PbPb");
-    PbPb_sign->SetNDC();
-    PbPb_sign->SetTextSize(23);
-    PbPb_sign->SetTextFont(43);
-    PbPb_sign->SetTextColor(kBlack);
-    //PbPb_sign->Draw("same");
-
-	TLegend *w3 = new TLegend(0.35,0.2,0.5,0.4);
-    w3->SetLineColor(kWhite);
-    w3->SetFillColor(0);
-    w3->SetTextSize(20);
-    w3->SetTextFont(43);
-    w3->AddEntry(temp7, Label3.c_str());
-    w3->AddEntry(temp77, Label4.c_str());
-    w3->Draw("same");
-
-	c1->cd(4);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base3 = (TH1D*)base1->Clone("base3");
-	base3->SetTitle("unlike-sign, Pb-going");
-	base3->Draw();
-	temp5->Draw("Psame");
 	temp55->Draw("Psame");
 
-	TLegend *w4 = new TLegend(0.35,0.2,0.5,0.4);
-    w4->SetLineColor(kWhite);
-    w4->SetFillColor(0);
-    w4->SetTextSize(20);
-    w4->SetTextFont(43);
-    w4->AddEntry(temp5, Label1.c_str());
-    w4->AddEntry(temp55, Label2.c_str());
-    w4->Draw("same");
+	TLatex* r41 = new TLatex(0.24, 0.85, "pPb #sqrt{s_{NN}} = 5.02 TeV");
+    r41->SetNDC();
+    r41->SetTextSize(23);
+    r41->SetTextFont(43);
+    r41->SetTextColor(kBlack);
 
-	c1->cd(5);
+	TLatex* r45 = new TLatex(0.24, 0.76, "185 #leq N^{offline}_{trk} < 220");
+    r45->SetNDC();
+    r45->SetTextSize(23);
+    r45->SetTextFont(43);
+    r45->SetTextColor(kBlack);
+
+    r41->Draw("same");
+    r45->Draw("same");
+	
+	c1->cd(2);
+	gPad->SetLeftMargin(0.20);
+	gPad->SetBottomMargin(0.13);
+	gPad->SetTopMargin(0.06);
 	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base4 = (TH1D*)base1->Clone("base4");
-	base4->SetTitle("unlike-sign, p-going");
-	base4->Draw();
-	temp6->Draw("Psame");
+	TH1D* base2 = (TH1D*) base1->Clone("base2");
+	base2->SetTitle("p-going");
+	base2->Draw();
+	temp33->Draw("Psame");
 	temp66->Draw("Psame");
-
-	TLegend *w5 = new TLegend(0.35,0.2,0.5,0.4);
+	
+	TLegend *w5 = new TLegend(0.40,0.20,0.60,0.40);
     w5->SetLineColor(kWhite);
     w5->SetFillColor(0);
-    w5->SetTextSize(20);
-    w5->SetTextFont(43);
-    w5->AddEntry(temp6, Label1.c_str());
-    w5->AddEntry(temp66, Label2.c_str());
+    w5->SetTextSize(23);
+    w5->SetTextFont(45);
+    w5->AddEntry(temp11, "  like sign");
+    w5->AddEntry(temp55, "  unlike sign");
     w5->Draw("same");
-
-	c1->cd(6);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base_PbPb_unlike = (TH1D*)base1->Clone("base_PbPb_unlike");
-	base_PbPb_unlike->SetTitle("unlike-sign, PbPb");
-	base_PbPb_unlike->Draw();
-	temp10_1->Draw("Psame");
-	temp10_11->Draw("Psame");
-    //PbPb_sign->Draw("same");
-
-	TLegend *w6 = new TLegend(0.35,0.2,0.5,0.4);
-    w6->SetLineColor(kWhite);
-    w6->SetFillColor(0);
-    w6->SetTextSize(20);
-    w6->SetTextFont(43);
-    w6->AddEntry(temp10_1, Label3.c_str());
-    w6->AddEntry(temp10_11, Label4.c_str());
-    w6->Draw("same");
 	
 	TH1D* base5 = makeHist("base5","like-sign, Pb-going","#Delta#eta", "default - systematic checks", 48,0,4.8);
     base5->GetXaxis()->SetTitleColor(kBlack);
@@ -489,70 +414,9 @@ void plotSystematics(){
     TH1D* ratio8 = (TH1D*)temp10_1->Clone("ratio8");
     TH1D* ratio88 = (TH1D*)temp10_11->Clone("ratio88");
 
-   	TCanvas* c2 = makeMultiCanvas("c2","c2",3,2);
-	c2->cd(1);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	base5->Draw();
-	ratio1->Add( ratio11, -1 );
-	ratio1->Draw("Psame");
+    //c1->Print("../systematics/systematics_v10.pdf");
 
-	c2->cd(2);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base6 = (TH1D*)base5->Clone("base6");
-	base6->SetTitle("like-sign, p-going");
-	base6->Draw();
-	ratio3->Add( ratio33, -1 );
-	ratio3->Draw("Psame");
-
-	c2->cd(3);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base6_PbPb = (TH1D*)base5->Clone("base6_PbPb");
-	base6_PbPb->SetTitle("like-sign, PbPb");
-	base6_PbPb->Draw();
-	ratio7->Add( ratio77, -1 );
-	ratio7->Draw("Psame");
-    //PbPb_sign->Draw("same");
-
-	c2->cd(4);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base7 = (TH1D*)base5->Clone("base7");
-	base7->SetTitle("unlike-sign, Pb-going");
-	base7->Draw();
-	ratio5->Add( ratio55, -1 );	
-	ratio5->Draw("Psame");
-
-	c2->cd(5);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base8 = (TH1D*)base5->Clone("base8");
-	base8->SetTitle("unlike-sign, p-going");
-	base8->Draw();
-	ratio6->Add( ratio66, -1 );
-	ratio6->Draw("Psame");
-
-	c2->cd(6);
-	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.14);
-	TH1D* base8_PbPb = (TH1D*)base5->Clone("base8_PbPb");
-	base8_PbPb->SetTitle("unlike-sign, PbPb");
-	base8_PbPb->Draw();
-	ratio8->Add( ratio88, -1 );
-	ratio8->Draw("Psame");
-    //PbPb_sign->Draw("same");
-
-
-	c1->Print("../systematics/systematics_v4.pdf");
-	c2->Print("../systematics/systematics_diff_v4.pdf");
+ 
 
 
 
