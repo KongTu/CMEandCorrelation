@@ -340,9 +340,9 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
           if( deta == 0 ){
               for(int sign = 0; sign < 2; sign++){
 
-                if( Q1_count[ieta][sign] == 0.0 || Qrp_count == 0.0 ) continue;
+                if( Q1_count[ieta][sign] == 0.0 || Qrp_count[keta] == 0.0 ) continue;
 
-                double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Qrp[keta][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Qrp[keta][1], Q1_count[ieta][sign], Qrp_count );
+                double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Qrp[keta][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Qrp[keta][1], Q1_count[ieta][sign], Qrp_count[keta] );
                 QvsdEta[deta][sign]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*Qrp_count[keta] );
                 
               }
