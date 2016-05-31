@@ -184,6 +184,10 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         double nlayersTracker = trk.hitPattern().trackerLayersWithMeasurement();
         chi2n = chi2n/nlayersTracker;
         double trkEta = trk.eta();
+        double phiangle = trk.phi();
+
+        double num = fRand(0.0,1.0);
+        if(num > 0.5) {phiangle = -trk.phi();}
 
         double weight = 1.0;
         if( doEffCorrection_ ) { weight = 1.0/effTable->GetBinContent( effTable->FindBin(trk.eta(), trk.pt()) );}
@@ -198,12 +202,12 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         if( reverseBeam_ ) {trkEta = -trk.eta();}
 
-        trkPhi->Fill( trk.phi() );//make sure if messAcceptance is on or off
+        trkPhi->Fill( phiangle );//make sure if messAcceptance is on or off
         trkPt->Fill( trk.pt(), weight);//single particle closure
         trk_eta->Fill( trk.eta(), weight);
 
-        QcosTRK += weight*cos( 2*trk.phi() );
-        QsinTRK += weight*sin( 2*trk.phi() );
+        QcosTRK += weight*cos( 2*phiangle );
+        QsinTRK += weight*sin( 2*phiangle );
         QcountsTrk += weight;
 
         for(int eta = 0; eta < NetaBins; eta++){
@@ -211,38 +215,38 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
 
             if( trk.charge() == 1){
 
-              Q1[eta][0][0] += weight*cos( trk.phi() );
-              Q1[eta][0][1] += weight*sin( trk.phi() );
+              Q1[eta][0][0] += weight*cos( phiangle );
+              Q1[eta][0][1] += weight*sin( phiangle );
 
-              P1[eta][0][0] += weight*cos( trk.phi() );//the same as Q1, just for consistency
-              P1[eta][0][1] += weight*sin( trk.phi() );
+              P1[eta][0][0] += weight*cos( phiangle );//the same as Q1, just for consistency
+              P1[eta][0][1] += weight*sin( phiangle );
 
               Q1_count[eta][0] += weight;
 
-              Q2[eta][0][0] += weight*weight*cos( 2*trk.phi() );
-              Q2[eta][0][1] += weight*weight*sin( 2*trk.phi() );
+              Q2[eta][0][0] += weight*weight*cos( 2*phiangle );
+              Q2[eta][0][1] += weight*weight*sin( 2*phiangle );
 
-              P2[eta][0][0] += weight*cos( -trk.phi() );
-              P2[eta][0][1] += weight*sin( -trk.phi() );
+              P2[eta][0][0] += weight*cos( -phiangle );
+              P2[eta][0][1] += weight*sin( -phiangle );
 
               Q2_count[eta][0] += weight*weight;
 
             }
             else if( trk.charge() == -1){
               
-              Q1[eta][1][0] += weight*cos( trk.phi() );
-              Q1[eta][1][1] += weight*sin( trk.phi() );
+              Q1[eta][1][0] += weight*cos( phiangle );
+              Q1[eta][1][1] += weight*sin( phiangle );
 
-              P1[eta][1][0] += weight*cos( trk.phi() );//the same as Q1, just for consistency
-              P1[eta][1][1] += weight*sin( trk.phi() );
+              P1[eta][1][0] += weight*cos( phiangle );//the same as Q1, just for consistency
+              P1[eta][1][1] += weight*sin( phiangle );
             
               Q1_count[eta][1] += weight;
 
-              Q2[eta][1][0] += weight*weight*cos( 2*trk.phi() );
-              Q2[eta][1][1] += weight*weight*sin( 2*trk.phi() );
+              Q2[eta][1][0] += weight*weight*cos( 2*phiangle );
+              Q2[eta][1][1] += weight*weight*sin( 2*phiangle );
 
-              P2[eta][1][0] += weight*cos( -trk.phi() );
-              P2[eta][1][1] += weight*sin( -trk.phi() );
+              P2[eta][1][0] += weight*cos( -phiangle );
+              P2[eta][1][1] += weight*sin( -phiangle );
               
               Q2_count[eta][1] += weight*weight;
 
