@@ -7,6 +7,38 @@ double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1
 const int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
 double dEtaBins[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
 const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
+double dEtaReBins[] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.4,2.8,3.4,4.2,4.8};
+const int NdEtaReBins = sizeof(dEtaReBins) / sizeof(dEtaReBins[0]) - 1;
+double dEtaReBinCenter[] = {0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5,1.7,1.9,2.2,2.6,3.1,3.8,4.5};
+
+//rebin option2:
+double dEtaReBins2[] = {0.0,0.3,0.6,0.9,1.2,1.5,1.8,2.2,2.8,3.8,4.8};
+const int NdEtaReBins2 = sizeof(dEtaReBins2) / sizeof(dEtaReBins2[0]) - 1;
+
+double dEtaReBinCenter2[] = {0.15,0.45,0.75,1.05,1.35,1.65,2.0,2.5,3.3,4.3};
+
+double weightedAverage(double a1, double a2, double a3, double eta1, double eta2, double eta3){
+
+	double temp1 = a1*eta1 + a2*eta2 + a3*eta3;
+	double temp2 = (a1+a2+a3);
+
+	return temp1/temp2;
+}
+
+double weightedAverageError(double a1, double a2, double a3, double etaError1, double etaError2, double etaError3){
+
+	double temp1 = (a1/(a1+a2+a3))*(a1/(a1+a2+a3));
+	double temp2 = etaError1*etaError1;
+	double temp3 = (a2/(a1+a2+a3))*(a2/(a1+a2+a3));
+	double temp4 = etaError2*etaError2;
+	double temp5 = (a3/(a1+a2+a3))*(a3/(a1+a2+a3));
+	double temp6 = etaError3*etaError3;
+
+	double total = temp1*temp2 + temp3*temp4 + temp5*temp6;
+
+	return sqrt(total);
+
+}
 
 double get3Real(double R1, double R2, double R3, double I1, double I2, double I3){
 
@@ -42,15 +74,26 @@ double get2Imag( double R1, double R2, double I1, double I2){
 
 void plotGenCorrelation(){
 
+	TGaxis::SetMaxDigits(3);
+
 	for(int deta = 0; deta < NdEtaBins+1; deta++){
 		dEtaBins[deta] = dEtaBins[deta] - 0.00001;//fix bin boundary
 	}
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v5.root");
-	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v46.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v12.root");
+	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v51.root");
+	TFile* file2 = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3and4.root");
 
+	TH1D* delEta3p[3][2];
 
+	for(int sign = 0; sign < 3; sign++){
+		for(int HF = 0; HF < 2; HF++){
+
+			delEta3p[sign][HF] = (TH1D*) file2->Get(Form("ana/delEta3p_%d_%d",sign,HF));
+		}
+	}
+	
 	TH1D* QvsdEta1[48][3][2];
 	TH1D* QvsdEta2[48][3][2];
 
@@ -128,9 +171,86 @@ void plotGenCorrelation(){
 		hist4[sign] = new TH1D(Form("hist4_%d",sign),"test", NdEtaBins, dEtaBins);
 
 		for(int HF = 0; HF < 2; HF++){
-			hist1[sign][HF] = new TH1D(Form("hist1_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
-			hist2[sign][HF] = new TH1D(Form("hist2_%d_%d",sign,HF),"test", NdEtaBins, dEtaBins);
+			hist1[sign][HF] = new TH1D(Form("hist1_%d_%d",sign,HF),"test", NdEtaReBins2, dEtaReBins2);
+			hist2[sign][HF] = new TH1D(Form("hist2_%d_%d",sign,HF),"test", NdEtaReBins2, dEtaReBins2);
 		
+		}
+	}
+
+	for(int deta = 0; deta < NdEtaReBins2; deta++){
+		for(int sign = 0; sign < 3; sign++){
+			for(int HF = 0; HF < 2; HF++){
+
+				if(deta < 8){
+
+					double weight1 = delEta3p[sign][HF]->GetBinContent( 3*deta+1 );
+					double weight2 = delEta3p[sign][HF]->GetBinContent( 3*deta+2 );
+					double weight3 = delEta3p[sign][HF]->GetBinContent( 3*deta+3 );
+					
+					double Q_total_real_dEta1 = QvsdEta1[3*deta][sign][HF]->GetMean();
+					double Q_total_real_dEta_error1 = QvsdEta1[3*deta][sign][HF]->GetMeanError();
+
+					double Q_total_real_dEta2 = QvsdEta1[3*deta+1][sign][HF]->GetMean();
+					double Q_total_real_dEta_error2 = QvsdEta1[3*deta+1][sign][HF]->GetMeanError();
+
+					double Q_total_real_dEta3 = QvsdEta1[3*deta+2][sign][HF]->GetMean();
+					double Q_total_real_dEta_error3 = QvsdEta1[3*deta+2][sign][HF]->GetMeanError();	
+					
+					double value = weightedAverage(weight1, weight2, weight1, Q_total_real_dEta1, Q_total_real_dEta2, Q_total_real_dEta3 );
+					double error = weightedAverageError(weight1, weight2, weight3, Q_total_real_dEta_error1, Q_total_real_dEta_error2, Q_total_real_dEta_error3 );
+					
+					hist1[sign][HF]->SetBinContent(deta+1, value );
+					hist1[sign][HF]->SetBinError(deta+1, error );
+
+					double Q_total_real_dEta1 = QvsdEta2[3*deta][sign][HF]->GetMean();
+					double Q_total_real_dEta_error1 = QvsdEta2[3*deta][sign][HF]->GetMeanError();
+
+					double Q_total_real_dEta2 = QvsdEta2[3*deta+1][sign][HF]->GetMean();
+					double Q_total_real_dEta_error2 = QvsdEta2[3*deta+1][sign][HF]->GetMeanError();
+
+					double Q_total_real_dEta3 = QvsdEta2[3*deta+2][sign][HF]->GetMean();
+					double Q_total_real_dEta_error3 = QvsdEta2[3*deta+2][sign][HF]->GetMeanError();	
+					
+					double value = weightedAverage(weight1, weight2, weight1, Q_total_real_dEta1, Q_total_real_dEta2, Q_total_real_dEta3 );
+					double error = weightedAverageError(weight1, weight2, weight3, Q_total_real_dEta_error1, Q_total_real_dEta_error2, Q_total_real_dEta_error3 );
+					
+					hist2[sign][HF]->SetBinContent(deta+1, value );
+					hist2[sign][HF]->SetBinError(deta+1, error );
+
+				}
+				else{
+
+					double Q_total_real_dEta1 = QvsdEta1[27][sign][HF]->GetMean();
+					double Q_total_real_dEta_error1 = QvsdEta1[27][sign][HF]->GetMeanError();
+					
+					double Q_total_real_dEta2 = QvsdEta1[28][sign][HF]->GetMean();
+					double Q_total_real_dEta_error2 = QvsdEta1[28][sign][HF]->GetMeanError();
+
+					double weight1 = delEta3p[sign][HF]->GetBinContent( 28 );
+					double weight2 = delEta3p[sign][HF]->GetBinContent( 29 );
+
+					double value = weightedAverage(weight1, weight2, 0, Q_total_real_dEta1, Q_total_real_dEta2, 0);
+					double error = weightedAverageError(weight1, weight2, 0, Q_total_real_dEta_error1, Q_total_real_dEta_error2, 0 );
+					
+					hist1[sign][HF]->SetBinContent(deta+1, value );
+					hist1[sign][HF]->SetBinError(deta+1,  error);
+
+					double Q_total_real_dEta1 = QvsdEta2[27][sign][HF]->GetMean();
+					double Q_total_real_dEta_error1 = QvsdEta2[27][sign][HF]->GetMeanError();
+					
+					double Q_total_real_dEta2 = QvsdEta2[28][sign][HF]->GetMean();
+					double Q_total_real_dEta_error2 = QvsdEta2[28][sign][HF]->GetMeanError();
+
+					double weight1 = delEta3p[sign][HF]->GetBinContent( 28 );
+					double weight2 = delEta3p[sign][HF]->GetBinContent( 29 );
+
+					double value = weightedAverage(weight1, weight2, 0, Q_total_real_dEta1, Q_total_real_dEta2, 0);
+					double error = weightedAverageError(weight1, weight2, 0, Q_total_real_dEta_error1, Q_total_real_dEta_error2, 0 );
+					
+					hist2[sign][HF]->SetBinContent(deta+1, value );
+					hist2[sign][HF]->SetBinError(deta+1,  error);
+				}
+			}
 		}
 	}
 
@@ -152,17 +272,17 @@ void plotGenCorrelation(){
 
 			for(int HF = 0; HF < 2; HF++){
 
-				double Q_total_real_dEta = QvsdEta1[deta][sign][HF]->GetMean();
-				double Q_total_real_dEta_error = QvsdEta1[deta][sign][HF]->GetMeanError();
+				// double Q_total_real_dEta = QvsdEta1[deta][sign][HF]->GetMean();
+				// double Q_total_real_dEta_error = QvsdEta1[deta][sign][HF]->GetMeanError();
 
-				hist1[sign][HF]->SetBinContent(deta+1, Q_total_real_dEta);
-				hist1[sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
+				// hist1[sign][HF]->SetBinContent(deta+1, Q_total_real_dEta);
+				// hist1[sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
 				
-				double Q_total_real_dEta = QvsdEta2[deta][sign][HF]->GetMean();
-				double Q_total_real_dEta_error = QvsdEta2[deta][sign][HF]->GetMeanError();
+				// double Q_total_real_dEta = QvsdEta2[deta][sign][HF]->GetMean();
+				// double Q_total_real_dEta_error = QvsdEta2[deta][sign][HF]->GetMeanError();
 	
-				hist2[sign][HF]->SetBinContent(deta+1, Q_total_real_dEta);
-				hist2[sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
+				// hist2[sign][HF]->SetBinContent(deta+1, Q_total_real_dEta);
+				// hist2[sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
 			}
 		}
 	}
@@ -237,6 +357,10 @@ void plotGenCorrelation(){
     w2->AddEntry(temp4, "unlike sign RECO");
     w2->Draw("same");
 
+    TLine* l1 = new TLine(0,0.00007,4.8,0.00007);
+    l1->SetLineColor(kBlack);
+    l1->SetLineStyle(2);
+
     TCanvas* c3 = makeMultiCanvas("c3","c3",2,1);
     for(int HF = 0; HF < 2; HF++){
 		c3->cd(HF+1);
@@ -265,6 +389,7 @@ void plotGenCorrelation(){
 		
 		ratio3->Add(ratio, -1);
 		ratio3->Draw("Psame");
+		l1->Draw("same");
 
 		TH1D* ratio4 = (TH1D*)hist2[2][HF]->Clone("ratio4");
 		ratio4->Scale( 1.0/v2_2[HF] );
@@ -280,6 +405,8 @@ void plotGenCorrelation(){
 		
 		ratio4->Add(ratio2, -1);
 		ratio4->Draw("Psame");
+		l1->Draw("same");
+
 
 	}    
 
@@ -332,7 +459,7 @@ void plotGenCorrelation(){
 	
 	w2->Draw("same");
 
-    c1->Print("../systematics/closure_40_1000_cumulant.pdf");
-    c3->Print("../systematics/closure_40_1000_diff_cumulant.pdf");
+    // c1->Print("../systematics/closure_40_1000_cumulant.pdf");
+    // c3->Print("../systematics/closure_40_1000_diff_cumulant.pdf");
 
 }
