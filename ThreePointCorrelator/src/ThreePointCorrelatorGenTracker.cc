@@ -414,7 +414,6 @@ ThreePointCorrelatorGenTracker::beginJob()
   const int NdEtaBins = dEtaBins_.size() - 1;
   const int NetaBins = etaBins_.size() - 1;
   double etaBinsArray[100];
-  const int NdEtaBins = dEtaBins_.size() - 1;
   double dEtaBinsArray[100];
 
   for(unsigned i = 0; i < dEtaBins_.size(); i++){
