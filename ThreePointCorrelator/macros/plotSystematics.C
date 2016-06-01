@@ -11,6 +11,12 @@ const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
 //rebin option:
 double dEtaReBins[] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.4,2.8,3.4,4.2,4.8};
 const int NdEtaReBins = sizeof(dEtaReBins) / sizeof(dEtaReBins[0]) - 1;
+//rebin option2:
+double dEtaReBins2[] = {0.0,0.3,0.6,0.9,1.2,1.5,1.8,2.2,2.8,3.8,4.8};
+const int NdEtaReBins2 = sizeof(dEtaReBins2) / sizeof(dEtaReBins2[0]) - 1;
+
+double dEtaReBinCenter2[] = {0.15,0.45,0.75,1.05,1.35,1.65,2.0,2.5,3.3,4.3};
+
 //short range:
 double dEtaBinsShortRange[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0};
 const int NdEtaBinsShortRange = sizeof(dEtaBinsShortRange) / sizeof(dEtaBinsShortRange[0]) - 1;
@@ -21,22 +27,24 @@ const int Nmults = 4;
 
 bool doShortRange_ = false;
 
-double weightedAverage(double a1, double a2, double eta1, double eta2){
+double weightedAverage(double a1, double a2, double a3, double eta1, double eta2, double eta3){
 
-	double temp1 = a1*eta1 + a2*eta2;
-	double temp2 = (a1+a2);
+	double temp1 = a1*eta1 + a2*eta2 + a3*eta3;
+	double temp2 = (a1+a2+a3);
 
 	return temp1/temp2;
 }
 
-double weightedAverageError(double a1, double a2, double etaError1, double etaError2){
+double weightedAverageError(double a1, double a2, double a3, double etaError1, double etaError2, double etaError3){
 
-	double temp1 = (a1/(a1+a2))*(a1/(a1+a2));
+	double temp1 = (a1/(a1+a2+a3))*(a1/(a1+a2+a3));
 	double temp2 = etaError1*etaError1;
-	double temp3 = (a2/(a1+a2))*(a2/(a1+a2));
+	double temp3 = (a2/(a1+a2+a3))*(a2/(a1+a2+a3));
 	double temp4 = etaError2*etaError2;
+	double temp5 = (a3/(a1+a2+a3))*(a3/(a1+a2+a3));
+	double temp6 = etaError3*etaError3;
 
-	double total = temp1*temp2 + temp3*temp4;
+	double total = temp1*temp2 + temp3*temp4 + temp5*temp6;
 
 	return sqrt(total);
 
@@ -53,17 +61,19 @@ void plotSystematics(){
 	string Label4; 
 
 	Label1 = "pPb default";
-	Label2 = "pPb smaller gap ";
+	Label2 = "pPb loose ";
 	Label3 = "PbPb default";
-	Label4 = "PbPb smaller gap ";
+	Label4 = "PbPb loose ";
 
 
 	TFile* file[16];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v10.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_Systematics_v4.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v7.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v2.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_Systematics_v7.root");
+
+	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_Systematics_v5.root");
 
 	TH1D* QvsdEta[16][48][3][2];
 
@@ -81,6 +91,8 @@ void plotSystematics(){
 	TH1D* QaQb[16]; TH1D* QaQc[16]; TH1D* QcQb[16];
 	TH1D* aveQ3[16][2][2];
 
+
+
 	for(int mult = 0; mult < Nmults; mult++){
 
 		QaQb[mult] = (TH1D*)file[mult]->Get("ana/c2_ab");
@@ -94,7 +106,6 @@ void plotSystematics(){
 			}
 		}
 	}
-
 
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int deta = 0; deta < NdEtaBins; deta++){
@@ -132,57 +143,109 @@ void plotSystematics(){
 		v2[mult][1] = sqrt(c2_a - aCorr );
 		v2[mult][2] = sqrt(c2_ab - abCorr );
 	}
+	
+//tracker 	
+	for(int sign = 0; sign < 3; sign++){
+		delEta3p[4][sign][0] = (TH1D*) file[4]->Get(Form("ana/delEta3p_%d",sign));
+		delEta3p[4][sign][1] = (TH1D*) file[4]->Get(Form("ana/delEta3p_%d",sign));
+
+	}
+
+	QaQb[4] = (TH1D*)file[4]->Get("ana/c2_ab");
+	QaQc[4] = (TH1D*)file[4]->Get("ana/c2_ac");
+	QcQb[4] = (TH1D*)file[4]->Get("ana/c2_cb");
+
+	for(int deta = 0; deta < NdEtaBins; deta++){
+		for(int sign = 0; sign < 3; sign++){
+
+			QvsdEta[4][deta][sign][0] = (TH1D*) file[4]->Get( Form("ana/QvsdEta_%d_%d",deta,sign) );
+			QvsdEta[4][deta][sign][1] = (TH1D*) file[4]->Get( Form("ana/QvsdEta_%d_%d",deta,sign) );
+
+		}
+	}
+
+	double meanQaQb = QaQb[4]->GetMean();
+	double meanQaQc = QaQc[4]->GetMean();
+	double meanQcQb = QcQb[4]->GetMean();
+
+	double c2_c = meanQcQb*meanQaQc/meanQaQb;
+	v2[4][0] = sqrt(c2_c);
+	v2[4][1] = sqrt(c2_c);
+
+//
+
 
 	if( !doShortRange_ ){
 
 		TH1D* hist1[8][3][2];
 		TH1D* hist2[8][3][2];
-		for(int mult = 0; mult < Nmults; mult++){
+		for(int mult = 0; mult < 5; mult++){
 			for(int sign = 0; sign < 3; sign++){
 				for(int HF = 0; HF < 2; HF++){
-					hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
-					hist2[mult][sign][HF] = new TH1D(Form("hist2_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
+					hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins2, dEtaReBins2);
+					hist2[mult][sign][HF] = new TH1D(Form("hist2_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins2, dEtaReBins2);
 				}
 			}
 		}
 
-		for(int mult = 0; mult < Nmults; mult++){
-			for(int deta = 0; deta < NdEtaReBins; deta++){
-				for(int sign = 0; sign < 3; sign++){
-					for(int HF = 0; HF < 2; HF++){
+		for(int mult = 0; mult < 5; mult++){
+		for(int deta = 0; deta < NdEtaReBins2; deta++){
+			for(int sign = 0; sign < 3; sign++){
+				for(int HF = 0; HF < 2; HF++){
 
-						if(deta < 14){
-							
-							double Q_total_real_dEta1 = QvsdEta[mult][2*deta][sign][HF]->GetMean();
-							double Q_total_real_dEta_error1 = QvsdEta[mult][2*deta][sign][HF]->GetMeanError();
+					if(deta < 8){
 
-							double Q_total_real_dEta2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMean();
-							double Q_total_real_dEta_error2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMeanError();
+						double Q_total_real_dEta1 = QvsdEta[mult][3*deta][sign][HF]->GetMean();
+						double Q_total_real_dEta_error1 = QvsdEta[mult][3*deta][sign][HF]->GetMeanError();
 
-							double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+1 );
-							double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+2 );
+						double Q_total_real_dEta2 = QvsdEta[mult][3*deta+1][sign][HF]->GetMean();
+						double Q_total_real_dEta_error2 = QvsdEta[mult][3*deta+1][sign][HF]->GetMeanError();
 
-							double value = weightedAverage(weight1, weight2, Q_total_real_dEta1, Q_total_real_dEta2);
-							double error = weightedAverageError(weight1, weight2, Q_total_real_dEta_error1, Q_total_real_dEta_error2 );
-							
-							hist1[mult][sign][HF]->SetBinContent(deta+1, value );
-							hist1[mult][sign][HF]->SetBinError(deta+1, error );
+						double Q_total_real_dEta3 = QvsdEta[mult][3*deta+2][sign][HF]->GetMean();
+						double Q_total_real_dEta_error3 = QvsdEta[mult][3*deta+2][sign][HF]->GetMeanError();
 
-						}
-						else{
-
-							double Q_total_real_dEta = QvsdEta[mult][deta+14][sign][HF]->GetMean();
-							double Q_total_real_dEta_error = QvsdEta[mult][deta+14][sign][HF]->GetMeanError();
-							
-							hist1[mult][sign][HF]->SetBinContent(deta+1, Q_total_real_dEta );
-							hist1[mult][sign][HF]->SetBinError(deta+1,  Q_total_real_dEta_error);
-						}
+						double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+1 );
+						double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+2 );
+						double weight3 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+3 );
+						
+						double value = weightedAverage(weight1, weight2, weight3, Q_total_real_dEta1, Q_total_real_dEta2, Q_total_real_dEta3);
+						double error = weightedAverageError(weight1, weight2, weight3, Q_total_real_dEta_error1, Q_total_real_dEta_error2, Q_total_real_dEta_error3 );
+						
+						hist1[mult][sign][HF]->SetBinContent(deta+1, value );
+						hist1[mult][sign][HF]->SetBinError(deta+1, error );
 
 
 					}
+
+					// if(deta >= 8){
+
+					// hist1[mult][sign][HF]->SetBinContent(deta+1, 0.0 );
+					// hist1[mult][sign][HF]->SetBinError(deta+1, 0.0 );
+
+					// }
+					else{
+
+						double Q_total_real_dEta1 = QvsdEta[mult][27][sign][HF]->GetMean();
+						double Q_total_real_dEta_error1 = QvsdEta[mult][27][sign][HF]->GetMeanError();
+						
+						double Q_total_real_dEta2 = QvsdEta[mult][28][sign][HF]->GetMean();
+						double Q_total_real_dEta_error2 = QvsdEta[mult][28][sign][HF]->GetMeanError();
+
+						double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 28 );
+						double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 29 );
+
+						double value = weightedAverage(weight1, weight2, 0, Q_total_real_dEta1, Q_total_real_dEta2, 0);
+						double error = weightedAverageError(weight1, weight2, 0, Q_total_real_dEta_error1, Q_total_real_dEta_error2, 0 );
+						
+						hist1[mult][sign][HF]->SetBinContent(deta+1, value );
+						hist1[mult][sign][HF]->SetBinError(deta+1,  error);
+					}
+
+
 				}
 			}
 		}
+	}
 	
 	}
 	else{
@@ -215,10 +278,27 @@ void plotSystematics(){
 		}
 	}
 
-	TH1D* base1 = makeHist("base1","like-sign, Pb-going","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{3})#GT", 48,0,4.8);
+	TH1D* base1 = makeHist("base1","like-sign, Pb-going","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8);
     base1->GetXaxis()->SetTitleColor(kBlack);
     base1->GetYaxis()->SetRangeUser(-0.002, 0.002);
     base1->GetYaxis()->SetTitleOffset(1.0);
+
+//tracker    
+
+    TH1D* tracker1 = (TH1D*) hist1[4][0][0]->Clone("tracker1");
+    TH1D* tracker2 = (TH1D*) hist1[4][1][0]->Clone("tracker2");
+    tracker1->Add(tracker2, +1);
+    tracker1->Scale(0.5);
+    tracker1->Scale(1.0/v2[4][0]);
+    tracker1->SetMarkerStyle(20);
+    tracker1->SetMarkerColor(kBlack);
+	tracker1->SetLineColor(kBlack);
+
+    TH1D* tracker3 = (TH1D*) hist1[4][2][0]->Clone("tracker3");
+    tracker3->Scale(1.0/v2[4][0]);
+    tracker3->SetMarkerColor(kGreen+3);
+	tracker3->SetLineColor(kGreen+3);
+	tracker3->SetMarkerStyle(21);
 
 //default:
 	//like sign Pb-going
@@ -391,7 +471,8 @@ void plotSystematics(){
 	base_PbPb->Draw();
 	temp7->Draw("Psame");
 	temp77->Draw("Psame");
-	
+
+
 	TLatex* PbPb_sign = new TLatex(0.2, 0.6, "No HM trigger in PbPb");
     PbPb_sign->SetNDC();
     PbPb_sign->SetTextSize(23);
@@ -549,10 +630,48 @@ void plotSystematics(){
 	ratio8->Add( ratio88, -1 );
 	ratio8->Draw("Psame");
     //PbPb_sign->Draw("same");
+    
+ //    TCanvas* c3 = makeCanvas("c3","c3");
+ //    gPad->SetTicks();
+	// gPad->SetLeftMargin(0.15);
+	// gPad->SetBottomMargin(0.14);
+	// TH1D* base9_tracker = (TH1D*)base1->Clone("base9_tracker");
+	// base9_tracker->SetTitle("PbPb tracker");
+	// base9_tracker->GetXaxis()->SetRangeUser(0,3.0);
+	// base9_tracker->Draw();
 
+	// tracker1->Draw("Psame");
+	// tracker3->Draw("Psame");
+	// temp7->Draw("Psame");
+	// temp10_1->Draw("Psame");
+	
+	// TLegend *w7 = new TLegend(0.55,0.2,0.7,0.4);
+ //    w7->SetLineColor(kWhite);
+ //    w7->SetFillColor(0);
+ //    w7->SetTextSize(20);
+ //    w7->SetTextFont(43);
+ //    w7->AddEntry(tracker1, "like-sign, tracker");
+ //    w7->AddEntry(temp7, "like-sign, HF");
+ //    w7->AddEntry(tracker3, "unlike-sign, tracker");
+ //    w7->AddEntry(temp10_1, "unlike-sign, HF");
+ //    w7->Draw("same");
 
-	c1->Print("../systematics/systematics_v4.pdf");
-	c2->Print("../systematics/systematics_diff_v4.pdf");
+	// TLatex* r3 = new TLatex(0.2, 0.84, "PbPb #sqrt{s_{NN}} = 5.02 TeV");
+ //    r3->SetNDC();
+ //    r3->SetTextSize(23);
+ //    r3->SetTextFont(43);
+ //    r3->SetTextColor(kBlack);
+ //    r3->Draw("same");
+
+ //    TLatex* lmult = new TLatex(0.2, 0.76, "185 #leq N^{offline}_{trk} < 220");
+ //    lmult->SetNDC();
+ //    lmult->SetTextSize(23);
+ //    lmult->SetTextFont(43);
+ //    lmult->SetTextColor(kBlack);
+ //    lmult->Draw("same");
+
+	// c1->Print("../systematics/systematics_v7.pdf");
+	// c2->Print("../systematics/systematics_diff_v7.pdf");
 
 
 

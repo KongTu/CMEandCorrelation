@@ -61,7 +61,7 @@ void plotSystematicsCheck(){
 	TFile* file[16];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v10.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v12.root");
 	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
 	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_Systematics_v4.root");
 
@@ -414,7 +414,7 @@ void plotSystematicsCheck(){
     TH1D* ratio8 = (TH1D*)temp10_1->Clone("ratio8");
     TH1D* ratio88 = (TH1D*)temp10_11->Clone("ratio88");
 
-    //c1->Print("../systematics/systematics_v10.pdf");
+    c1->Print("../systematics/systematics_v12.pdf");
 
  
 
