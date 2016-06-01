@@ -279,6 +279,8 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
           if( deta == 0){
             for(int sign = 0; sign < 2; sign++){
               if( Q2_count[ieta][sign] == 0.0 ) continue;
+              
+              delEta2p[sign]->Fill( deltaEta );
 
               double P_real = get2Real(P1[ieta][sign][0], P2[ieta][sign][0], P1[ieta][sign][1], P2[ieta][sign][1]);
               double P_real_count = Q2_count[ieta][sign]*(Q2_count[ieta][sign]-1);
@@ -288,6 +290,8 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
             }
 
             if( Q2_count[ieta][0] == 0.0 || Q2_count[ieta][1] == 0.0 ) continue;
+
+              delEta2p[2]->Fill( deltaEta );
 
               double P_real = get2Real(P1[ieta][0][0], P2[ieta][1][0], P1[ieta][0][1], P2[ieta][1][1]);
               double P_real_count = Q2_count[ieta][0]*Q2_count[ieta][1];
@@ -300,6 +304,8 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
             for(int sign = 0; sign < 2; sign++){
               if( Q2_count[ieta][sign] == 0.0 || Q2_count[jeta][sign] == 0.0 ) continue;
 
+              delEta2p[sign]->Fill( deltaEta );
+
               double P_real = get2Real(P1[ieta][sign][0], P2[jeta][sign][0], P1[ieta][sign][1], P2[jeta][sign][1]);
               double P_real_count = Q2_count[ieta][sign]*Q2_count[jeta][sign];
               P_real = P_real/P_real_count; //for COS(P1-P2) needs to minus the N.
@@ -308,6 +314,8 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
             }
 
             if( Q2_count[ieta][0] == 0.0 || Q2_count[jeta][1] == 0.0 ) continue;
+
+              delEta2p[2]->Fill( deltaEta );
 
               double P_real = get2Real(P1[ieta][0][0], P2[jeta][1][0], P1[ieta][0][1], P2[jeta][1][1]);
               double P_real_count = Q2_count[ieta][0]*Q2_count[jeta][1];
@@ -339,12 +347,16 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
 
                 if( Q1_count[ieta][sign] == 0.0 || Qrp_count[keta] == 0.0 ) continue;
 
+                delEta3p[sign]->Fill( deltaEta12 );
+
                 double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Qrp[keta][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Qrp[keta][1], Q1_count[ieta][sign], Qrp_count[keta] );
                 QvsdEta[deta][sign]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*Qrp_count[keta] );
                 
               }
 
               if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || Qrp_count[keta] == 0.0 ) continue;
+
+              delEta3p[2]->Fill( deltaEta12 );
 
               double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Qrp[keta][0]/Qrp_count[keta], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Qrp[keta][1]/Qrp_count[keta]);
               QvsdEta[deta][2]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*Qrp_count[keta] );  
@@ -356,12 +368,16 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
               
                 if( Q1_count[ieta][sign] == 0.0 || Q1_count[jeta][sign] == 0.0 || Qrp_count[keta] == 0.0 ) continue; 
 
+                delEta3p[sign]->Fill( deltaEta12 );
+
                 double Q_real = get3Real(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Qrp[keta][0]/Qrp_count[keta], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Qrp[keta][1]/Qrp_count[keta]);
                 QvsdEta[deta][sign]->Fill( Q_real, Q1_count[ieta][sign]*Q1_count[jeta][sign]*Qrp_count[keta] );  
 
               }
 
               if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 || Qrp_count[keta] == 0.0 ) continue;
+
+                delEta3p[2]->Fill( deltaEta12 );
 
                 double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Qrp[keta][0]/Qrp_count[keta], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Qrp[keta][1]/Qrp_count[keta]);
                 QvsdEta[deta][2]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*Qrp_count[keta] );  
@@ -422,6 +438,13 @@ ThreePointCorrelatorGenTracker::beginJob()
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
+
+ for(int sign = 0; sign < 3; sign++){
+
+    delEta2p[sign] = fs->make<TH1D>(Form("delEta2p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+    delEta3p[sign] = fs->make<TH1D>(Form("delEta3p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+
+  }
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){

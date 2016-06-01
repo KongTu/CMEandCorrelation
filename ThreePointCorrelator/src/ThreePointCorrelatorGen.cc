@@ -272,6 +272,8 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
             for(int sign = 0; sign < 2; sign++){
               if( Q2_count[ieta][sign] == 0.0 ) continue;
 
+              delEta2p[sign]->Fill( deltaEta );
+
               double P_real = get2Real(P1[ieta][sign][0], P2[ieta][sign][0], P1[ieta][sign][1], P2[ieta][sign][1]);
               double P_real_count = Q2_count[ieta][sign]*(Q2_count[ieta][sign]-1);
               P_real = (P_real - Q2_count[ieta][sign])/P_real_count; //for COS(P1-P2) needs to minus the N.
@@ -280,6 +282,8 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
             }
 
             if( Q2_count[ieta][0] == 0.0 || Q2_count[ieta][1] == 0.0 ) continue;
+              
+              delEta2p[2]->Fill( deltaEta );
 
               double P_real = get2Real(P1[ieta][0][0], P2[ieta][1][0], P1[ieta][0][1], P2[ieta][1][1]);
               double P_real_count = Q2_count[ieta][0]*Q2_count[ieta][1];
@@ -291,6 +295,8 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
           else{
             for(int sign = 0; sign < 2; sign++){
               if( Q2_count[ieta][sign] == 0.0 || Q2_count[jeta][sign] == 0.0 ) continue;
+             
+              delEta2p[sign]->Fill( deltaEta );
 
               double P_real = get2Real(P1[ieta][sign][0], P2[jeta][sign][0], P1[ieta][sign][1], P2[jeta][sign][1]);
               double P_real_count = Q2_count[ieta][sign]*Q2_count[jeta][sign];
@@ -300,7 +306,9 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
             }
 
             if( Q2_count[ieta][0] == 0.0 || Q2_count[jeta][1] == 0.0 ) continue;
-
+              
+              delEta2p[2]->Fill( deltaEta );
+              
               double P_real = get2Real(P1[ieta][0][0], P2[jeta][1][0], P1[ieta][0][1], P2[jeta][1][1]);
               double P_real_count = Q2_count[ieta][0]*Q2_count[jeta][1];
               P_real = P_real/P_real_count;
@@ -327,6 +335,7 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
 
                 if( Q1_count[ieta][sign] == 0.0 || ETT[HF] == 0.0 ) continue;
 
+                delEta3p[sign][HF]->Fill( deltaEta );
                 double Q_real = get3RealOverlap(Q1[ieta][sign][0], Q2[ieta][sign][0], Q3[HF][0], Q1[ieta][sign][1], Q2[ieta][sign][1], Q3[HF][1], Q1_count[ieta][sign], ETT[HF] );
                 QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*(Q1_count[ieta][sign]-1)*ETT[HF] );
                 
@@ -334,6 +343,7 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
 
               if( Q1_count[ieta][0] == 0.0 || Q1_count[ieta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
 
+              delEta3p[2][HF]->Fill( deltaEta );
               double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
               QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
 
@@ -345,13 +355,15 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
               
                 if( Q1_count[ieta][sign] == 0.0 || Q1_count[jeta][sign] == 0.0 || ETT[HF] == 0.0 ) continue; 
 
+                delEta3p[sign][HF]->Fill( deltaEta );
                 double Q_real = get3Real(Q1[ieta][sign][0]/Q1_count[ieta][sign],Q1[jeta][sign][0]/Q1_count[jeta][sign],Q3[HF][0]/ETT[HF], Q1[ieta][sign][1]/Q1_count[ieta][sign], Q1[jeta][sign][1]/Q1_count[jeta][sign], Q3[HF][1]/ETT[HF]);
                 QvsdEta[deta][sign][HF]->Fill( Q_real, Q1_count[ieta][sign]*Q1_count[jeta][sign]*ETT[HF] );  
 
               }
 
               if( Q1_count[ieta][0] == 0.0 || Q1_count[jeta][1] == 0.0 || ETT[HF] == 0.0 ) continue;
-
+                
+                delEta3p[2][HF]->Fill( deltaEta );
                 double Q_real = get3Real(Q1[ieta][0][0]/Q1_count[ieta][0],Q1[jeta][1][0]/Q1_count[jeta][1],Q3[HF][0]/ETT[HF], Q1[ieta][0][1]/Q1_count[ieta][0], Q1[jeta][1][1]/Q1_count[jeta][1], Q3[HF][1]/ETT[HF]);
                 QvsdEta[deta][2][HF]->Fill( Q_real, Q1_count[ieta][0]*Q1_count[jeta][1]*ETT[HF] );  
 
@@ -413,6 +425,16 @@ ThreePointCorrelatorGen::beginJob()
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
+
+  for(int sign = 0; sign < 3; sign++){
+
+    delEta2p[sign] = fs->make<TH1D>(Form("delEta2p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+
+    for(int HF = 0; HF < HFside; HF++){
+        delEta3p[sign][HF] = fs->make<TH1D>(Form("delEta3p_%d_%d",sign,HF),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+
+    }
+  }
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){

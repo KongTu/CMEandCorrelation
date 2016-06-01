@@ -543,6 +543,8 @@ class ThreePointCorrelatorGen : public edm::EDAnalyzer {
       TH1D* c2_cb;
 
 //end v2
+      TH1D* delEta3p[3][2];
+      TH1D* delEta2p[3];
 
       TH1D* QvsdEta[48][3][2];
       TH1D* PvsdEta[48][3];
@@ -615,6 +617,8 @@ class ThreePointCorrelatorGenTracker : public edm::EDAnalyzer {
       TH1D* cbinHist;
       TH1D* trkPt;
       TH1D* trk_eta;
+      TH1D* delEta3p[3];
+      TH1D* delEta2p[3];
 
 //v2
       TH1D* c2_ab;
