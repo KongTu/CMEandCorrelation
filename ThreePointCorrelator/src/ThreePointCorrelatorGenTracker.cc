@@ -81,7 +81,7 @@ ThreePointCorrelatorGenTracker::analyze(const edm::Event& iEvent, const edm::Eve
   bestvzError = vtx.zError(); bestvxError = vtx.xError(); bestvyError = vtx.yError();
   
   //first selection; vertices
-  if(bestvz < vzLow_ || bestvz > vzHigh_ ) return;
+  if(fabs(bestvz) < vzLow_ || fabs(bestvz) > vzHigh_ ) return;
   
   Handle<CaloTowerCollection> towers;
   iEvent.getByLabel(towerSrc_, towers);
