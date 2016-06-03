@@ -387,8 +387,8 @@ void plotSystematicsCheck(){
     w5->SetFillColor(0);
     w5->SetTextSize(23);
     w5->SetTextFont(45);
-    w5->AddEntry(temp11, "  like sign");
-    w5->AddEntry(temp55, "  unlike sign");
+    w5->AddEntry(temp11, "  same");
+    w5->AddEntry(temp55, "  opposite");
     w5->Draw("same");
 	
 	TH1D* base5 = makeHist("base5","like-sign, Pb-going","#Delta#eta", "default - systematic checks", 48,0,4.8);

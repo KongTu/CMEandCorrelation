@@ -196,7 +196,7 @@ void plotCorrectionCrosschecks(){
 		}
 	}
 
-	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{3})#GT", 48,0,4.8);
+	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
     base3->GetYaxis()->SetRangeUser(-0.0007,0.0005);
     base3->GetXaxis()->SetRangeUser(0,1.6);
@@ -276,7 +276,7 @@ void plotCorrectionCrosschecks(){
     for(int deta = 1; deta < 16; deta++){
 
     	double xe = 0.005;
-    	double ye = 0.0001;
+    	double ye = 0.00006;
 
     	box1[deta] = new TBox(dEtaBinsCenter[deta]-xe,value1[deta]-ye,dEtaBinsCenter[deta]+xe,value1[deta]+ye);
 		box1[deta]->SetFillColor(kRed);
@@ -354,10 +354,10 @@ void plotCorrectionCrosschecks(){
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(43);
-    w2->AddEntry(temp1, "CMS like sign");
-    w2->AddEntry(temp5, "CMS unlike sign");
- 	w2->AddEntry(alice2, "ALICE like sign");
-    w2->AddEntry(alice1, "ALICE unlike sign");   
+    w2->AddEntry(temp1, "CMS same");
+    w2->AddEntry(temp5, "CMS opposite");
+ 	w2->AddEntry(alice2, "ALICE same");
+    w2->AddEntry(alice1, "ALICE opposite");   
     w2->Draw("same");
 
 	TLatex* r4 = new TLatex(0.24, 0.82, "PbPb #sqrt{s_{NN}} = 2.76 TeV");

@@ -5,7 +5,14 @@ using namespace std;
 void plotSingleParticleClosure(){
 	
 	TFile* file1 = new TFile("../rootfiles/test.root");
-	TFile* file2 = new TFile("../rootfiles/test_gen.root");
+	TFile* file2 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_NestedLoop_v4.root");
+
+	TH1D* Ntrk1 = (TH1D*)file1->Get("ana/Ntrk");
+	TH1D* Ntrk2 = (TH1D*)file2->Get("ana/Ntrk");
+
+	double N1 = Ntrk1->GetEntries();
+	double N2 = Ntrk2->GetEntries();
+	double ratio = N1/N2;
 
 	TH1D* reco_pt = (TH1D*) file1->Get("ana/trkPt");
 	TH1D* reco_eta = (TH1D*) file1->Get("ana/trk_eta");
@@ -13,17 +20,22 @@ void plotSingleParticleClosure(){
 	TH1D* gen_pt = (TH1D*) file2->Get("ana/trkPt");
 	TH1D* gen_eta = (TH1D*) file2->Get("ana/trk_eta");
 
+
+	gen_pt->Scale( ratio );
+	gen_eta->Scale( ratio );
+
 	TCanvas* c1 = makeMultiCanvas("c1","c1",2,1);
 	c1->cd(1);
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.23);
 	gPad->SetBottomMargin(0.16);
-
+	
 	reco_pt->SetStats(kFALSE);
 	reco_pt->SetTitle("RECO_weighted/GEN");
+	reco_pt->Divide( gen_pt );
 	reco_pt->GetYaxis()->SetRangeUser(0.8,1.2);
 	reco_pt->GetXaxis()->SetRangeUser(0.25,3.2);
-	reco_pt->Divide( gen_pt );
+	
 	reco_pt->Draw();
 
 	c1->cd(2);
@@ -33,8 +45,9 @@ void plotSingleParticleClosure(){
 	
 	reco_eta->SetTitle("RECO_weighted/GEN");
 	reco_eta->SetStats(kFALSE);
-	reco_eta->GetYaxis()->SetRangeUser(0.8,1.2);
 	reco_eta->Divide( gen_eta );
+	reco_eta->GetYaxis()->SetRangeUser(0.8,1.2);
+
 	reco_eta->Draw();
 
 

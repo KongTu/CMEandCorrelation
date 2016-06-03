@@ -15,21 +15,23 @@ int ntrkBinCenter[] = {17.5, 47.5, 75, 105, 135, 167.5, 202.5, 240};
 double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
+double PbPb_5TeV_ntrkBinCenter[] = {103.921, 134.061, 166.539, 201.615, 239.096, 279.13, 324.044, 374.081, 448.17};
 
 double PbPb_ntrkCentralityBinCenter[] = {151.6, 270.2, 441.9, 685.4,1024,1376,1721};
 const int Nmults = 23;
 
-double total_systematics_pPb = 0.00015;
-double total_systematics_PbPb = 0.00014;
+double total_systematics_pPb = 0.000077;
+double total_systematics_PbPb = 0.000071;
 
 void plotIntegrated(){
 
 	gStyle->SetErrorX(0);
 
-	TFile* file[3];
+	TFile* file[4];
 	file[0] = new TFile("../dataPoints/pPb_data.root");
-	file[1] = new TFile("../dataPoints/PbPb_data.root");
+	file[1] = new TFile("../dataPoints/PbPb5TeV_data.root");
 	file[2] = new TFile("../dataPoints/PbPb_centrality_data.root");
+	file[3] = new TFile("../dataPoints/EPOS_data.root");
 
 	TGraphErrors* gr1[4];
 	for(int i = 0; i < 4; i++){
@@ -48,7 +50,13 @@ void plotIntegrated(){
 
 		gr3[i] = (TGraphErrors*) file[2]->Get(Form("Graph;%d", i+1));
 	}
-	
+
+	TGraphErrors* gr4[4];
+	for(int i = 0; i < 4; i++){
+
+		gr4[i] = (TGraphErrors*) file[3]->Get(Form("Graph;%d", i+1));
+	}
+
 	for(int i = 0; i < 4; i++){
 		for(int mult = 0; mult < 3; mult++){
 			double x, y;
@@ -56,14 +64,15 @@ void plotIntegrated(){
 			gr1[i]->SetPoint(mult, x, 100);
 		}
 	}
-	for(int i = 0; i < 2; i++){
-		for(int mult = 0; mult < 3; mult++){
-			double x, y;
-			gr2[i]->GetPoint(mult, x, y);
-			gr2[i]->SetPoint(mult, x, 100);
-		}
-	}
-
+	// for(int i = 0; i < 2; i++){
+	// 	for(int mult = 0; mult < 3; mult++){
+	// 		double x, y;
+	// 		gr2[i]->GetPoint(mult, x, y);
+	// 		gr2[i]->SetPoint(mult, x, 100);
+	// 	}
+	// }
+	// 
+	
 
 //start plotting
 
@@ -72,8 +81,8 @@ void plotIntegrated(){
 	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 5000,0.1,10000,kBlack);
 	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 5000,0.1,10000,kBlack);
 
-	base1->GetYaxis()->SetRangeUser(-0.0013, 0.0007);
-	base1->GetXaxis()->SetRangeUser(70, 4000);
+	base1->GetYaxis()->SetRangeUser(-0.001, 0.0007);
+	base1->GetXaxis()->SetRangeUser(70, 550);
 
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	
@@ -115,7 +124,7 @@ void plotIntegrated(){
 	gPad->SetBottomMargin(0.13);
 	gStyle->SetPadBorderMode(0.1);
 	gStyle->SetOptTitle(0);
-	gPad->SetLogx(1);
+	//gPad->SetLogx(1);
 
 	base1->Draw();
 
@@ -141,30 +150,45 @@ void plotIntegrated(){
 	// gr1[3]->SetLineColor(kBlue);
 	// gr1[3]->Draw("Psame");
 
-	gr2[0]->SetMarkerStyle(28);
+	gr2[0]->SetMarkerStyle(24);
 	gr2[0]->SetMarkerSize(1.4);
 	gr2[0]->SetMarkerColor(kRed);
 	gr2[0]->SetLineColor(kRed);
 	gr2[0]->Draw("Psame");
 
-	gr2[1]->SetMarkerStyle(28);
+	gr2[1]->SetMarkerStyle(25);
 	gr2[1]->SetMarkerSize(1.4);
 	gr2[1]->SetMarkerColor(kBlue);
 	gr2[1]->SetLineColor(kBlue);
 	gr2[1]->Draw("Psame");
 
-	gr3[0]->SetMarkerStyle(24);
-	gr3[0]->SetMarkerSize(1.4);
-	gr3[0]->SetMarkerColor(kRed);
-	gr3[0]->SetLineColor(kRed);
-	gr3[0]->Draw("Psame");
+	// gr3[0]->SetMarkerStyle(24);
+	// gr3[0]->SetMarkerSize(1.4);
+	// gr3[0]->SetMarkerColor(kRed);
+	// gr3[0]->SetLineColor(kRed);
+	// gr3[0]->Draw("Psame");
 
-	gr3[1]->SetMarkerStyle(25);
-	gr3[1]->SetMarkerSize(1.4);
-	gr3[1]->SetMarkerColor(kBlue);
-	gr3[1]->SetLineColor(kBlue);
-	gr3[1]->Draw("Psame");
+	// gr3[1]->SetMarkerStyle(25);
+	// gr3[1]->SetMarkerSize(1.4);
+	// gr3[1]->SetMarkerColor(kBlue);
+	// gr3[1]->SetLineColor(kBlue);
+	// gr3[1]->Draw("Psame");
 
+	gr4[0]->SetMarkerStyle(24);
+	gr4[0]->SetMarkerSize(1.4);
+	gr4[0]->SetMarkerColor(kBlack);
+	gr4[0]->SetLineColor(kBlack);
+	gr4[0]->SetLineStyle(5);
+	gr4[0]->SetLineWidth(2.0);
+	gr4[0]->Draw("same");
+
+	gr4[1]->SetMarkerStyle(25);
+	gr4[1]->SetMarkerSize(1.4);
+	gr4[1]->SetMarkerColor(kGreen+3);
+	gr4[1]->SetLineColor(kGreen+3);
+	gr4[1]->SetLineStyle(5);
+	gr4[1]->SetLineWidth(2.0);
+	gr4[1]->Draw("same");
 
     TBox *box1[50];
     TBox *box2[50];
@@ -187,31 +211,51 @@ void plotIntegrated(){
 
     	box1[mult] = new TBox(x1-xe,value1-ye,x1+xe,value1+ye);
 		box1[mult]->SetFillColor(kRed);
-        box1[mult]->SetFillStyle(0);
-    	box1[mult]->SetLineWidth(1);
+	 	box1[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box1[mult]->SetFillStyle(1001);
+    	box1[mult]->SetLineWidth(0);
     	box1[mult]->SetLineColor(kRed);
         box1[mult]->Draw("SAME");
 
 		box2[mult] = new TBox(x2-xe,value2-ye,x2+xe,value2+ye);
 		box2[mult]->SetFillColor(kBlue);
-        box2[mult]->SetFillStyle(0);
-    	box2[mult]->SetLineWidth(1);
+	 	box2[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box2[mult]->SetFillStyle(1001);
+    	box2[mult]->SetLineWidth(0);
     	box2[mult]->SetLineColor(kBlue);
         box2[mult]->Draw("SAME");
 
-  //   	box3[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value3[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value3[mult]+ye);
-		// box3[mult]->SetFillColor(kRed);
-  //       box3[mult]->SetFillStyle(0);
-  //   	box3[mult]->SetLineWidth(1);
-  //   	box3[mult]->SetLineColor(kRed);
-  //       box3[mult]->Draw("SAME");
+    }
 
-		// box4[mult] = new TBox(pPb_ntrkBinCenter[mult]-xe,value4[mult]-ye,pPb_ntrkBinCenter[mult]+xe,value4[mult]+ye);
-		// box4[mult]->SetFillColor(kBlue);
-  //       box4[mult]->SetFillStyle(0);
-  //   	box4[mult]->SetLineWidth(1);
-  //   	box4[mult]->SetLineColor(kBlue);
-  //       box4[mult]->Draw("SAME");
+    for(int mult = 0; mult < 9; mult++){
+
+    	double xe = 5;
+    	double ye = total_systematics_PbPb;
+
+    	double x1;
+    	double value1;
+    	gr2[0]->GetPoint(mult, x1, value1);
+
+    	double x2;
+    	double value2;
+    	gr2[1]->GetPoint(mult, x2, value2);
+
+
+    	box3[mult] = new TBox(PbPb_5TeV_ntrkBinCenter[mult]-xe,value1[mult]-ye,PbPb_5TeV_ntrkBinCenter[mult]+xe,value1[mult]+ye);
+		box3[mult]->SetFillColor(kRed);
+        box3[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box3[mult]->SetFillStyle(1001);
+    	box3[mult]->SetLineWidth(0);
+    	box3[mult]->SetLineColor(kRed);
+        box3[mult]->Draw("SAME");
+
+		box4[mult] = new TBox(PbPb_5TeV_ntrkBinCenter[mult]-xe,value2[mult]-ye,PbPb_5TeV_ntrkBinCenter[mult]+xe,value2[mult]+ye);
+		box4[mult]->SetFillColor(kBlue);
+        box4[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box4[mult]->SetFillStyle(1001);
+    	box4[mult]->SetLineWidth(0);
+    	box4[mult]->SetLineColor(kBlue);
+        box4[mult]->Draw("SAME");
     }
 
     //VERZO:
@@ -245,36 +289,43 @@ void plotIntegrated(){
 	}
 
 
-	TGraphErrors* gr4 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_same2, xbinwidth, alice_centrality_same2_error);
+	TGraphErrors* gr6 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_same2, xbinwidth, alice_centrality_same2_error);
 	TGraphErrors* gr5 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_oppo2, xbinwidth, alice_centrality_oppo2_error);
 
 
-	gr4->SetMarkerStyle(27);
-	gr4->SetMarkerSize(1.4);
-	gr4->SetMarkerColor(kBlack);
-	gr4->SetLineColor(kBlack);
-	gr4->Draw("Psame");
+	gr6->SetMarkerStyle(27);
+	gr6->SetMarkerSize(1.4);
+	gr6->SetMarkerColor(kBlack);
+	gr6->SetLineColor(kBlack);
+	//gr6->Draw("Psame");
 
 
 	gr5->SetMarkerStyle(28);
 	gr5->SetMarkerSize(1.4);
 	gr5->SetMarkerColor(kBlack);
 	gr5->SetLineColor(kBlack);
-	gr5->Draw("Psame");
+	//gr5->Draw("Psame");
 	//c2->Print("../results/IntegratedResults.pdf");
 
-	TLegend *w1 = new TLegend(0.40,0.15,0.8,0.4);
+	TLegend *w1 = new TLegend(0.45,0.7,0.85,0.86);
     w1->SetLineColor(kWhite);
     w1->SetFillColor(0);
     w1->SetTextSize(20);
     w1->SetTextFont(43);
-    w1->AddEntry(gr1[0], "pPb Pb-going, like sign", "P");
-    w1->AddEntry(gr1[1], "pPb Pb-going, unlike sign", "P");
-    w1->AddEntry(gr3[0], "CMS PbPb, like sign", "P");
-    w1->AddEntry(gr3[1], "CMS PbPb, unlike sign", "P");
-    w1->AddEntry(gr4, "ALICE PbPb, like sign", "P");
-    w1->AddEntry(gr5, "ALICE PbPb, unlike sign", "P");
+    w1->AddEntry(gr1[0], "pPb Pb-going, same", "P");
+    w1->AddEntry(gr1[1], "pPb Pb-going, opposite", "P");
+    w1->AddEntry(gr2[0], "PbPb, same", "P");
+    w1->AddEntry(gr2[1], "PbPb, opposite", "P");
     w1->Draw("same");
+
+	TLegend *w2 = new TLegend(0.45,0.15,0.85,0.25);
+    w2->SetLineColor(kWhite);
+    w2->SetFillColor(0);
+    w2->SetTextSize(20);
+    w2->SetTextFont(43);
+    w2->AddEntry(gr4[1], "EPOS pPb, opposite", "L");
+    w2->AddEntry(gr4[0], "EPOS pPb, same", "L");
+    w2->Draw("same");
 
    	TLatex* r11 = new TLatex(0.62,0.91, "CMS");
     r11->SetNDC();

@@ -31,6 +31,7 @@ double get3Imag(double R1, double R2, double R3, double I1, double I2, double I3
 
 }
 
+
 double get2Real( double R1, double R2, double I1, double I2){
 
 	double real = R1*R2 - I1*I2;

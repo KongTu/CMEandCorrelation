@@ -294,7 +294,7 @@ void plotGenCorrelation(){
 
     TH1D* base2 = (TH1D*) base1->Clone("base4");
 
-	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{1}+#phi_{2}-2#phi_{3})/v_{2,3}#GT", 48,0,4.8);
+	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{1}+#phi_{2}-2#Psi_{RP})#GT", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
     base3->GetYaxis()->SetRangeUser(-0.0025,0.0045);
     base3->GetYaxis()->SetTitleOffset(1.9);
@@ -351,10 +351,10 @@ void plotGenCorrelation(){
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(43);
-    w2->AddEntry(temp, "like sign GEN");
-    w2->AddEntry(temp2, "unlike sign GEN");
-    w2->AddEntry(temp3, "like sign RECO");
-    w2->AddEntry(temp4, "unlike sign RECO");
+    w2->AddEntry(temp, "same GEN");
+    w2->AddEntry(temp2, "opposite GEN");
+    w2->AddEntry(temp3, "same RECO");
+    w2->AddEntry(temp4, "opposite RECO");
     w2->Draw("same");
 
     TLine* l1 = new TLine(0,0.00007,4.8,0.00007);
@@ -389,7 +389,7 @@ void plotGenCorrelation(){
 		
 		ratio3->Add(ratio, -1);
 		ratio3->Draw("Psame");
-		l1->Draw("same");
+		//l1->Draw("same");
 
 		TH1D* ratio4 = (TH1D*)hist2[2][HF]->Clone("ratio4");
 		ratio4->Scale( 1.0/v2_2[HF] );
@@ -405,7 +405,7 @@ void plotGenCorrelation(){
 		
 		ratio4->Add(ratio2, -1);
 		ratio4->Draw("Psame");
-		l1->Draw("same");
+		//l1->Draw("same");
 
 
 	}    
@@ -415,8 +415,8 @@ void plotGenCorrelation(){
     w3->SetFillColor(0);
     w3->SetTextSize(20);
     w3->SetTextFont(43);
-    w3->AddEntry(ratio3, "like sign");
-    w3->AddEntry(ratio4, "unlike sign");
+    w3->AddEntry(ratio3, "same");
+    w3->AddEntry(ratio4, "opposite");
 
     w3->Draw("same");
 

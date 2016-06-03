@@ -4,6 +4,38 @@
 
 using namespace std;
 
+//CASE 1 and 2, cos1 and sin1 denotes sum of cos(phi) and sin(phi), and cos2 and sin2 denotes sum of cos(2phi) and sin(2phi)
+//CASE 3, cos1 and sin1 denotes sum of cos(phi+) and sin(phi+), and cos2 and sin2 denote sum of cos(phi-) and sin(phi-)
+
+double correctionFactor(double cos1, double sin1, double cos2, double sin2, double HFcos, double HFsin, int CASE){
+
+	double realPart1 = 0.;
+	double imagPart1 = 0.;
+
+	double realPart2 = 0.;
+	double imagPart2 = 0.;
+
+	if( CASE == 1 || CASE == 2){
+
+		realPart1 = cos1*cos1 - sin1*sin1 - cos2;
+		imagPart1 = 2*cos1*sin1 - sin2;
+
+		realPart2 = realPart1 * HFcos + imagPart1 * HFsin;
+
+		return realPart2;
+
+	}
+	else if( CASE == 3 ){
+
+		realPart1 = cos1*cos2 - sin1*sin2;
+		imagPart1 = sin1*cos2 + cos1*sin2;
+
+		realPart2 = realPart1 * HFcos + imagPart1 * HFsin;
+
+		return realPart2;
+	}
+}
+
 void makeCorrectionTableNtrk(){
 
 	int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
@@ -24,8 +56,6 @@ void makeCorrectionTableNtrk(){
 	vector<TH1D*> HFsinSum = loadingHistogram(file, "ana/HFsinSum_", 2);
 	vector<TH1D*> weightSum = loadingHistogram(file, "ana/weightSum_", 2);
 
-	ofstream myfile("ntrk_185_220.txt");
-
     double HFcosSumPlus = getWeightedSum( HFcosSum[0], weightSum[0] );
     double HFsinSumPlus = getWeightedSum( HFsinSum[0], weightSum[0] );
     double HFcosSumMinus = getWeightedSum( HFcosSum[1], weightSum[1] );
@@ -44,24 +74,37 @@ void makeCorrectionTableNtrk(){
     double plusSumEntries = TRKcosPlusSum->GetEntries();
     double minusSumEntries = TRKcosMinusSum->GetEntries();
 
+    //case1 (++) with HF+
+    double factor1plus = correctionFactor(cosPlusSum, sinPlusSum, cos2PlusSum, sin2PlusSum, HFcosSumPlus, HFsinSumPlus, 1);
+    factor1plus = factor1plus/(plusSumEntries*(plusSumEntries-1));
+    //case1 (++) with HF-
+    double factor1minus = correctionFactor(cosPlusSum, sinPlusSum, cos2PlusSum, sin2PlusSum, HFcosSumMinus, HFsinSumMinus, 1);
+    factor1minus = factor1minus/(plusSumEntries*(plusSumEntries-1));
 
+    //case2 (--) with HF+
+    double factor2plus = correctionFactor(cosMinusSum, sinMinusSum, cos2MinusSum, sin2MinusSum, HFcosSumPlus, HFsinSumPlus, 2);
+    factor2plus = factor2plus/(minusSumEntries*(minusSumEntries-1));
+    //case2 (--) with HF-
+    double factor2minus = correctionFactor(cosMinusSum, sinMinusSum, cos2MinusSum, sin2MinusSum, HFcosSumMinus, HFsinSumMinus, 2);
+    factor2minus = factor2minus/(minusSumEntries*(minusSumEntries-1));
 
+    //case3 (+/-) with HF+
+    double factor3plus = correctionFactor(cosPlusSum, sinPlusSum, cosMinusSum, sinMinusSum, HFcosSumPlus, HFsinSumPlus, 3);
+    factor3plus = factor3plus/(plusSumEntries*minusSumEntries);
+    //case3 (+/-) with HF-
+    double factor3minus = correctionFactor(cosPlusSum, sinPlusSum, cosMinusSum, sinMinusSum, HFcosSumMinus, HFsinSumMinus, 3);
+    factor3minus = factor3minus/(plusSumEntries*minusSumEntries);
+
+    ofstream myfile("ntrk_185_220.txt");
 	if( myfile.is_open() ){
 
-			myfile << cosPlusSum << " "
-			       << sinPlusSum << " " 
-			       << cos2PlusSum << " " 
-			       << sin2PlusSum << " " 
-			       << cosMinusSum << " " 
-			       << sinMinusSum << " " 
-			       << cos2MinusSum << " " 
-			       << sin2MinusSum << " "
-			       << plusSumEntries << " "			   
-			       << minusSumEntries << " "
-			       << HFcosSumPlus << " "
-			       << HFsinSumPlus << " "
-			       << HFcosSumMinus << " "
-			       << HFsinSumMinus << endl;
+			myfile << factor1plus << " "
+			       << factor1minus << " " 
+			       << factor2plus << " " 
+			       << factor2minus << " " 
+			       << factor3plus << " " 
+			       << factor3minus << endl; 
+			        
 	}	
 
 	myfile.close();

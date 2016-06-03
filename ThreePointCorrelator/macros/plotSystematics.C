@@ -61,17 +61,17 @@ void plotSystematics(){
 	string Label4; 
 
 	Label1 = "pPb default";
-	Label2 = "pPb loose ";
+	Label2 = "pPb |Vz| < 3 ";
 	Label3 = "PbPb default";
-	Label4 = "PbPb loose ";
+	Label4 = "PbPb |Vz| < 3 ";
 
 
 	TFile* file[16];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v7.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v1.root");
 	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v2.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_Systematics_v7.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_Systematics_v1.root");
 
 	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_Systematics_v5.root");
 
@@ -278,27 +278,27 @@ void plotSystematics(){
 		}
 	}
 
-	TH1D* base1 = makeHist("base1","like-sign, Pb-going","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8);
+	TH1D* base1 = makeHist("base1","same-sign, Pb-going","#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT", 48,0,4.8);
     base1->GetXaxis()->SetTitleColor(kBlack);
     base1->GetYaxis()->SetRangeUser(-0.002, 0.002);
     base1->GetYaxis()->SetTitleOffset(1.0);
 
 //tracker    
 
-    TH1D* tracker1 = (TH1D*) hist1[4][0][0]->Clone("tracker1");
-    TH1D* tracker2 = (TH1D*) hist1[4][1][0]->Clone("tracker2");
-    tracker1->Add(tracker2, +1);
-    tracker1->Scale(0.5);
-    tracker1->Scale(1.0/v2[4][0]);
-    tracker1->SetMarkerStyle(20);
-    tracker1->SetMarkerColor(kBlack);
-	tracker1->SetLineColor(kBlack);
+ //    TH1D* tracker1 = (TH1D*) hist1[4][0][0]->Clone("tracker1");
+ //    TH1D* tracker2 = (TH1D*) hist1[4][1][0]->Clone("tracker2");
+ //    tracker1->Add(tracker2, +1);
+ //    tracker1->Scale(0.5);
+ //    tracker1->Scale(1.0/v2[4][0]);
+ //    tracker1->SetMarkerStyle(20);
+ //    tracker1->SetMarkerColor(kBlack);
+	// tracker1->SetLineColor(kBlack);
 
-    TH1D* tracker3 = (TH1D*) hist1[4][2][0]->Clone("tracker3");
-    tracker3->Scale(1.0/v2[4][0]);
-    tracker3->SetMarkerColor(kGreen+3);
-	tracker3->SetLineColor(kGreen+3);
-	tracker3->SetMarkerStyle(21);
+ //    TH1D* tracker3 = (TH1D*) hist1[4][2][0]->Clone("tracker3");
+ //    tracker3->Scale(1.0/v2[4][0]);
+ //    tracker3->SetMarkerColor(kGreen+3);
+	// tracker3->SetLineColor(kGreen+3);
+	// tracker3->SetMarkerStyle(21);
 
 //default:
 	//like sign Pb-going
@@ -448,7 +448,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base2 = (TH1D*)base1->Clone("base2");
-	base2->SetTitle("like-sign, p-going");
+	base2->SetTitle("same-sign, p-going");
 	base2->Draw();
 	temp3->Draw("Psame");
 	temp33->Draw("Psame");
@@ -467,7 +467,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base_PbPb = (TH1D*)base1->Clone("base_PbPb");
-	base_PbPb->SetTitle("like-sign, PbPb");
+	base_PbPb->SetTitle("same-sign, PbPb");
 	base_PbPb->Draw();
 	temp7->Draw("Psame");
 	temp77->Draw("Psame");
@@ -494,7 +494,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base3 = (TH1D*)base1->Clone("base3");
-	base3->SetTitle("unlike-sign, Pb-going");
+	base3->SetTitle("opposite-sign, Pb-going");
 	base3->Draw();
 	temp5->Draw("Psame");
 	temp55->Draw("Psame");
@@ -513,7 +513,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base4 = (TH1D*)base1->Clone("base4");
-	base4->SetTitle("unlike-sign, p-going");
+	base4->SetTitle("opposite-sign, p-going");
 	base4->Draw();
 	temp6->Draw("Psame");
 	temp66->Draw("Psame");
@@ -532,7 +532,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base_PbPb_unlike = (TH1D*)base1->Clone("base_PbPb_unlike");
-	base_PbPb_unlike->SetTitle("unlike-sign, PbPb");
+	base_PbPb_unlike->SetTitle("opposite-sign, PbPb");
 	base_PbPb_unlike->Draw();
 	temp10_1->Draw("Psame");
 	temp10_11->Draw("Psame");
@@ -547,7 +547,7 @@ void plotSystematics(){
     w6->AddEntry(temp10_11, Label4.c_str());
     w6->Draw("same");
 	
-	TH1D* base5 = makeHist("base5","like-sign, Pb-going","#Delta#eta", "default - systematic checks", 48,0,4.8);
+	TH1D* base5 = makeHist("base5","same-sign, Pb-going","#Delta#eta", "default - systematic checks", 48,0,4.8);
     base5->GetXaxis()->SetTitleColor(kBlack);
     base5->GetYaxis()->SetRangeUser(-0.0005, 0.0005);
     base5->GetYaxis()->SetTitleOffset(1.5);
@@ -584,7 +584,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base6 = (TH1D*)base5->Clone("base6");
-	base6->SetTitle("like-sign, p-going");
+	base6->SetTitle("same-sign, p-going");
 	base6->Draw();
 	ratio3->Add( ratio33, -1 );
 	ratio3->Draw("Psame");
@@ -594,7 +594,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base6_PbPb = (TH1D*)base5->Clone("base6_PbPb");
-	base6_PbPb->SetTitle("like-sign, PbPb");
+	base6_PbPb->SetTitle("same-sign, PbPb");
 	base6_PbPb->Draw();
 	ratio7->Add( ratio77, -1 );
 	ratio7->Draw("Psame");
@@ -605,7 +605,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base7 = (TH1D*)base5->Clone("base7");
-	base7->SetTitle("unlike-sign, Pb-going");
+	base7->SetTitle("opposite-sign, Pb-going");
 	base7->Draw();
 	ratio5->Add( ratio55, -1 );	
 	ratio5->Draw("Psame");
@@ -615,7 +615,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base8 = (TH1D*)base5->Clone("base8");
-	base8->SetTitle("unlike-sign, p-going");
+	base8->SetTitle("opposite-sign, p-going");
 	base8->Draw();
 	ratio6->Add( ratio66, -1 );
 	ratio6->Draw("Psame");
@@ -625,7 +625,7 @@ void plotSystematics(){
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.14);
 	TH1D* base8_PbPb = (TH1D*)base5->Clone("base8_PbPb");
-	base8_PbPb->SetTitle("unlike-sign, PbPb");
+	base8_PbPb->SetTitle("opposite-sign, PbPb");
 	base8_PbPb->Draw();
 	ratio8->Add( ratio88, -1 );
 	ratio8->Draw("Psame");
@@ -650,10 +650,10 @@ void plotSystematics(){
  //    w7->SetFillColor(0);
  //    w7->SetTextSize(20);
  //    w7->SetTextFont(43);
- //    w7->AddEntry(tracker1, "like-sign, tracker");
- //    w7->AddEntry(temp7, "like-sign, HF");
- //    w7->AddEntry(tracker3, "unlike-sign, tracker");
- //    w7->AddEntry(temp10_1, "unlike-sign, HF");
+ //    w7->AddEntry(tracker1, "same, tracker");
+ //    w7->AddEntry(temp7, "same, HF");
+ //    w7->AddEntry(tracker3, "opposite, tracker");
+ //    w7->AddEntry(temp10_1, "opposite, HF");
  //    w7->Draw("same");
 
 	// TLatex* r3 = new TLatex(0.2, 0.84, "PbPb #sqrt{s_{NN}} = 5.02 TeV");
@@ -670,8 +670,8 @@ void plotSystematics(){
  //    lmult->SetTextColor(kBlack);
  //    lmult->Draw("same");
 
-	// c1->Print("../systematics/systematics_v7.pdf");
-	// c2->Print("../systematics/systematics_diff_v7.pdf");
+	c1->Print("../systematics/systematics_v1.pdf");
+	c2->Print("../systematics/systematics_diff_v1.pdf");
 
 
 

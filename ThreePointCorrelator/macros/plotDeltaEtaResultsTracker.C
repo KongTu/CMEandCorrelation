@@ -24,8 +24,8 @@ double ntrkBins[] = {0,35,60,90,120,150,185,220,260};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 const int Nmults = 3;
 
-double total_systematics_pPb = 0.00015;
-double total_systematics_PbPb = 0.00014;
+double total_systematics_pPb = 0.000077;
+double total_systematics_PbPb = 0.000071;
 
 double weightedAverage(double a1, double a2, double a3, double eta1, double eta2, double eta3){
 
@@ -221,7 +221,7 @@ void plotDeltaEtaResultsTracker(){
 	base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.4);
 	
 	TH1D* base3 = (TH1D*) base1->Clone("base3");
-	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT (unlike - like)");
+	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{RP})#GT (opposite - same)");
 	base3->GetYaxis()->SetRangeUser(-0.0007,0.0018);
 	base3->GetYaxis()->SetTitleOffset(1.2);
 	base3->GetXaxis()->SetTitleOffset(1.1);
@@ -444,8 +444,8 @@ void plotDeltaEtaResultsTracker(){
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(45);
-    w2->AddEntry(temp5, "  like sign");
-    w2->AddEntry(temp9, "  unlike sign");
+    w2->AddEntry(temp5, "  same");
+    w2->AddEntry(temp9, "  opposite");
     w2->Draw("same");
 
     TLatex* r63 = new TLatex(0.73, 0.2, "Tracker");

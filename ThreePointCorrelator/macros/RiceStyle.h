@@ -25,6 +25,8 @@
 #include "TLatex.h"
 #include "TLine.h"
 #include "TAxis.h"
+#include "TGraph.h"
+#include "TGraphErrors.h"
 
 void RiceStyle(){
 

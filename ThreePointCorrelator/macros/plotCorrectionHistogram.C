@@ -49,14 +49,14 @@ void plotCorrectionHistogram(){
 
 	TFile* file[8];
 
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_1.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_2.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_3.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v3_4.root");
-	file[4] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_1.root");
-	file[5] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_2.root");
-	file[6] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_3.root");
-	file[7] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v31_4.root");
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_2.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_3.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_4.root");
+	file[4] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_1.root");
+	file[5] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_2.root");
+	file[6] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
+	file[7] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_4.root");
 
 	// file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_1.root");
 	// file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v2_2.root");
@@ -145,6 +145,7 @@ void plotCorrectionHistogram(){
 		v2[mult][0] = sqrt(c2_b - bCorr);
 		v2[mult][1] = sqrt(c2_a - aCorr );
 		v2[mult][2] = sqrt(c2_ab - abCorr );
+
 	}
 
 	TH1D* hist1[8][3][2];
@@ -236,18 +237,38 @@ void plotCorrectionHistogram(){
 
 		base3->Draw();
 
-		TH1D* temp1 = (TH1D*)hist2[mult][0][0]->Clone("temp1");
-		temp1->Add(hist2[mult][1][0], +1);
+		//Pb-going:
+		// TH1D* temp1 = (TH1D*)hist2[mult][0][0]->Clone("temp1");
+		// temp1->Add(hist2[mult][1][0], +1);
+		// temp1->Scale(0.5);
+
+		// temp1->Scale( 1.0/v2[mult][0] );
+		// temp1->SetMarkerColor(kRed);
+		// temp1->SetLineColor(kRed);
+		// temp1->SetMarkerStyle(20);
+		// temp1->Draw("Psame");
+
+		// TH1D* temp2 = (TH1D*)hist2[mult][2][0]->Clone("temp2");
+		// temp2->Scale( 1.0/v2[mult][0] );
+		// temp2->SetMarkerColor(kBlue);
+		// temp2->SetLineColor(kBlue);
+		// temp2->SetMarkerStyle(24);
+		// temp2->Draw("Psame");
+		// 
+		
+		//p-going
+		TH1D* temp1 = (TH1D*)hist2[mult][0][1]->Clone("temp1");
+		temp1->Add(hist2[mult][1][1], +1);
 		temp1->Scale(0.5);
 
-		temp1->Scale( 1.0/v2[mult][0] );
+		temp1->Scale( 1.0/v2[mult][1] );
 		temp1->SetMarkerColor(kRed);
 		temp1->SetLineColor(kRed);
 		temp1->SetMarkerStyle(20);
 		temp1->Draw("Psame");
 
-		TH1D* temp2 = (TH1D*)hist2[mult][2][0]->Clone("temp2");
-		temp2->Scale( 1.0/v2[mult][0] );
+		TH1D* temp2 = (TH1D*)hist2[mult][2][1]->Clone("temp2");
+		temp2->Scale( 1.0/v2[mult][1] );
 		temp2->SetMarkerColor(kBlue);
 		temp2->SetLineColor(kBlue);
 		temp2->SetMarkerStyle(24);

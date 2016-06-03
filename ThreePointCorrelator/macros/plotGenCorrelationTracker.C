@@ -81,8 +81,8 @@ void plotGenCorrelationTracker(){
 	}
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v11.root");
-	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v50.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v13.root");
+	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v52.root");
 
 	TH1D* delEta3p[3];
 
@@ -303,7 +303,7 @@ void plotGenCorrelationTracker(){
 
     TH1D* base2 = (TH1D*) base1->Clone("base4");
 
-	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{1}+#phi_{2}-2#phi_{3})/v_{2,3}#GT", 48,0,4.8);
+	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{1}+#phi_{2}-2#Psi_{RP})#GT", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
     base3->GetYaxis()->SetRangeUser(-0.0025,0.0045);
     base3->GetYaxis()->SetTitleOffset(1.9);
@@ -367,47 +367,21 @@ void plotGenCorrelationTracker(){
 		
 	TH1D* base5 = (TH1D*) base3->Clone();base5->GetYaxis()->SetRangeUser(-0.002, 0.002);base5->SetTitle("Pb-going");base5->Draw();base5->GetYaxis()->SetTitle("RECO - GEN");
 
-	TH1D* ratio3 = (TH1D*)hist2[0]->Clone("ratio3");
-	ratio3->Add(hist2[1], +1);
-	ratio3->Scale(0.5);
-	ratio3->Scale( 1.0/v2_2[3] );
-	ratio3->SetMarkerColor(kRed);
-	ratio3->SetLineColor(kRed);
-	ratio3->SetMarkerStyle(24);
-	
-	TH1D* ratio = (TH1D*)hist1[0]->Clone("ratio");
-	ratio->Add(hist1[1], +1);
-	ratio->Scale(0.5);
-	ratio->Scale( 1.0/v2_1[3] );
-	ratio->SetMarkerColor(kRed);
-	ratio->SetLineColor(kRed);
-	ratio->SetMarkerStyle(20);
-	
-	ratio3->Add(ratio, -1);
-	ratio3->Draw("Psame");
+	TH1D* ratio1 = (TH1D*) temp3->Clone("ratio1");
+	ratio1->Add(temp, -1);
+	ratio1->Draw("Psame");
 
-	TH1D* ratio4 = (TH1D*)hist2[2]->Clone("ratio4");
-	ratio4->Scale( 1.0/v2_2 );
-	ratio4->SetMarkerColor(kBlue);
-	ratio4->SetLineColor(kBlue);
-	ratio4->SetMarkerStyle(25);		
-
-	TH1D* ratio2 = (TH1D*)hist1[2]->Clone("ratio2");
-	ratio2->Scale( 1.0/v2_1[3] );
-	ratio2->SetMarkerColor(kBlue);
-	ratio2->SetLineColor(kBlue);
-	ratio2->SetMarkerStyle(21);
-	
-	ratio4->Add(ratio2, -1);
-	ratio4->Draw("Psame");
+	TH1D* ratio2 = (TH1D*) temp4->Clone("ratio2");
+	ratio2->Add(temp2, -1);
+	ratio2->Draw("Psame");
 
 	TLegend *w3 = new TLegend(0.50,0.65,0.8,0.80);
     w3->SetLineColor(kWhite);
     w3->SetFillColor(0);
     w3->SetTextSize(20);
     w3->SetTextFont(43);
-    w3->AddEntry(ratio3, "like sign");
-    w3->AddEntry(ratio4, "unlike sign");
+    w3->AddEntry(ratio1, "like sign");
+    w3->AddEntry(ratio2, "unlike sign");
 
     w3->Draw("same");
 
