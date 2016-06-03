@@ -189,11 +189,18 @@ void makeTGraph_PbPb(){
 	temp5->SetMarkerColor(kBlue);
 	temp5->SetLineColor(kBlue);
 
+	TH1D* total = (TH1D*) temp1->Clone("total");
+	total->Add(temp5, +1);
+	total->Scale(0.5);
+
+
 
     double value1[9];
     double value1_error[9];
     double value2[9];
     double value2_error[9];
+    double value3[9];
+    double value3_error[9];
 
 
     for(int mult = 0; mult < 9; mult++){
@@ -204,15 +211,20 @@ void makeTGraph_PbPb(){
     	value2[mult] = temp5->GetBinContent(mult+1);
     	value2_error[mult] = temp5->GetBinError(mult+1);
 
+    	value3[mult] = total->GetBinContent(mult+1);
+    	value3_error[mult] = 0.000071;
+
     }
 
 	TGraphErrors* gr5 = new TGraphErrors(9, PbPb_5TeV_ntrkBinCenter, value1, xbinwidth, value1_error);
     TGraphErrors* gr6 = new TGraphErrors(9, PbPb_5TeV_ntrkBinCenter, value2, xbinwidth, value2_error);
+    TGraphErrors* gr7 = new TGraphErrors(9, PbPb_5TeV_ntrkBinCenter, value3, xbinwidth, value3_error);
+
 
     TFile t1("../dataPoints/PbPb5TeV_data.root","RECREATE");
     gr5->Write();
     gr6->Write();
-
+    gr7->Write();
 
 
 }

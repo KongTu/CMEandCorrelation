@@ -57,7 +57,7 @@ void plotDeltaEtaResult(){
 	TFile* file[16];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	//file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
+	//file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_4.root");
 
 	//file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7and8.root");
 	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_4.root");
@@ -285,8 +285,14 @@ void plotDeltaEtaResult(){
 	base1->Draw();
 
 	TH1D* temp1 = (TH1D*)hist1[0][0][0]->Clone("temp1");
-	temp1->Add(hist1[0][1][0], +1);
-	temp1->Scale(0.5);
+	TH1D* neg1  = (TH1D*)hist1[0][1][0]->Clone("neg1");
+	neg1->Scale(1.0/v2[0][0]);
+	neg1->SetMarkerStyle(24);
+	neg1->SetMarkerSize(1.4);
+	neg1->SetMarkerColor(kBlack);
+	neg1->SetLineColor(kBlack);
+	//temp1->Add(hist1[0][1][0], +1);
+	//temp1->Scale(0.5);
 	temp1->Scale(1.0/v2[0][0]);
 	temp1->SetMarkerStyle(24);
 	temp1->SetMarkerSize(1.4);
@@ -301,8 +307,13 @@ void plotDeltaEtaResult(){
 	temp2->SetLineColor(kBlue);
 
 	TH1D* temp3 = (TH1D*)hist1[0][0][1]->Clone("temp3");
-	temp3->Add(hist1[0][1][1], +1);
-	temp3->Scale(0.5);
+	TH1D* neg2 = (TH1D*) hist1[0][1][1]->Clone("neg2");
+	neg2->Scale(1.0/v2[0][1]);
+	neg2->SetMarkerStyle(24);
+	neg2->SetMarkerColor(kBlack);
+	neg2->SetLineColor(kBlack);
+	//temp3->Add(hist1[0][1][1], +1);
+	//temp3->Scale(0.5);
 	temp3->Scale(1.0/v2[0][1]);
 	temp3->SetMarkerStyle(24);
 	temp3->SetMarkerColor(kRed);
@@ -316,6 +327,7 @@ void plotDeltaEtaResult(){
 
 	temp1->Draw("Psame");
 	temp2->Draw("Psame");
+	neg1->Draw("Psame");
 
     TLatex* r3 = new TLatex(0.25, 0.84, "pPb #sqrt{s_{NN}} = 5.02 TeV");
     r3->SetNDC();
@@ -396,6 +408,7 @@ void plotDeltaEtaResult(){
 
 	temp3->Draw("Psame");
 	temp4->Draw("Psame");
+	neg2->Draw("Psame");
 
     TBox *box3[50];
     TBox *box4[50];
@@ -447,11 +460,20 @@ void plotDeltaEtaResult(){
 	TH1D* temp7 = (TH1D*)hist1[1][0][1]->Clone("temp6");
 	TH1D* temp8 = (TH1D*)hist1[1][1][1]->Clone("temp6");
 
-	temp5->Add(temp6, +1);
+	//temp5->Add(temp6, +1);
 	temp5->Add(temp7, +1);
-	temp5->Add(temp8, +1);
+	//temp5->Add(temp8, +1);
+	
+	temp6->Add(temp8, +1);
+	temp6->Scale(0.5);
+	temp6->Scale(1.0/v2[1][2]);
+	temp6->SetMarkerStyle(24);
+	temp6->SetMarkerSize(1.4);
+	temp6->SetMarkerColor(kBlack);
+	temp6->SetLineColor(kBlack);
+	temp6->Draw("Psame");
 
-	temp5->Scale(0.25);
+	temp5->Scale(0.5);
 	temp5->Scale(1.0/v2[1][2]);
 	temp5->SetMarkerStyle(24);
 	temp5->SetMarkerSize(1.4);
@@ -477,8 +499,9 @@ void plotDeltaEtaResult(){
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(45);
-    w2->AddEntry(temp5, "like sign");
-    w2->AddEntry(temp9, "unlike sign");
+    w2->AddEntry(temp5, " pos-pos ");
+    w2->AddEntry(temp6, " neg-neg ");
+    w2->AddEntry(temp9, " pos-neg ");
     w2->Draw("same");
 
    	TLatex* r1 = new TLatex(0.58,0.95, "CMS");

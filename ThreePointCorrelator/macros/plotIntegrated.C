@@ -39,8 +39,8 @@ void plotIntegrated(){
 		gr1[i] = (TGraphErrors*) file[0]->Get(Form("Graph;%d", i+1));
 	}
 
-	TGraphErrors* gr2[2];
-	for(int i = 0; i < 2; i++){
+	TGraphErrors* gr2[3];
+	for(int i = 0; i < 3; i++){
 
 		gr2[i] = (TGraphErrors*) file[1]->Get(Form("Graph;%d", i+1));
 	}
@@ -97,6 +97,7 @@ void plotIntegrated(){
 	base1->GetXaxis()->SetTitleSize(base1->GetXaxis()->GetTitleSize()*1.4);
 	base1->GetYaxis()->SetLabelSize(base1->GetYaxis()->GetLabelSize()*1.4);
 	base1->GetXaxis()->SetLabelSize(base1->GetXaxis()->GetLabelSize()*1.4);
+	base1->GetXaxis()->SetNdivisions(4,12,0);
 
 	base2->GetYaxis()->SetTitleOffset(1.9);
 	base2->GetYaxis()->SetTitleSize(base2->GetYaxis()->GetTitleSize()*1.4);
@@ -162,6 +163,14 @@ void plotIntegrated(){
 	gr2[1]->SetLineColor(kBlue);
 	gr2[1]->Draw("Psame");
 
+	gr2[2]->SetMarkerStyle(25);
+	gr2[2]->SetMarkerSize(1.4);
+	gr2[2]->SetMarkerColor(kBlue);
+	gr2[2]->SetLineColor(kBlue);
+	gr2[2]->SetFillColorAlpha(kBlue,0.2);
+   	gr2[2]->SetFillStyle(1001);
+	//gr2[2]->DrawClone("E3same");
+
 	// gr3[0]->SetMarkerStyle(24);
 	// gr3[0]->SetMarkerSize(1.4);
 	// gr3[0]->SetMarkerColor(kRed);
@@ -184,8 +193,8 @@ void plotIntegrated(){
 
 	gr4[1]->SetMarkerStyle(25);
 	gr4[1]->SetMarkerSize(1.4);
-	gr4[1]->SetMarkerColor(kGreen+3);
-	gr4[1]->SetLineColor(kGreen+3);
+	gr4[1]->SetMarkerColor(kGreen+2);
+	gr4[1]->SetLineColor(kGreen+2);
 	gr4[1]->SetLineStyle(5);
 	gr4[1]->SetLineWidth(2.0);
 	gr4[1]->Draw("same");
@@ -197,7 +206,7 @@ void plotIntegrated(){
 
     for(int mult = 3; mult < 8; mult++){
 
-    	double xe = 5;
+    	double xe = 6;
     	double ye = total_systematics_pPb;
 
     	double x1;
@@ -211,7 +220,7 @@ void plotIntegrated(){
 
     	box1[mult] = new TBox(x1-xe,value1-ye,x1+xe,value1+ye);
 		box1[mult]->SetFillColor(kRed);
-	 	box1[mult]->SetFillColorAlpha(kGray+1,0.3);
+	 	box1[mult]->SetFillColorAlpha(kGray+1,0.5);
         box1[mult]->SetFillStyle(1001);
     	box1[mult]->SetLineWidth(0);
     	box1[mult]->SetLineColor(kRed);
@@ -219,7 +228,7 @@ void plotIntegrated(){
 
 		box2[mult] = new TBox(x2-xe,value2-ye,x2+xe,value2+ye);
 		box2[mult]->SetFillColor(kBlue);
-	 	box2[mult]->SetFillColorAlpha(kGray+1,0.3);
+	 	box2[mult]->SetFillColorAlpha(kGray+1,0.5);
         box2[mult]->SetFillStyle(1001);
     	box2[mult]->SetLineWidth(0);
     	box2[mult]->SetLineColor(kBlue);
@@ -229,7 +238,7 @@ void plotIntegrated(){
 
     for(int mult = 0; mult < 9; mult++){
 
-    	double xe = 5;
+    	double xe = 6;
     	double ye = total_systematics_PbPb;
 
     	double x1;
@@ -243,7 +252,7 @@ void plotIntegrated(){
 
     	box3[mult] = new TBox(PbPb_5TeV_ntrkBinCenter[mult]-xe,value1[mult]-ye,PbPb_5TeV_ntrkBinCenter[mult]+xe,value1[mult]+ye);
 		box3[mult]->SetFillColor(kRed);
-        box3[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box3[mult]->SetFillColorAlpha(kGray+1,0.5);
         box3[mult]->SetFillStyle(1001);
     	box3[mult]->SetLineWidth(0);
     	box3[mult]->SetLineColor(kRed);
@@ -251,7 +260,7 @@ void plotIntegrated(){
 
 		box4[mult] = new TBox(PbPb_5TeV_ntrkBinCenter[mult]-xe,value2[mult]-ye,PbPb_5TeV_ntrkBinCenter[mult]+xe,value2[mult]+ye);
 		box4[mult]->SetFillColor(kBlue);
-        box4[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box4[mult]->SetFillColorAlpha(kGray+1,0.5);
         box4[mult]->SetFillStyle(1001);
     	box4[mult]->SetLineWidth(0);
     	box4[mult]->SetLineColor(kBlue);
@@ -326,6 +335,13 @@ void plotIntegrated(){
     w2->AddEntry(gr4[1], "EPOS pPb, opposite", "L");
     w2->AddEntry(gr4[0], "EPOS pPb, same", "L");
     w2->Draw("same");
+
+    TLatex* r3 = new TLatex(0.18, 0.84, "#sqrt{s_{NN}} = 5.02 TeV");
+    r3->SetNDC();
+    r3->SetTextSize(23);
+    r3->SetTextFont(43);
+    r3->SetTextColor(kBlack);
+    r3->Draw("same");
 
    	TLatex* r11 = new TLatex(0.62,0.91, "CMS");
     r11->SetNDC();
