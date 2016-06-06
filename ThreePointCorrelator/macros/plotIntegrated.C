@@ -505,6 +505,7 @@ void plotIntegrated(){
 	                            70,
 	                            510,"-");
 	newaxis1->SetLabelOffset(-0.03);
+	newaxis1->SetLabelFont(42);
 
 	base10->GetYaxis()->SetRangeUser(-0.0009, 0.0008);
 	base10->GetXaxis()->SetRangeUser(0, 70);

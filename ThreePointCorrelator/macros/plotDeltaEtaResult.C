@@ -64,7 +64,6 @@ void plotDeltaEtaResult(){
 	
 	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
 
-
 	TH1D* QvsdEta[16][48][3][2];
 
 	TH1D* delEta3p[16][3][2];
@@ -228,7 +227,7 @@ void plotDeltaEtaResult(){
 	base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.4);
 	
 	TH1D* base3 = (TH1D*) base1->Clone("base3");
-	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT (opposite - same)");
+	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT (oppo - same)");
 	base3->GetYaxis()->SetRangeUser(-0.0007,0.0018);
 	base3->GetYaxis()->SetTitleOffset(1.2);
 	base3->GetXaxis()->SetTitleOffset(1.1);
@@ -290,7 +289,7 @@ void plotDeltaEtaResult(){
 	temp3_plot->Add(hist1[0][1][1], +1);
 	temp3_plot->Scale(0.5);
 	temp3_plot->Scale(1.0/v2[0][1]);
-	temp3_plot->SetMarkerStyle(24);
+	temp3_plot->SetMarkerStyle(22);
 	temp3_plot->SetMarkerSize(1.4);
 	temp3_plot->SetMarkerColor(kRed);
 	temp3_plot->SetLineColor(kRed);
@@ -311,9 +310,9 @@ void plotDeltaEtaResult(){
 	temp3->SetLineColor(kRed);
 
 	TH1D* temp4 = (TH1D*) hist1[0][2][1]->Clone("temp4");
-	temp4->SetMarkerStyle(25);
+	temp4->SetMarkerStyle(29);
 	temp4->Scale(1.0/v2[0][1]);	
-	temp4->SetMarkerSize(1.4);
+	temp4->SetMarkerSize(1.5);
 	temp4->SetMarkerColor(kBlue);
 	temp4->SetLineColor(kBlue);
 
@@ -590,8 +589,7 @@ void plotDeltaEtaResult(){
 	diff2->SetLineColor(kBlue);
 	diff2->Add(temp3, -1);
 
-	diff1->Draw("Psame");
-	diff2->Draw("Psame");
+	
 
     TLatex* r33 = new TLatex(0.25, 0.82, "pPb #sqrt{s_{NN}} = 5.02 TeV");
     r33->SetNDC();
@@ -613,6 +611,64 @@ void plotDeltaEtaResult(){
 	diff3->SetMarkerSize(1.4);
 	diff3->SetMarkerColor(kBlack);
 	diff3->SetLineColor(kBlack);
+
+
+    double value5[50];
+    double value5_error[50];
+    double value6[50];
+    double value6_error[50];
+    double value7[50];
+    double value7_error[50];
+
+    for(int deta = 0; deta < NdEtaReBins2; deta++){
+
+    	value5[deta] = diff1->GetBinContent(deta+1);
+    	value5_error[deta] = diff1->GetBinError(deta+1);
+
+    	value6[deta] = diff2->GetBinContent(deta+1);
+    	value6_error[deta] = diff2->GetBinError(deta+1);
+
+    	value7[deta] = diff3->GetBinContent(deta+1);
+    	value7_error[deta] = diff3->GetBinError(deta+1);
+
+    }
+	
+    TBox *box5[50];
+    TBox *box6[50];
+    TBox *box7[50];
+
+    for(int deta = 0; deta < NdEtaReBins2; deta++){
+
+    	double xe = 0.065;
+    	double ye = total_systematics_PbPb;
+
+    	box5[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value5[deta]-ye,dEtaReBinCenter2[deta]+xe,value5[deta]+ye);
+		box5[deta]->SetFillColor(kRed);
+        box5[deta]->SetFillColorAlpha(kGray+1,0.4);
+        box5[deta]->SetFillStyle(1001);
+    	box5[deta]->SetLineWidth(0);
+    	box5[deta]->SetLineColor(kRed);
+        box5[deta]->Draw("SAME");
+
+		box6[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value6[deta]-ye,dEtaReBinCenter2[deta]+xe,value6[deta]+ye);
+		box6[deta]->SetFillColor(kBlue);
+        box6[deta]->SetFillColorAlpha(kGray+1,0.4);
+        box6[deta]->SetFillStyle(1001);
+    	box6[deta]->SetLineWidth(0);
+    	box6[deta]->SetLineColor(kBlue);
+        box6[deta]->Draw("SAME");
+
+        box7[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value7[deta]-ye,dEtaReBinCenter2[deta]+xe,value7[deta]+ye);
+		box7[deta]->SetFillColor(kBlue);
+        box7[deta]->SetFillColorAlpha(kGray+1,0.4);
+        box7[deta]->SetFillStyle(1001);
+    	box7[deta]->SetLineWidth(0);
+    	box7[deta]->SetLineColor(kBlue);
+        box7[deta]->Draw("SAME");
+    }
+
+	diff1->Draw("Psame");
+	diff2->Draw("Psame");
 	diff3->Draw("Psame");
 
    	TLatex* r11 = new TLatex(0.62,0.91, "CMS");
@@ -961,7 +1017,7 @@ void plotDeltaEtaResult(){
     w6->SetTextSize(23);
     w6->SetTextFont(45);
     w6->AddEntry(temp11, "  same");
-    w6->AddEntry(temp12, "  opposite");
+    w6->AddEntry(temp12, "  oppo");
     w6->Draw("same");
 
     c5->cd(3);

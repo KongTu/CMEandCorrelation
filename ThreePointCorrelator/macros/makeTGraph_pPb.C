@@ -12,12 +12,12 @@ double ntrkBins[] = {0,35,60,90,120,150,185,220,260,300};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 int ntrkBinCenter[] = {17.5, 47.5, 75, 105, 135, 167.5, 202.5, 240};
 
-double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5, 270.4};
+double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5, 270.4, 310.9};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
 
 double PbPb_ntrkCentralityBinCenter[] = {151.6, 270.2, 441.9, 685.4,1024,1376,1721,40000};
-const int Nmults = 9;
+const int Nmults = 10;
 
 double total_systematics_pPb = 0.00015;
 double total_systematics_PbPb = 0.00014;
@@ -25,7 +25,7 @@ double total_systematics_PbPb = 0.00014;
 
 void makeTGraph_pPb(){
 
-	TFile* file[9];
+	TFile* file[10];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
 	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_2.root");
@@ -36,6 +36,7 @@ void makeTGraph_pPb(){
 	file[6] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
 	file[7] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_4.root");
 	file[8] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_260_300.root");
+	file[9] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_300_350.root");
 
 
 	TH1D* QvsdEta[30][48][3][2];
@@ -112,9 +113,9 @@ void makeTGraph_pPb(){
 		}
 	}
 
-	double threeParticleNtrk[9][3][2];
-	double threeParticleNtrkError[9][3][2];
-	double totalWeight[9][3][2];
+	double threeParticleNtrk[10][3][2];
+	double threeParticleNtrkError[10][3][2];
+	double totalWeight[10][3][2];
 
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
@@ -138,7 +139,7 @@ void makeTGraph_pPb(){
 	//pPb:
 	for(int sign = 0; sign < 3; sign++){
 		for(int HF = 0; HF < 2; HF++){
-			for(int mult = 0; mult < 9; mult++){
+			for(int mult = 0; mult < Nmults; mult++){
 
 				//pPb(0,7)
 				double value = threeParticleNtrk[mult][sign][HF]/totalWeight[mult][sign][HF];
@@ -175,16 +176,16 @@ void makeTGraph_pPb(){
 	temp4->SetMarkerColor(kBlue);
 	temp4->SetLineColor(kBlue);
 
-    double value1[9];
-    double value1_error[9];
-    double value2[9];
-    double value2_error[9];
-    double value3[9];
-    double value3_error[9];
-    double value4[9];
-    double value4_error[9];
+    double value1[10];
+    double value1_error[10];
+    double value2[10];
+    double value2_error[10];
+    double value3[10];
+    double value3_error[10];
+    double value4[10];
+    double value4_error[10];
 
-    for(int mult = 0; mult < 9; mult++){
+    for(int mult = 0; mult < Nmults; mult++){
 
     	value1[mult] = temp1->GetBinContent(mult+1);
     	value1_error[mult] = temp1->GetBinError(mult+1);
@@ -199,10 +200,10 @@ void makeTGraph_pPb(){
     	value4_error[mult] = temp4->GetBinError(mult+1);
     }
 
-    TGraphErrors* gr1 = new TGraphErrors(9, pPb_ntrkBinCenter, value1, xbinwidth, value1_error);
-    TGraphErrors* gr2 = new TGraphErrors(9, pPb_ntrkBinCenter, value2, xbinwidth, value2_error);
-    TGraphErrors* gr3 = new TGraphErrors(9, pPb_ntrkBinCenter, value3, xbinwidth, value3_error);
-    TGraphErrors* gr4 = new TGraphErrors(9, pPb_ntrkBinCenter, value4, xbinwidth, value4_error);
+    TGraphErrors* gr1 = new TGraphErrors(10, pPb_ntrkBinCenter, value1, xbinwidth, value1_error);
+    TGraphErrors* gr2 = new TGraphErrors(10, pPb_ntrkBinCenter, value2, xbinwidth, value2_error);
+    TGraphErrors* gr3 = new TGraphErrors(10, pPb_ntrkBinCenter, value3, xbinwidth, value3_error);
+    TGraphErrors* gr4 = new TGraphErrors(10, pPb_ntrkBinCenter, value4, xbinwidth, value4_error);
 
     TFile t1("../dataPoints/pPb_data.root","RECREATE");
     gr1->Write();

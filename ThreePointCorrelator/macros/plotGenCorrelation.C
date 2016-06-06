@@ -420,6 +420,112 @@ void plotGenCorrelation(){
 
     w3->Draw("same");
 
+
+    TCanvas* c4 = makeMultiCanvas("c4","c4",2,1);
+
+    for(int HF = 0; HF < 2; HF++){
+	
+	c4->cd(HF+1);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.20);
+	gPad->SetBottomMargin(0.16);
+
+	if(HF == 0) {TH1D* base7 = (TH1D*) base3->Clone();base7->GetYaxis()->SetRangeUser(-0.002, 0.002);base7->SetTitle("Pb-going");base7->Draw();base7->GetYaxis()->SetTitle("oppo - same");}
+	if(HF == 1) {TH1D* base8 = (TH1D*) base4->Clone();base8->GetYaxis()->SetRangeUser(-0.002, 0.002);base8->SetTitle("p-going");base8->Draw();base8->GetYaxis()->SetTitle("oppo - same");}
+
+	TH1D* ratio1 = (TH1D*)hist2[0][HF]->Clone("ratio1");
+	ratio1->Add(hist2[1][HF], +1);
+	ratio1->Scale(0.5);
+	ratio1->Scale( 1.0/v2_2[HF] );
+	ratio1->SetMarkerColor(kRed);
+	ratio1->SetLineColor(kRed);
+	ratio1->SetMarkerStyle(24);
+
+	TH1D* ratio11 = (TH1D*)hist2[2][HF]->Clone("ratio11");
+
+	ratio11->Add(ratio1, -1);
+	ratio11->SetMarkerStyle(20);
+	ratio11->SetMarkerColor(kRed);
+	ratio11->Draw("Psame");
+	
+	TH1D* ratio5 = (TH1D*)hist1[0][HF]->Clone("ratio5");
+	ratio5->Add(hist1[1][HF], +1);
+	ratio5->Scale(0.5);
+	ratio5->Scale( 1.0/v2_1[HF] );
+	ratio5->SetMarkerColor(kRed);
+	ratio5->SetLineColor(kRed);
+	ratio5->SetMarkerStyle(20);
+	
+	TH1D* ratio22 = (TH1D*)hist1[2][HF]->Clone("ratio22");
+
+	ratio22->Add(ratio5, -1);
+	ratio22->SetMarkerStyle(21);
+	ratio22->SetMarkerColor(kBlue);
+	ratio22->Draw("Psame");
+
+	}
+
+	TLegend *w4 = new TLegend(0.50,0.65,0.8,0.80);
+    w4->SetLineColor(kWhite);
+    w4->SetFillColor(0);
+    w4->SetTextSize(20);
+    w4->SetTextFont(43);
+    w4->AddEntry(ratio11, "GEN");
+    w4->AddEntry(ratio22, "RECO");
+
+    w4->Draw("same");
+
+
+    TCanvas* c5 = makeMultiCanvas("c5","c5",2,1);
+
+    for(int HF = 0; HF < 2; HF++){
+	
+	c5->cd(HF+1);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.20);
+	gPad->SetBottomMargin(0.16);
+
+	if(HF == 0) {TH1D* base7 = (TH1D*) base3->Clone();base7->GetYaxis()->SetRangeUser(-0.002, 0.002);base7->SetTitle("Pb-going");base7->Draw();base7->GetYaxis()->SetTitle("oppo - same");}
+	if(HF == 1) {TH1D* base8 = (TH1D*) base4->Clone();base8->GetYaxis()->SetRangeUser(-0.002, 0.002);base8->SetTitle("p-going");base8->Draw();base8->GetYaxis()->SetTitle("oppo - same");}
+
+	TH1D* ratio1 = (TH1D*)hist2[0][HF]->Clone("ratio1");
+	ratio1->Add(hist2[1][HF], +1);
+	ratio1->Scale(0.5);
+	ratio1->Scale( 1.0/v2_2[HF] );
+	ratio1->SetMarkerColor(kRed);
+	ratio1->SetLineColor(kRed);
+	ratio1->SetMarkerStyle(24);
+
+	TH1D* ratio11 = (TH1D*)hist2[2][HF]->Clone("ratio11");
+
+	ratio11->Add(ratio1, -1);
+	ratio11->SetMarkerStyle(20);
+	ratio11->SetMarkerColor(kRed);
+	
+	TH1D* ratio5 = (TH1D*)hist1[0][HF]->Clone("ratio5");
+	ratio5->Add(hist1[1][HF], +1);
+	ratio5->Scale(0.5);
+	ratio5->Scale( 1.0/v2_1[HF] );
+	ratio5->SetMarkerColor(kRed);
+	ratio5->SetLineColor(kRed);
+	ratio5->SetMarkerStyle(20);
+	
+	TH1D* ratio22 = (TH1D*)hist1[2][HF]->Clone("ratio22");
+
+	ratio22->Add(ratio5, -1);
+	ratio22->SetMarkerStyle(21);
+	ratio22->SetMarkerColor(kBlue);
+	
+
+
+	ratio11->Add(ratio22, -1);
+	ratio11->Draw("Psame");
+
+	}
+
+	return;
+
+
     TCanvas* c2 = makeCanvas("c2","c2");
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.20);
