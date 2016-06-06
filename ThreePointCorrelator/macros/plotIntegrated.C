@@ -30,13 +30,14 @@ void plotIntegrated(){
 
 	gStyle->SetErrorX(0);
 
-	TFile* file[6];
+	TFile* file[7];
 	file[0] = new TFile("../dataPoints/pPb_data.root");
 	file[1] = new TFile("../dataPoints/PbPb5TeV_data.root");
 	file[2] = new TFile("../dataPoints/PbPb_5TeV_centrality_data.root");
 	file[3] = new TFile("../dataPoints/EPOS_data.root");
 	file[4] = new TFile("../dataPoints/ALICE_STAR_data.root");
 	file[5] = new TFile("../dataPoints/PbPb_5TeV_centrality_centrality_data.root");
+	file[6] = new TFile("../dataPoints/PbPb_centrality_data.root");
 
 	TGraphErrors* gr1[4];
 	for(int i = 0; i < 4; i++){
@@ -73,6 +74,12 @@ void plotIntegrated(){
 		gr6[i] = (TGraphErrors*) file[5]->Get(Form("Graph;%d", i+1));
 	}
 
+	TGraphErrors* gr7[2];
+	for(int i = 0; i < 2; i++){
+
+		gr7[i] = (TGraphErrors*) file[6]->Get(Form("Graph;%d", i+1));
+	}
+
 
 	for(int i = 0; i < 4; i++){
 		for(int mult = 0; mult < 3; mult++){
@@ -81,15 +88,6 @@ void plotIntegrated(){
 			gr1[i]->SetPoint(mult, x, 100);
 		}
 	}
-	// for(int i = 0; i < 2; i++){
-	// 	for(int mult = 0; mult < 3; mult++){
-	// 		double x, y;
-	// 		gr2[i]->GetPoint(mult, x, y);
-	// 		gr2[i]->SetPoint(mult, x, 100);
-	// 	}
-	// }
-	// 
-	
 
 //start plotting
 
@@ -333,37 +331,31 @@ void plotIntegrated(){
 	gr5[0]->SetMarkerSize(1.4);
 	gr5[0]->SetMarkerColor(kBlack);
 	gr5[0]->SetLineColor(kBlack);
-	//gr5[0]->Draw("Psame");
 
 	gr5[1]->SetMarkerStyle(27);
 	gr5[1]->SetMarkerSize(1.4);
 	gr5[1]->SetMarkerColor(kBlack);
 	gr5[1]->SetLineColor(kBlack);
-	//gr5[1]->Draw("Psame");
 
 	gr5[2]->SetMarkerStyle(28);
 	gr5[2]->SetMarkerSize(1.4);
 	gr5[2]->SetMarkerColor(kBlack);
 	gr5[2]->SetLineColor(kBlack);
-	//gr5[2]->Draw("Psame");
 
 	gr5[3]->SetMarkerStyle(30);
 	gr5[3]->SetMarkerSize(1.4);
 	gr5[3]->SetMarkerColor(kBlack);
 	gr5[3]->SetLineColor(kBlack);
-	//gr5[3]->Draw("Psame");
 	
 	gr6[0]->SetMarkerStyle(24);
 	gr6[0]->SetMarkerSize(1.4);
 	gr6[0]->SetMarkerColor(kRed);
 	gr6[0]->SetLineColor(kRed);
-	//gr6[0]->Draw("Psame");
 
 	gr6[1]->SetMarkerStyle(25);
 	gr6[1]->SetMarkerSize(1.4);
 	gr6[1]->SetMarkerColor(kBlue);
 	gr6[1]->SetLineColor(kBlue);
-	//gr6[1]->Draw("Psame");
 
 	TLegend *w1 = new TLegend(0.48,0.64,0.88,0.77);
     w1->SetLineColor(kWhite);
@@ -375,7 +367,7 @@ void plotIntegrated(){
     w1->SetNColumns(2);
 
     w1->AddEntry(gr1[0], "  ", "P");
-    w1->AddEntry(gr1[1], "  pPb, Pb-going", "P");
+    w1->AddEntry(gr1[1], "  pPb, #Psi_{EP}(Pb-going)", "P");
 
     w1->AddEntry(gr2[0], "  ", "P");
     w1->AddEntry(gr2[1], "  PbPb", "P");
@@ -618,9 +610,6 @@ void plotIntegrated(){
     r44->SetTextSize(24);
     r44->SetTextFont(53);
     r44->Draw("same");
-
-
-
 
 
 

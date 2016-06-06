@@ -16,8 +16,10 @@ double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
 
-double PbPb_ntrkCentralityBinCenter[] = {151.6, 270.2, 441.9, 685.4,1024,1376,1721};
-const int Nmults = 8;
+double PbPb_ntrkCentralityBinCenter[] = {404.1, 717.6, 1141, 1782, 2662.4, 3577.6, 4474};
+double PbPb_centralityBinCenter[] = {55,45,35,25,15,7.5,2.5};
+
+const int Nmults = 7;
 
 double total_systematics_pPb = 0.00015;
 double total_systematics_PbPb = 0.00014;
@@ -34,7 +36,6 @@ void makeTGraph_PbPb_centrality(){
 	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v2_3.root");
 	file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v2_2.root");
 	file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v2_1.root");
-	file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_0_60_v2_1.root");
 
 
 	TH1D* QvsdEta[30][48][3][2];
@@ -137,7 +138,7 @@ void makeTGraph_PbPb_centrality(){
 	//pPb:
 	for(int sign = 0; sign < 3; sign++){
 		for(int HF = 0; HF < 2; HF++){
-			for(int mult = 0; mult < 8; mult++){
+			for(int mult = 0; mult < Nmults; mult++){
 
 				//pPb(0,7)
 				double value = threeParticleNtrk[mult][sign][HF]/totalWeight[mult][sign][HF];
@@ -180,6 +181,7 @@ void makeTGraph_PbPb_centrality(){
     double value2[8];
     double value2_error[8];
 
+	double PbPb_centralityBinCenter_fill[7];
 
     for(int mult = 0; mult < 7; mult++){
 
@@ -189,10 +191,13 @@ void makeTGraph_PbPb_centrality(){
     	value2[mult] = temp5->GetBinContent(mult+1);
     	value2_error[mult] = temp5->GetBinError(mult+1);
 
+    	PbPb_centralityBinCenter_fill[mult] = 70 - PbPb_centralityBinCenter[mult];
+
+
     }
 
-	TGraphErrors* gr5 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, value1, xbinwidth, value1_error);
-    TGraphErrors* gr6 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, value2, xbinwidth, value2_error);
+	TGraphErrors* gr5 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, value1, xbinwidth, value1_error);
+    TGraphErrors* gr6 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, value2, xbinwidth, value2_error);
 
     TFile t1("../dataPoints/PbPb_centrality_data.root","RECREATE");
     gr5->Write();

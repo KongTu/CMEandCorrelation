@@ -700,7 +700,7 @@ void plotDeltaEtaResult(){
 	base5->GetYaxis()->SetLabelSize(base5->GetYaxis()->GetLabelSize()*1.3);
 	base5->GetXaxis()->SetLabelSize(base5->GetXaxis()->GetLabelSize()*1.3);
 	base5->GetXaxis()->SetNdivisions(5,6,0);
-	base5->GetYaxis()->SetRangeUser(-0.0012,0.0014);
+	base5->GetYaxis()->SetRangeUser(-0.0012,0.0016);
 
 	TH1D* base6 = (TH1D*) base5->Clone("base6");
 	base6->GetYaxis()->SetRangeUser(-0.01, 0.04);
@@ -733,16 +733,22 @@ void plotDeltaEtaResult(){
     r45->SetTextFont(43);
     r45->SetTextColor(kBlack);
 
+    TLatex* r46 = new TLatex(0.24, 0.80, "185 #leq N^{offline}_{trk} < 220");
+    r46->SetNDC();
+    r46->SetTextSize(23);
+    r46->SetTextFont(43);
+    r46->SetTextColor(kBlack);
+
     TLegend *w4 = new TLegend(0.5,0.2,0.95,0.35);
     w4->SetLineColor(kWhite);
     w4->SetFillColor(0);
     w4->SetTextSize(23);
     w4->SetTextFont(45);
     w4->SetNColumns(2);
-    w4->AddEntry(temp1_plot, " ");
+    w4->AddEntry(temp1_plot, "  ");
     w4->AddEntry(temp2, "  #Psi_{EP}(Pb-going)");
     
-    w4->AddEntry(temp3_plot, " ");
+    w4->AddEntry(temp3_plot, "  ");
     w4->AddEntry(temp4, "  #Psi_{EP}(p-going)");
 
 	TLatex* latex1 = new TLatex(0.48, 0.37, "same");
@@ -836,6 +842,7 @@ void plotDeltaEtaResult(){
     w4->Draw("same");
     latex1->Draw("same");
     latex2->Draw("same");
+    r46->Draw("same");
 
 
     c4->cd(2);
@@ -883,13 +890,31 @@ void plotDeltaEtaResult(){
         box6[deta]->Draw("SAME");
     }
 
+    TLegend *w40 = new TLegend(0.5,0.22,0.73,0.4);
+    w40->SetLineColor(kWhite);
+    w40->SetFillColor(0);
+    w40->SetTextSize(23);
+    w40->SetTextFont(45);
+    w40->SetNColumns(2);
+    w40->SetTextAlign();
+    w40->AddEntry(temp5_plot, " ");
+    w40->AddEntry(temp9, " ");
+
+    TLatex* r434 = new TLatex(0.70,0.29, "PbPb");
+    r434->SetNDC();
+    r434->SetTextSize(21);
+    r434->SetTextFont(43);
+
+
     temp5_plot->Draw("Psame");
 	temp9->Draw("Psame");
 	r42->Draw("same");
 	r43->Draw("same");
 	r44->Draw("same");
-
-
+	w40->Draw("same");
+	latex1->Draw("same");
+    latex2->Draw("same");
+    r434->Draw("same");
 
     TLatex* r433 = new TLatex(0.47,0.94, "CMS");
     r433->SetNDC();
