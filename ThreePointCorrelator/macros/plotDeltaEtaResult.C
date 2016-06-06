@@ -290,7 +290,7 @@ void plotDeltaEtaResult(){
 	temp3_plot->Add(hist1[0][1][1], +1);
 	temp3_plot->Scale(0.5);
 	temp3_plot->Scale(1.0/v2[0][1]);
-	temp3_plot->SetMarkerStyle(20);
+	temp3_plot->SetMarkerStyle(24);
 	temp3_plot->SetMarkerSize(1.4);
 	temp3_plot->SetMarkerColor(kRed);
 	temp3_plot->SetLineColor(kRed);
@@ -311,7 +311,7 @@ void plotDeltaEtaResult(){
 	temp3->SetLineColor(kRed);
 
 	TH1D* temp4 = (TH1D*) hist1[0][2][1]->Clone("temp4");
-	temp4->SetMarkerStyle(21);
+	temp4->SetMarkerStyle(25);
 	temp4->Scale(1.0/v2[0][1]);	
 	temp4->SetMarkerSize(1.4);
 	temp4->SetMarkerColor(kBlue);
@@ -644,18 +644,19 @@ void plotDeltaEtaResult(){
 	base5->GetYaxis()->SetLabelSize(base5->GetYaxis()->GetLabelSize()*1.3);
 	base5->GetXaxis()->SetLabelSize(base5->GetXaxis()->GetLabelSize()*1.3);
 	base5->GetXaxis()->SetNdivisions(5,6,0);
+	base5->GetYaxis()->SetRangeUser(-0.0012,0.0014);
 
 	TH1D* base6 = (TH1D*) base5->Clone("base6");
 	base6->GetYaxis()->SetRangeUser(-0.01, 0.04);
 	base6->GetXaxis()->SetRangeUser(-0.2, 4.8);
 
-    TLatex* r41 = new TLatex(0.24, 0.85, "pPb #sqrt{s_{NN}} = 5.02 TeV, Pb-going");
+    TLatex* r41 = new TLatex(0.24, 0.87, "pPb #sqrt{s_{NN}} = 5.02 TeV");
     r41->SetNDC();
     r41->SetTextSize(23);
     r41->SetTextFont(43);
     r41->SetTextColor(kBlack);
 
-    TLatex* r42 = new TLatex(0.05, 0.85, "PbPb #sqrt{s_{NN}} = 5.02 TeV");
+    TLatex* r42 = new TLatex(0.05, 0.87, "PbPb #sqrt{s_{NN}} = 5.02 TeV");
     r42->SetNDC();
     r42->SetTextSize(23);
     r42->SetTextFont(43);
@@ -670,12 +671,34 @@ void plotDeltaEtaResult(){
     r44->SetTextSize(24);
     r44->SetTextFont(53);
     
-    TLatex* r45 = new TLatex(0.24, 0.78, "185 #leq N^{offline}_{trk} < 220");
+    TLatex* r45 = new TLatex(0.05, 0.80, "185 #leq N^{offline}_{trk} < 220");
     r45->SetNDC();
     r45->SetTextSize(23);
     r45->SetTextFont(43);
     r45->SetTextColor(kBlack);
+
+    TLegend *w4 = new TLegend(0.4,0.2,0.90,0.35);
+    w4->SetLineColor(kWhite);
+    w4->SetFillColor(0);
+    w4->SetTextSize(23);
+    w4->SetTextFont(45);
+    w4->SetNColumns(2);
+    w4->AddEntry(temp1_plot, " ");
+    w4->AddEntry(temp2, "  Pb-going (PbPb)");
     
+    w4->AddEntry(temp3_plot, " ");
+    w4->AddEntry(temp4, "  p-going");
+
+	TLatex* latex1 = new TLatex(0.38, 0.37, "same");
+    latex1->SetNDC();
+    latex1->SetTextSize(20);
+    latex1->SetTextFont(43);
+    latex1->SetTextColor(kBlack);
+    TLatex* latex2 = new TLatex(0.49, 0.37, "oppo");
+    latex2->SetNDC();
+    latex2->SetTextSize(20);
+    latex2->SetTextFont(43);
+    latex2->SetTextColor(kBlack);
     
     TCanvas* c4 = new TCanvas("c4","c4",1000,600);
 	c4->Divide(2,1,0,0);
@@ -685,6 +708,7 @@ void plotDeltaEtaResult(){
 	gPad->SetTopMargin(0.06);
 	gPad->SetTicks();
 	base5->Draw();
+
 
     double value1[50];
     double value1_error[50];
@@ -730,12 +754,29 @@ void plotDeltaEtaResult(){
     	box2[deta]->SetLineWidth(0);
     	box2[deta]->SetLineColor(kBlue);
         box2[deta]->Draw("SAME");
+
+    	box3[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value3[deta]-ye,dEtaReBinCenter2[deta]+xe,value3[deta]+ye);
+		box3[deta]->SetFillColor(kRed);
+        box3[deta]->SetFillColorAlpha(kGray+1,0.4);
+        box3[deta]->SetFillStyle(1001);
+    	box3[deta]->SetLineWidth(0);
+    	box3[deta]->SetLineColor(kRed);
+        box3[deta]->Draw("SAME");
+
+		box4[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value4[deta]-ye,dEtaReBinCenter2[deta]+xe,value4[deta]+ye);
+		box4[deta]->SetFillColor(kBlue);
+        box4[deta]->SetFillColorAlpha(kGray+1,0.4);
+        box4[deta]->SetFillStyle(1001);
+    	box4[deta]->SetLineWidth(0);
+    	box4[deta]->SetLineColor(kBlue);
+        box4[deta]->Draw("SAME");
     }
 
     temp1_plot->Draw("Psame");
 	temp2->Draw("Psame");
+	temp3_plot->Draw("Psame");
+	temp4->Draw("Psame");
 	r41->Draw("same");
-	r45->Draw("same");
 
     c4->cd(2);
 	gPad->SetBottomMargin(0.13);
@@ -743,6 +784,7 @@ void plotDeltaEtaResult(){
 	gPad->SetRightMargin(0.06);
 	gPad->SetTicks();
 	base5->Draw();
+	r45->Draw("same");
 
     double value5[50];
     double value5_error[50];
@@ -787,14 +829,9 @@ void plotDeltaEtaResult(){
 	r43->Draw("same");
 	r44->Draw("same");
 
-	TLegend *w4 = new TLegend(0.60,0.25,0.75,0.4);
-    w4->SetLineColor(kWhite);
-    w4->SetFillColor(0);
-    w4->SetTextSize(23);
-    w4->SetTextFont(45);
-    w4->AddEntry(temp5_plot, "  same");
-    w4->AddEntry(temp9, "  opposite");
     w4->Draw("same");
+    latex1->Draw("same");
+    latex2->Draw("same");
 
     TLatex* r433 = new TLatex(0.47,0.94, "CMS");
     r433->SetNDC();
@@ -918,14 +955,14 @@ void plotDeltaEtaResult(){
     r72->Draw("same");
 	
 
-	TLegend *w5 = new TLegend(0.55,0.60,0.7,0.80);
-    w5->SetLineColor(kWhite);
-    w5->SetFillColor(0);
-    w5->SetTextSize(23);
-    w5->SetTextFont(45);
-    w5->AddEntry(temp11, "  same");
-    w5->AddEntry(temp12, "  opposite");
-    w5->Draw("same");
+	TLegend *w6 = new TLegend(0.55,0.60,0.7,0.80);
+    w6->SetLineColor(kWhite);
+    w6->SetFillColor(0);
+    w6->SetTextSize(23);
+    w6->SetTextFont(45);
+    w6->AddEntry(temp11, "  same");
+    w6->AddEntry(temp12, "  opposite");
+    w6->Draw("same");
 
     c5->cd(3);
     gPad->SetLeftMargin(0.20);

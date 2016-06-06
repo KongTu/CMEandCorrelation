@@ -18,6 +18,10 @@ double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
 
 //double PbPb_ntrkCentralityBinCenter[] = {151.6, 270.2, 441.9, 685.4,1024,1376,1721};
 double PbPb_ntrkCentralityBinCenter[] = {404.1, 717.6, 1141, 1782, 2662.4, 3577.6, 4474};
+double PbPb_centralityBinCenter[] = {55,45,35,25,15,7.5,2.5};
+
+
+
 const int Nmults = 9;
 
 double total_systematics_pPb = 0.00015;
@@ -34,6 +38,9 @@ void makeTGraph_ALICE_STAR(){
 
 	double alice_centrality_same1[] = {-3.66E-4, -2.48E-4, -1.47E-4, -9.8E-5, -4.6E-5, -1.0E-5, 0.0};
 	double alice_centrality_same1_error[] = {8.1E-5, 4.1E-5, 2.4E-5, 1.4E-5, 9.0E-6, 6.0E-6, 4.0E-6};
+	//don't use VERZO for now. 
+
+
 
 	double alice_centrality_oppo2[7];
 	double alice_centrality_oppo2_error[7];
@@ -82,6 +89,8 @@ void makeTGraph_ALICE_STAR(){
 	double star_centrality_oppo2[7];
 	double star_centrality_oppo2_error[7];
 
+	double PbPb_centralityBinCenter_fill[7];
+
 	for(int mult = 0; mult < 7; mult++){
 
 		star_centrality_same1[mult] = star_centrality_dump_same1[6-mult];
@@ -96,16 +105,21 @@ void makeTGraph_ALICE_STAR(){
 		star_centrality_oppo2[mult] = star_centrality_dump_oppo2[6-mult];
 		star_centrality_oppo2_error[mult] = star_centrality_dump_oppo2_error[6-mult];
 
+		PbPb_centralityBinCenter_fill[mult] = 70-PbPb_centralityBinCenter[mult];
+
 	}
 
-	TGraphErrors* gr1 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_same2, xbinwidth, alice_centrality_same2_error);
-	TGraphErrors* gr2 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, alice_centrality_oppo2, xbinwidth, alice_centrality_oppo2_error);
-	
-	TGraphErrors* gr3 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, star_centrality_same1, xbinwidth, star_centrality_same1_error);
-	TGraphErrors* gr4 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, star_centrality_oppo1, xbinwidth, star_centrality_oppo1_error);
 
-	TGraphErrors* gr5 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, star_centrality_same2, xbinwidth, star_centrality_same2_error);
-	TGraphErrors* gr6 = new TGraphErrors(7, PbPb_ntrkCentralityBinCenter, star_centrality_oppo2, xbinwidth, star_centrality_oppo2_error);
+	//use the flipped value to place on the axis, so that it can be later drawed reversely. 
+
+	TGraphErrors* gr1 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, alice_centrality_same2, xbinwidth, alice_centrality_same2_error);
+	TGraphErrors* gr2 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, alice_centrality_oppo2, xbinwidth, alice_centrality_oppo2_error);
+	
+	TGraphErrors* gr3 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, star_centrality_same1, xbinwidth, star_centrality_same1_error);
+	TGraphErrors* gr4 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, star_centrality_oppo1, xbinwidth, star_centrality_oppo1_error);
+
+	TGraphErrors* gr5 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, star_centrality_same2, xbinwidth, star_centrality_same2_error);
+	TGraphErrors* gr6 = new TGraphErrors(7, PbPb_centralityBinCenter_fill, star_centrality_oppo2, xbinwidth, star_centrality_oppo2_error);
 
 	TFile t1("../dataPoints/ALICE_STAR_data.root","RECREATE");
     gr1->Write();
