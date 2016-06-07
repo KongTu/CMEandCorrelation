@@ -252,6 +252,13 @@ ThreePointCorrelatorEtaGap::analyze(const edm::Event& iEvent, const edm::EventSe
         }     
   } 
 
+  double q2_real = QcosTRK/QcountsTrk;
+  double q2_imag = QsinTRK/QcountsTrk;
+  double magnitude = sqrt(q2_imag*q2_imag + q2_real*q2_real);
+
+  q2_mag->Fill( magnitude );
+
+
 //loop over calo towers (HF)
 
   double Q3[2][2];
@@ -516,6 +523,8 @@ ThreePointCorrelatorEtaGap::beginJob()
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
+
+  q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
 
   for(int sign = 0; sign < 3; sign++){
 
