@@ -329,6 +329,7 @@ class ThreePointCorrelatorEtaGapQ2 : public edm::EDAnalyzer {
       double holeLeft_;
       double holeRight_;
       double holesize_;
+      double q2max_;
 
       bool useCentrality_;
       bool useBothSide_;
