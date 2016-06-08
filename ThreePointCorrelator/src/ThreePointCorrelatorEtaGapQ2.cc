@@ -47,7 +47,8 @@ ThreePointCorrelatorEtaGapQ2::ThreePointCorrelatorEtaGapQ2(const edm::ParameterS
   holeLeft_ = iConfig.getUntrackedParameter<double>("holeLeft");
   holeRight_ = iConfig.getUntrackedParameter<double>("holeRight");
   q2max_ = iConfig.getUntrackedParameter<double>("q2max");
-
+  q2min_ = iConfig.getUntrackedParameter<double>("q2min");
+  
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
   offlineChi2_ = iConfig.getUntrackedParameter<double>("offlineChi2", 0.0);
@@ -316,7 +317,7 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
   double magnitude = sqrt(q2_imag*q2_imag + q2_real*q2_real);
 
 
-  if( magnitude > q2max_ ) return;
+  if( magnitude > q2max_ || magnitude < q2min_ ) return;
 
 
   q2_mag->Fill( magnitude );
