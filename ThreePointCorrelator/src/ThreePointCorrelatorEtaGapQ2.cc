@@ -315,7 +315,7 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
   double magnitude = sqrt(q2_imag*q2_imag + q2_real*q2_real);
 
 
-  if( magnitude > 0.01 ) continue;
+  if( magnitude > 0.01 ) return;
 
 
   q2_mag->Fill( magnitude );
