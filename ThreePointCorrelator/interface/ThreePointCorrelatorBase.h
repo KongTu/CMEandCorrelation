@@ -341,6 +341,7 @@ class ThreePointCorrelatorEtaGapQ2 : public edm::EDAnalyzer {
       bool messAcceptance_;
       bool doEffCorrection_;
       bool do3pTracker_;
+      bool doTrackerQ2_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
