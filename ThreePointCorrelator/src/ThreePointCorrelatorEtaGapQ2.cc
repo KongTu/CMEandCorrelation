@@ -133,45 +133,16 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
   double P1[NetaBins][2][2];
   double P2[NetaBins][2][2];
 
-//SP v2
-//case1
-  double QnA_1[2];
-  double QnC_1[2];
-  double Qn_1[2];
-  double QnB_1[2];
+//v2{2}
 
-  double QnA_1_count = 0.0;
-  double QnC_1_count = 0.0;
-  double Qn_1_count = 0.0;
-  double QnB_1_count = 0.0;
-
-//case2
-  double QnA_2[2];
-  double QnC_2[2];
-  double Qn_2[2];
-  double QnB_2[2];
-
-  double QnA_2_count = 0.0;
-  double QnC_2_count = 0.0;
-  double Qn_2_count = 0.0;
-  double QnB_2_count = 0.0;
-
-  for(int i = 0; i < 2; i++){
-
-      QnA_1[i] = 0.0;
-      QnC_1[i] = 0.0;
-      Qn_1[i] = 0.0;
-      QnB_1[i] = 0.0;
-
-      QnA_2[i] = 0.0;
-      QnC_2[i] = 0.0;
-      Qn_2[i] = 0.0;
-      QnB_2[i] = 0.0;
-  }
-
+  double QnC[NetaBins][2];
+  double QnC_count[NetaBins];
 
   for(int i = 0; i < NetaBins; i++){
+
+    QnC_count[i] = 0.0;
     for(int j = 0; j < 2; j++){
+      QnC[i][j] = 0.0;
       Q1_count[i][j] = 0.0;
       Q2_count[i][j] = 0.0;
       for(int k = 0; k < 2; k++){
@@ -238,27 +209,6 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
         if( messAcceptance_ ) { if( trk.phi() < holeRight_ && trk.phi() > holeLeft_ ) continue;}
         if( reverseBeam_ ) {trkEta = -trk.eta();}
 
-        if( trk.eta() < 0 ){
-
-            QnC_1[0] += weight*cos( 2*trk.phi() );
-            QnC_1[1] += weight*sin( 2*trk.phi() );
-            QnC_1_count += weight;
-
-            Qn_2[0] += weight*cos( 2*trk.phi() );
-            Qn_2[1] += weight*cos( 2*trk.phi() ); 
-            Qn_2_count += weight;
-        }
-        if( trk.eta() > 0 ){
-
-            Qn_1[0] += weight*cos( 2*trk.phi() );
-            Qn_1[1] += weight*cos( 2*trk.phi() );
-            Qn_1_count += weight;
-
-            QnC_2[0] += weight*cos( 2*trk.phi() );
-            QnC_2[1] += weight*sin( 2*trk.phi() );
-            QnC_2_count += weight;
-        }
-
         trkPhi->Fill( phiangle );//make sure if messAcceptance is on or off
         trkPt->Fill( trk.pt(), weight);//single particle closure
         trk_eta->Fill( trk.eta(), weight);
@@ -269,6 +219,10 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
+
+            QnC[eta][0] += weight*cos( 2*phiangle );
+            QnC[eta][1] += weight*sin( 2*phiangle );
+            QnC_count[eta] += weight;
 
             if( trk.charge() == 1){
 
@@ -392,27 +346,27 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
           if( messAcceptance_ ){if( caloPhi < holeRight_ && caloPhi > holeLeft_ ) continue;} hfPhi->Fill( caloPhi );//make sure if messAcceptance is on or off
           
 
-          if( caloEta < -3.0 && caloEta > -5.0 ){
+          // if( caloEta < -3.0 && caloEta > -5.0 ){
 
-            QnA_1[0] += w*cos( 2*caloPhi );
-            QnA_1[1] += w*sin( 2*caloPhi );
-            QnA_1_count += w;
+          //   QnA_1[0] += w*cos( 2*caloPhi );
+          //   QnA_1[1] += w*sin( 2*caloPhi );
+          //   QnA_1_count += w;
 
-            QnB_2[0] += w*cos( 2*caloPhi );
-            QnB_2[1] += w*sin( 2*caloPhi );
-            QnB_2_count += w;
-          }
-          if( caloEta > 3.0 && caloEta < 5.0){
+          //   QnB_2[0] += w*cos( 2*caloPhi );
+          //   QnB_2[1] += w*sin( 2*caloPhi );
+          //   QnB_2_count += w;
+          // }
+          // if( caloEta > 3.0 && caloEta < 5.0){
 
-            QnA_2[0] += w*cos( 2*caloPhi );
-            QnA_2[1] += w*sin( 2*caloPhi );
-            QnA_2_count += w;
+          //   QnA_2[0] += w*cos( 2*caloPhi );
+          //   QnA_2[1] += w*sin( 2*caloPhi );
+          //   QnA_2_count += w;
           
-            QnB_1[0] += w*cos( 2*caloPhi );
-            QnB_1[1] += w*sin( 2*caloPhi );
-            QnB_1_count += w;
+          //   QnB_1[0] += w*cos( 2*caloPhi );
+          //   QnB_1[1] += w*sin( 2*caloPhi );
+          //   QnB_1_count += w;
 
-          }
+          // }
 
           if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
             
@@ -561,28 +515,25 @@ calculate v2 using 3 sub-events method:
   c2_ab->Fill( QaQb, ETT[1]*ETT[0] );
 
 /*
-calculate SP v2 
+calculate v2{2} with eta gap of 2 
  */  
   
-  double QnQnA_case1 = get2Real(Qn_1[0]/Qn_1_count, QnA_1[0]/QnA_1_count, Qn_1[1]/Qn_1_count, -QnA_1[1]/QnA_1_count);
-  QnQnA[0]->Fill(QnQnA_case1, Qn_1_count*QnA_1_count);
-  double QnQnA_case2 = get2Real(Qn_2[0]/Qn_2_count, QnA_2[0]/QnA_2_count, Qn_2[1]/Qn_2_count, -QnA_2[1]/QnA_2_count);
-  QnQnA[1]->Fill(QnQnA_case2, Qn_2_count*QnA_2_count);
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+    for(int jeta = 0; jeta < NetaBins; jeta++){
 
-  double QnAQnB_case1 = get2Real(QnA_1[0]/QnA_1_count, QnB_1[0]/QnB_1_count, QnA_1[1]/QnA_1_count, -QnB_1[1]/QnB_1_count);
-  QnAQnB[0]->Fill(QnAQnB_case1, QnA_1_count*QnB_1_count);
-  double QnAQnB_case2 = get2Real(QnA_2[0]/QnA_2_count, QnB_2[0]/QnB_2_count, QnA_2[1]/QnA_2_count, -QnB_2[1]/QnB_2_count);
-  QnAQnB[1]->Fill(QnAQnB_case2, QnA_2_count*QnB_2_count);
+      double deltaEta = fabs(etaBins_[ieta] - etaBins_[jeta]);
 
-  double QnAQnC_case1 = get2Real(QnA_1[0]/QnA_1_count, QnC_1[0]/QnC_1_count, QnA_1[1]/QnA_1_count, -QnC_1[1]/QnC_1_count);
-  QnAQnC[0]->Fill(QnAQnC_case1, QnA_1_count*QnC_1_count);
-  double QnAQnC_case2 = get2Real(QnA_2[0]/QnA_2_count, QnC_2[0]/QnC_2_count, QnA_2[1]/QnA_2_count, -QnC_2[1]/QnC_2_count);
-  QnAQnC[1]->Fill(QnAQnC_case2, QnA_2_count*QnC_2_count);
+      if( deltaEta < 2.0 ) continue;
 
-  double QnBQnC_case1 = get2Real(QnB_1[0]/QnB_1_count, QnC_1[0]/QnC_1_count, QnB_1[1]/QnB_1_count, -QnC_1[1]/QnC_1_count);
-  QnBQnC[0]->Fill(QnBQnC_case1, QnB_1_count*QnC_1_count);
-  double QnBQnC_case2 = get2Real(QnB_2[0]/QnB_2_count, QnC_2[0]/QnC_2_count, QnB_2[1]/QnB_2_count, -QnC_2[1]/QnC_2_count);
-  QnBQnC[1]->Fill(QnBQnC_case2, QnB_2_count*QnC_2_count);
+      double Q_real = get2Real(QnC[ieta][0]/QnC_count[ieta],QnC[jeta][0]/QnC_count[jeta],QnC[ieta][1]/QnC_count[ieta],-QnC[jeta][1]/QnC_count[jeta]);
+      double Q_imag = get2Imag(QnC[ieta][0]/QnC_count[ieta],QnC[jeta][0]/QnC_count[jeta],QnC[ieta][1]/QnC_count[ieta],-QnC[jeta][1]/QnC_count[jeta]);
+
+      QnCQnC[0]->Fill(Q_real, QnC_count[ieta]*QnC_count[jeta]);
+      QnCQnC[1]->Fill(Q_imag, QnC_count[ieta]*QnC_count[jeta]);
+
+    }
+  }
+
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -638,10 +589,7 @@ ThreePointCorrelatorEtaGapQ2::beginJob()
 
   for(int i = 0; i < 2; i++){
 
-    QnQnA[i] = fs->make<TH1D>(Form("QnQnA_%d", i), "QnQnA", 2000, -1, 1);
-    QnAQnB[i] = fs->make<TH1D>(Form("QnAQnB_%d", i), "QnAQnB", 2000, -1, 1);
-    QnAQnC[i] = fs->make<TH1D>(Form("QnAQnC_%d", i), "QnAQnC", 2000, -1, 1);
-    QnBQnC[i] = fs->make<TH1D>(Form("QnBQnC_%d", i), "QnBQnC", 2000, -1, 1);
+    QnCQnC[i] = fs->make<TH1D>(Form("QnCQnC_%d", i), "QnCQnC", 2000, -1, 1);
 
   }
 
