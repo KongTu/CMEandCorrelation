@@ -36,7 +36,8 @@ ThreePointCorrelatorEtaGapQ2::ThreePointCorrelatorEtaGapQ2(const edm::ParameterS
   messAcceptance_ = iConfig.getUntrackedParameter<bool>("messAcceptance");
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
   do3pTracker_ = iConfig.getUntrackedParameter<bool>("do3pTracker");
-  
+  doTrackerQ2_ = iConfig.getUntrackedParameter<bool>("doTrackerQ2");
+
   etaTracker_ = iConfig.getUntrackedParameter<double>("etaTracker");
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
@@ -179,6 +180,28 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
   
   Ntrk->Fill(nTracks);
 
+//q2 from HF
+
+  double qHFcos = 0.;
+  double qHFsin = 0.;
+  double qHF_count = 0.;
+  for(unsigned i = 0; i < towers->size(); ++i){
+
+          const CaloTower & hit= (*towers)[i];
+
+          double caloEta = hit.eta();
+          double caloPhi = hit.phi();
+          double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+          if( reverseBeam_ ) caloEta = -hit.eta();
+
+    if( caloEta < -5.0 || caloEta > -3.0 ) continue;
+
+    qHFcos += w*cos(2*caloPhi);
+    qHFsin += w*sin(2*caloPhi);
+    qHF_count += w;
+
+  }
+
   for(unsigned it = 0; it < tracks->size(); it++){
 
      const reco::Track & trk = (*tracks)[it];
@@ -266,16 +289,25 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
         }     
   } 
 
-  double q2_real = QcosTRK/QcountsTrk;
-  double q2_imag = QsinTRK/QcountsTrk;
-  double magnitude = sqrt(q2_imag*q2_imag + q2_real*q2_real);
+  double q2tracker_real = QcosTRK/QcountsTrk;
+  double q2tracker_imag = QsinTRK/QcountsTrk;
+  double magnitude_tracker = sqrt(q2tracker_imag*q2tracker_imag + q2tracker_real*q2tracker_real);
 
+  double q2HF_real = qHFcos/qHF_count;
+  double q2HF_imag = qHFsin/qHF_count;
+  double magnitude_HF = sqrt(q2HF_imag*q2HF_imag + q2HF_real*q2HF_real);
 
-  if( magnitude > q2max_ || magnitude < q2min_ ) return;
+  q2_tracker_HF->Fill(magnitude_tracker, magnitude_HF);
 
-
-  q2_mag->Fill( magnitude );
-
+  if( doTrackerQ2_ ){
+    if( magnitude_tracker > q2max_ || magnitude_tracker < q2min_ ) return; 
+    q2_mag->Fill( magnitude_tracker );
+  }
+  else{
+    if( magnitude_HF > q2max_ || magnitude_HF < q2min_ ) return; 
+    q2_mag->Fill( magnitude_HF );
+  }
+  
 //loop over calo towers (HF)
 
   double Q3[2][2];
@@ -586,7 +618,9 @@ ThreePointCorrelatorEtaGapQ2::beginJob()
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
+  q2_tracker_HF = fs->make<TH2D>("q2_tracker_HF",";tracker Q2;HF Q2", 1000,0,1,1000,0,1);
 
+  
   for(int i = 0; i < 2; i++){
 
     QnCQnC[i] = fs->make<TH1D>(Form("QnCQnC_%d", i), "QnCQnC", 2000, -1, 1);
