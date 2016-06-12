@@ -194,7 +194,7 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
           double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
           if( reverseBeam_ ) caloEta = -hit.eta();
 
-    if( caloEta < -5.0 || caloEta > -3.0 ) continue;
+    if( caloEta < 3.0 || caloEta > 5.0 ) continue;
 
     qHFcos += w*cos(2*caloPhi);
     qHFsin += w*sin(2*caloPhi);
