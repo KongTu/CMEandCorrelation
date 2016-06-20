@@ -98,7 +98,7 @@ double getAverageHist( TH1D* hist ){
 
 void plotCorrectionTreeNtrk(){
 
-	TFile* file = new TFile("../rootfiles/test_tree_1.root");
+	TFile* file = new TFile("../rootfiles/test_tree.root");
 	TTree* tree = (TTree*)file->Get("ana_tree/trackTree");
 
 	int nTrk;

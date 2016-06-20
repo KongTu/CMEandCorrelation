@@ -5,7 +5,7 @@ using namespace std;
 void findQ2(){
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v2_1.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v9.root");
 	TH2D* q2_tracker_HF = (TH2D*) file->Get("ana/q2_tracker_HF");
 	TH1D* q2_mag = (TH1D*) q2_tracker_HF->ProjectionY("q2_mag", 1,1000);
 
@@ -16,7 +16,7 @@ void findQ2(){
 
 		double ratio = num/total;
 
-		if( ratio < 0.8 && ratio > 0.79){
+		if( ratio < 0.95 && ratio > 0.945){
 
 			cout << "bin number: " << i << endl;
 		}

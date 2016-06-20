@@ -60,7 +60,7 @@ void plotDeltaEtaResult(){
 	//file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_4.root");
 
 	//file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_4.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_4.root");
 	
 	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
 

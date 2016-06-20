@@ -128,14 +128,14 @@ void makeTGraph_pPb(){
 					double deltaEtaWeight = delEta3p[mult][sign][HF]->GetBinContent( deta+1 );
 
 					threeParticleNtrk[mult][sign][HF] += Q_total_real_dEta*deltaEtaWeight;
-					threeParticleNtrkError[mult][sign][HF] += (Q_total_real_dEta_error*Q_total_real_dEta_error)*(deltaEtaWeight*deltaEtaWeight);
+					double temp = (Q_total_real_dEta_error*Q_total_real_dEta_error)*(deltaEtaWeight*deltaEtaWeight);
+					threeParticleNtrkError[mult][sign][HF] += temp;
 					totalWeight[mult][sign][HF] += deltaEtaWeight;
 
 				}
 			}
 		}
-	}
-	
+	}	
 	//pPb:
 	for(int sign = 0; sign < 3; sign++){
 		for(int HF = 0; HF < 2; HF++){
@@ -145,8 +145,10 @@ void makeTGraph_pPb(){
 				double value = threeParticleNtrk[mult][sign][HF]/totalWeight[mult][sign][HF];
 				value = value/v2[mult][HF];
 				hist1[sign][HF]->SetBinContent( mult+1, value);
+				
 				double error = threeParticleNtrkError[mult][sign][HF]/(totalWeight[mult][sign][HF]*totalWeight[mult][sign][HF]);
-				hist1[sign][HF]->SetBinError( mult+1, sqrt(error));
+				error = sqrt(error)/v2[mult][HF];
+				hist1[sign][HF]->SetBinError( mult+1, error);
 
 			}
 		}

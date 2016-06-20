@@ -37,15 +37,15 @@ void makeTGraph_PbPb(){
 	// file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
 	// file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_8.root");
 
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_1.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_2.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_3.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_4.root");
-	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_5.root");
-	file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_6.root");
-	file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_7.root");
-	file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_8.root");
-	file[8] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v3_9.root");
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_1.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_2.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_3.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_4.root");
+	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_5.root");
+	file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_6.root");
+	file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_7.root");
+	file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_8.root");
+	file[8] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_9.root");
 
 	TH1D* QvsdEta[30][48][3][2];
 
@@ -159,7 +159,8 @@ void makeTGraph_PbPb(){
 				value = value/v2[mult][HF];
 				hist1[sign][HF]->SetBinContent( mult+1, value);
 				double error = threeParticleNtrkError[mult][sign][HF]/(totalWeight[mult][sign][HF]*totalWeight[mult][sign][HF]);
-				hist1[sign][HF]->SetBinError( mult+1, sqrt(error));
+				error = sqrt(error)/v2[mult][HF];
+				hist1[sign][HF]->SetBinError( mult+1, error);
 
 			}
 		}

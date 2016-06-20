@@ -43,38 +43,6 @@ const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
 double ntrkbins[] = {0.0, 20.0, 40.0, 60.0, 80.0, 100.0, 120.0, 150.0, 185.0, 220.0, 260.0, 300.0};
 const int Nntrkbins = sizeof(ntrkbins) / sizeof(ntrkbins[0]) - 1;
 
-//base hist for plotting:
-TH1D* hist = makeHistDifferentBins("hist","","#Delta#eta", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>/v_{2,3}", NdEtaBins, dEtaBins, kBlack);
-TH1D* hist2 = makeHistDifferentBins("hist2","","N^{offline}_{trk}", "<cos(#phi_{1}+#phi_{2}-2#phi_{3})>/v_{2,3}", Nntrkbins, ntrkbins, kBlack);
-
-TH1D* show1[3];
-TH1D* show2[3];
-TH1D* show3[3];
-
-TH1D* ntrk1[3];
-TH1D* ntrk2[3];
-TH1D* ntrk3[3];
-
-TH1D* corrHistPlusPlus[3]; 
-TH1D* corrHistMinusMinus[3]; 
-TH1D* corrHistPlusMinus[3]; 
-
-TH1D* corrVsEtaPlusPlus1D[3][48];
-TH1D* corrVsEtaMinusMinus1D[3][48];
-TH1D* corrVsEtaPlusMinus1D[3][48];
-
-TH1D* Qplusplus1D[3][48];
-TH1D* Qminusminus1D[3][48];
-TH1D* Qplusminus1D[3][48];
-TH1D* Qminusplus1D[3][48];
-
-TH1D* Qplusplus1Dntrk[3][48];
-TH1D* Qminusminus1Dntrk[3][48];
-TH1D* Qplusminus1Dntrk[3][48];
-TH1D* Qminusplus1Dntrk[3][48];
-
-
-
 //****** member functions **********//
 
 double getV2( TH1D* hist ){
@@ -155,15 +123,6 @@ double getWeightedSum( TH1D* hist1, TH1D* hist2 ){
 
 }
 
-double getReal(double cos1, double cos2, double cos3, double sin1, double sin2, double sin3){
 
-  double t1 = cos1*cos2*cos3;
-  double t2 = cos1*sin2*sin3;
-  double t3 = cos2*sin1*sin3;
-  double t4 = sin1*sin2*cos3;
-
-  return t1+t2+t3-t4;
-
-}
 
 	

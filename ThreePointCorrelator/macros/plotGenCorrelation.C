@@ -81,8 +81,8 @@ void plotGenCorrelation(){
 	}
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v12.root");
-	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v51.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v40.root");
+	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v46.root");
 	TFile* file2 = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3and4.root");
 
 	TH1D* delEta3p[3][2];
@@ -351,10 +351,10 @@ void plotGenCorrelation(){
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(43);
-    w2->AddEntry(temp, "same GEN");
-    w2->AddEntry(temp2, "opposite GEN");
-    w2->AddEntry(temp3, "same RECO");
-    w2->AddEntry(temp4, "opposite RECO");
+    w2->AddEntry(temp, "same Ridge cut");
+    w2->AddEntry(temp2, "opposite Ridge cut");
+    w2->AddEntry(temp3, "same CME cut");
+    w2->AddEntry(temp4, "opposite CME cut");
     w2->Draw("same");
 
     TLine* l1 = new TLine(0,0.00007,4.8,0.00007);
@@ -523,10 +523,7 @@ void plotGenCorrelation(){
 
 	}
 
-	return;
-
-
-    TCanvas* c2 = makeCanvas("c2","c2");
+    TCanvas* c6 = makeCanvas("c6","c6");
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.20);
 	gPad->SetBottomMargin(0.16);

@@ -41,8 +41,25 @@ double get2Imag( double R1, double R2, double I1, double I2){
 	return imag;
 }
 
+double get3RealOverlap(double R1, double R2, double R3, double I1, double I2, double I3, double N1, double N2, double N3){
+
+      double t1 = (R1*R1 - I1*I1 - R2)*R3;
+      double t2 = (2*R1*I1-I2)*I3;
+      double N = (N1*N1-N2)*N3;
+
+      if( N == 0.0 ){return 0.0;}
+      else{return (t1-t2)/N;}
+
+}
+
 void plotEtaDependence(){
 
+
+
+	cout << "before: " << get3RealOverlap(1.78862,1.20387,0.0927029,0.139372,0.18876, 0.0823238, 2, 2, 2.33165) << endl;
+	cout << "after: "  << get3RealOverlap(2.3919,2.15042,0.0927029,0.190583,0.357529, 0.0823238, 2.67494, 3.5777, 2.33165) << endl;
+
+	return;
 
 	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_etatest_v1.root");
 
