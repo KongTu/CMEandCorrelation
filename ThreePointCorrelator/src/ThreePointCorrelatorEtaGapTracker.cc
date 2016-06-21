@@ -46,6 +46,7 @@ ThreePointCorrelatorEtaGapTracker::ThreePointCorrelatorEtaGapTracker(const edm::
   ptHigh_ = iConfig.getUntrackedParameter<double>("ptHigh");
   holeLeft_ = iConfig.getUntrackedParameter<double>("holeLeft");
   holeRight_ = iConfig.getUntrackedParameter<double>("holeRight");
+  etaGap_ = iConfig.getUntrackedParameter<double>("etaGap");
 
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
@@ -366,7 +367,7 @@ ThreePointCorrelatorEtaGapTracker::analyze(const edm::Event& iEvent, const edm::
       double deltaEta13 = fabs(etaBins_[ieta] - etaBins_[keta]);
       double deltaEta23 = fabs(etaBins_[jeta] - etaBins_[keta]);
 
-      if( deltaEta13 < 2.0 || deltaEta23 < 2.0 ) continue;
+      if( deltaEta13 < etaGap_ || deltaEta23 < etaGap_ ) continue;
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta12 > dEtaBinsArray[deta] && deltaEta12 < dEtaBinsArray[deta+1] ){
