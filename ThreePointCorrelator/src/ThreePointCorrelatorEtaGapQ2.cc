@@ -125,6 +125,26 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
   double QsinTRK = 0.;
   double QcountsTrk = 0;
 
+  double QcosTRK_1[2];
+  double QsinTRK_1[2];
+  double QcountsTrk_1[2];
+
+  double QcosTRK_2[2];
+  double QsinTRK_2[2];
+  double QcountsTrk_2[2];
+
+  for(int i = 0; i < 2; i++){
+
+    QcosTRK_1[i] = 0.;
+    QsinTRK_1[i] = 0.;
+    QcountsTrk_1[i] = 0.;
+
+    QcosTRK_2[i] = 0.;
+    QsinTRK_2[i] = 0.;
+    QcountsTrk_2[i] = 0.;
+
+  }
+
   double Q1[NetaBins][2][2];
   double Q1_count[NetaBins][2];
 
@@ -239,6 +259,31 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
         QcosTRK += weight*cos( 2*phiangle );
         QsinTRK += weight*sin( 2*phiangle );
         QcountsTrk += weight;
+
+        if( trk.charge() == 1 ){
+
+          QcosTRK_1[0] += weight*cos( phiangle );
+          QsinTRK_1[0] += weight*sin( phiangle );
+          QcountsTrk_1[0] += weight;
+
+          QcosTRK_2[0] += weight*cos( 2*phiangle );
+          QsinTRK_2[0] += weight*sin( 2*phiangle );
+          QcountsTrk_2[0] += weight*weight;
+
+        }
+        if( trk.charge() = -1 ){
+
+          QcosTRK_1[1] += weight*cos( phiangle );
+          QsinTRK_1[1] += weight*sin( phiangle );
+          QcountsTrk_1[1] += weight;
+
+          QcosTRK_2[1] += weight*cos( 2*phiangle );
+          QsinTRK_2[1] += weight*sin( 2*phiangle );
+          QcountsTrk_2[1] += weight*weight;
+
+        }
+
+        
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
@@ -528,6 +573,27 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
     }
   }
 
+//event by event the average 3p cos vs 2p cos
+
+  double Qvector_HFplus_pp = get3RealOverlap(QcosTRK_1[0], QcosTRK_2[0], Q3[0][0], QsinTRK_1[0], QsinTRK_2[0], Q3[0][1], QcountsTrk_1[0], QcountsTrk_2[0], ETT[0] );
+  double Qvector_HFplus_mm = get3RealOverlap(QcosTRK_1[1], QcosTRK_2[1], Q3[0][0], QsinTRK_1[1], QsinTRK_2[1], Q3[0][1], QcountsTrk_1[1], QcountsTrk_2[1], ETT[0] );
+  double Qvector_HFplus_pm = get3Real(QcosTRK_1[0]/QcountsTrk_1[0], QcosTRK_1[1]/QcountsTrk_1[1], Q3[0][0]/ETT[0], QsinTRK_1[0]/QcountsTrk_1[0], QsinTRK_1[1]/QcountsTrk_1[1], Q3[0][1]/ETT[0] );
+
+  double Qvector_HFminus_pp = get3RealOverlap(QcosTRK_1[0], QcosTRK_2[0], Q3[1][0], QsinTRK_1[0], QsinTRK_2[0], Q3[1][1], QcountsTrk_1[0], QcountsTrk_2[0], ETT[1] );
+  double Qvector_HFminus_mm = get3RealOverlap(QcosTRK_1[1], QcosTRK_2[1], Q3[1][0], QsinTRK_1[1], QsinTRK_2[1], Q3[1][1], QcountsTrk_1[1], QcountsTrk_2[1], ETT[1] );
+  double Qvector_HFminus_pm = get3Real(QcosTRK_1[0]/QcountsTrk_1[0], QcosTRK_1[1]/QcountsTrk_1[1], Q3[1][0]/ETT[1], QsinTRK_1[0]/QcountsTrk_1[0], QsinTRK_1[1]/QcountsTrk_1[1], Q3[1][1]/ETT[1] );
+
+  double v2_vector_in_HFplus = get2Real(QcosTRK/QcountsTrk, Q3[0][0]/ETT[0], QsinTRK/QcountsTrk, Q3[0][1]/ETT[0]);
+  double v2_vector_in_HFminus = get2Real(QcosTRK/QcountsTrk, Q3[1][0]/ETT[1], QsinTRK/QcountsTrk, Q3[1][1]/ETT[1]);
+
+  QvsV2[0][0]->Fill(v2_vector_in_HFplus, Qvector_HFplus_pp);
+  QvsV2[1][0]->Fill(v2_vector_in_HFplus, Qvector_HFplus_mm);
+  QvsV2[2][0]->Fill(v2_vector_in_HFplus, Qvector_HFplus_pm);
+
+  QvsV2[0][1]->Fill(v2_vector_in_HFminus, Qvector_HFminus_pp);
+  QvsV2[1][1]->Fill(v2_vector_in_HFminus, Qvector_HFminus_mm);
+  QvsV2[2][1]->Fill(v2_vector_in_HFminus, Qvector_HFminus_pm);
+
 /*
 calculate v2 using 3 sub-events method:
  */
@@ -620,7 +686,13 @@ ThreePointCorrelatorEtaGapQ2::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   q2_tracker_HF = fs->make<TH2D>("q2_tracker_HF",";tracker Q2;HF Q2", 1000,0,1,1000,0,1);
 
-  
+  for(int sign = 0; sign < 3; sign++){
+    for(int HF = 0; HF < HFside; HF++){
+      QvsV2[sign][HF] = fs->make<TH2D>(Form("QvsV2_%d_%d", sign, HF), ";<2p>;<3p>", 20000,-1,1,20000,-1,1 );
+    }
+  }
+
+
   for(int i = 0; i < 2; i++){
 
     QnCQnC[i] = fs->make<TH1D>(Form("QnCQnC_%d", i), "QnCQnC", 2000, -1, 1);
