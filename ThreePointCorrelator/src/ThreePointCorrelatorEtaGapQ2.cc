@@ -271,7 +271,8 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
           QcountsTrk_2[0] += weight*weight;
 
         }
-        if( trk.charge() = -1 ){
+
+        if( trk.charge() == -1 ){
 
           QcosTRK_1[1] += weight*cos( phiangle );
           QsinTRK_1[1] += weight*sin( phiangle );
