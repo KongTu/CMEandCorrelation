@@ -687,7 +687,7 @@ ThreePointCorrelatorEtaGapQ2::beginJob()
 
   for(int sign = 0; sign < 3; sign++){
     for(int HF = 0; HF < HFside; HF++){
-      QvsV2[sign][HF] = fs->make<TH2D>(Form("QvsV2_%d_%d", sign, HF), ";<2p>;<3p>", 20000,-1,1,20000,-1,1 );
+      QvsV2[sign][HF] = fs->make<TH2D>(Form("QvsV2_%d_%d", sign, HF), ";<2p>;<3p>", 2000,-1,1,2000,-1,1 );
     }
   }
 
