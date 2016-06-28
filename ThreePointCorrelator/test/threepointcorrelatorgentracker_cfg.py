@@ -29,11 +29,11 @@ process.source = cms.Source("PoolSource",
 )
 )
 
-process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatorgen_cfi")
+process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatorgentracker_cfi")
 
 #define the cuts
-process.ana.Nmin = 90
-process.ana.Nmax = 120
+process.ana.Nmin = 40
+process.ana.Nmax = 1000
 
 process.TFileService = cms.Service("TFileService",fileName = cms.string("test_gen.root"))
 process.p = cms.Path( process.ana )

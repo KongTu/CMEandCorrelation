@@ -33,15 +33,17 @@ process.source = cms.Source("PoolSource",
 #'/store/user/davidlw/EPOS_GEN-SIM_1M_batch15/RecoSkim_ReTracking_v4/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_10_1_mWu.root'
 #'root://cmsxrootd.fnal.gov//store/user/davidlw/HIMinBiasUPC/PR2011_MBPPRereco_TRKANASKIM_v6/ccf03100d177f42de0f9cdc7627799d3/pPb_HM_1000_1_lq0.root'
 #'/store/user/davidlw/HIMinBiasUPC/PR2011_MBPPRereco_TRKANASKIM_v6/ccf03100d177f42de0f9cdc7627799d3/pPb_HM_1002_1_nsm.root'
-#'root://cmsxrootd.fnal.gov//store/user/gsfs/EPOSpPb_5TeV_HM150/EPOS_HM150_pPb_5TeV_RECODEBUG_20160530/160531_003234/0000/EPOSpPb_RAW2DIGI_L1Reco_RECO_10.root'
 )
 )
 
-process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatoretagap_cfi")
+process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatoretagaptracker_cfi")
 
 #define the cuts
 process.ana.Nmin = 185
 process.ana.Nmax = 220
+process.ana.etaGap = 0.1
+process.ana.ptHigh = 5.0
+process.ana.etaTracker = 0.8
 process.ana.doEffCorrection = True
 
 process.TFileService = cms.Service("TFileService",fileName = cms.string("test.root"))

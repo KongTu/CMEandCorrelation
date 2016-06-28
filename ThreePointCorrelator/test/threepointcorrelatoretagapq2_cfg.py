@@ -37,14 +37,14 @@ process.source = cms.Source("PoolSource",
 )
 )
 
-process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatoretagap_cfi")
+process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatoretagapq2_cfi")
 
 #define the cuts
 process.ana.Nmin = 185
-process.ana.Nmax = 220
+process.ana.Nmax = 260
 process.ana.doEffCorrection = True
 
-process.TFileService = cms.Service("TFileService",fileName = cms.string("test.root"))
+process.TFileService = cms.Service("TFileService",fileName = cms.string("test_q2.root"))
 process.p = cms.Path(   process.hltHM*
                         process.ana
                                     )

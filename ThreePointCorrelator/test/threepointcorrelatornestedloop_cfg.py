@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("Demo")
 
-process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
+#process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
@@ -23,18 +23,16 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
 #'file:/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/pPb_HM_1000_1_BPd.root'
 'file:/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/pPb_MB_100_2_s6H.root'
-#'/store/user/davidlw/ReggeGribovPartonMCfix_EposLHC_5TeV_pPb/RecoSkim_ReTracking_v4_5M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_101_2_GwZ.root',
-#'/store/user/davidlw/ReggeGribovPartonMCfix_EposLHC_5TeV_pPb/RecoSkim_ReTracking_v4_5M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_102_2_jJu.root'
 #'root://xrootd-cms.infn.it//store/user/davidlw/Hijing_PPb502_MinimumBias/RecoSkim_ReTracking_v4_10M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_100_1_yjL.root'
 )
 )
 
-process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatorgen_cfi")
+process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatornestedloop_cfi")
 
 #define the cuts
-process.ana.Nmin = 90
-process.ana.Nmax = 120
+process.ana.Nmin = 40
+process.ana.Nmax = 1000
 
-process.TFileService = cms.Service("TFileService",fileName = cms.string("test_gen.root"))
+process.TFileService = cms.Service("TFileService",fileName = cms.string("test_gen_nested.root"))
 process.p = cms.Path( process.ana )
                                     

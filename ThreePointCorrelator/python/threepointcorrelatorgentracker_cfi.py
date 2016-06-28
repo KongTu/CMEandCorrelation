@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 				
-ana = cms.EDAnalyzer('ThreePointCorrelatorGen',
+ana = cms.EDAnalyzer('ThreePointCorrelatorGenTracker',
                                                   vertexSrc = cms.string('offlinePrimaryVertices'),
                                                   trackSrc = cms.InputTag('generalTracks'),
                                                   towerSrc = cms.InputTag('towerMaker'),

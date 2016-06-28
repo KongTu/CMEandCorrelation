@@ -1,8 +1,20 @@
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("Demo")
+process.Timing = cms.Service("Timing")
+#process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
-process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
+import HLTrigger.HLTfilters.hltHighLevel_cfi
+process.hltHM = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
+process.hltHM.HLTPaths = ['HLT_PAPixelTracks_Multiplicity100_v*',
+                          'HLT_PAPixelTracks_Multiplicity130_v*',
+                          'HLT_PAPixelTracks_Multiplicity160_v*'
+                          #'HLT_PAPixelTracks_Multiplicity190_v*'
+                          #'HLT_PAPixelTracks_Multiplicity220_v*'
+]
+
+process.hltHM.andOr = cms.bool(True)
+process.hltHM.throw = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
@@ -27,24 +39,18 @@ process.source = cms.Source("PoolSource",
 #'root://xrootd-cms.infn.it//store/user/davidlw/Hijing_PPb502_MinimumBias/RecoSkim_ReTracking_v4_10M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_100_1_yjL.root'
 'file:/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/pPb_HM_1000_1_BPd.root'
 #'file:/afs/cern.ch/work/z/ztu/CME/CMSSW_5_3_20/src/CMEandCorrelation/ThreePointCorrelator/test/pPb_MB_100_2_s6H.root'
-#'/store/user/davidlw/ReggeGribovPartonMCfix_EposLHC_5TeV_pPb/RecoSkim_ReTracking_v4_5M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_101_2_GwZ.root',
-#'/store/user/davidlw/ReggeGribovPartonMCfix_EposLHC_5TeV_pPb/RecoSkim_ReTracking_v4_5M/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_102_2_jJu.root'
 #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAMinBiasUPC/PA2013_FlowCorr_PromptReco_MB_Gplus_Rereco_ReTracking_v18/25c9a89be536a41c8ccb3c75e9fd9358/pPb_HM_1000_1_Bgt.root'
-#'/store/user/davidlw/EPOS_GEN-SIM_1M_batch15/RecoSkim_ReTracking_v4/5cde49c8740ff28f897f533d05a99dbc/pPb_MB_10_1_mWu.root'
-#'root://cmsxrootd.fnal.gov//store/user/davidlw/HIMinBiasUPC/PR2011_MBPPRereco_TRKANASKIM_v6/ccf03100d177f42de0f9cdc7627799d3/pPb_HM_1000_1_lq0.root'
-#'/store/user/davidlw/HIMinBiasUPC/PR2011_MBPPRereco_TRKANASKIM_v6/ccf03100d177f42de0f9cdc7627799d3/pPb_HM_1002_1_nsm.root'
-#'root://cmsxrootd.fnal.gov//store/user/gsfs/EPOSpPb_5TeV_HM150/EPOS_HM150_pPb_5TeV_RECODEBUG_20160530/160531_003234/0000/EPOSpPb_RAW2DIGI_L1Reco_RECO_10.root'
 )
 )
 
 process.load("CMEandCorrelation.ThreePointCorrelator.threepointcorrelatoretagap_cfi")
 
 #define the cuts
-process.ana.Nmin = 185
-process.ana.Nmax = 220
-process.ana.doEffCorrection = True
+process.ana_nested.Nmin = 185
+process.ana_nested.Nmax = 220
+process.ana_nested.doEffCorrection = True
 
-process.TFileService = cms.Service("TFileService",fileName = cms.string("test.root"))
+process.TFileService = cms.Service("TFileService",fileName = cms.string("test_nested.root"))
 process.p = cms.Path(   process.hltHM*
-                        process.ana
+			process.ana_nested
                                     )
