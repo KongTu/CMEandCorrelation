@@ -201,8 +201,6 @@ class ThreePointCorrelatorEtaGap : public edm::EDAnalyzer {
 
 //end v2
 
-      TH2D* QvsV2[3][2];
-
       TH1D* QvsdEta[48][3][2];
       TH1D* PvsdEta[48][3];
 
@@ -306,6 +304,8 @@ class ThreePointCorrelatorEtaGapQ2 : public edm::EDAnalyzer {
       TH1D* aveQ3[2][2];//calculate the correction on v2
 
 //end v2
+
+      TH2D* QvsV2[3][2];
 
       TH1D* QvsdEta[48][3][2];
       TH1D* PvsdEta[48][3];
