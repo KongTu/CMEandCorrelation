@@ -343,6 +343,26 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
 
   q2_tracker_HF->Fill(magnitude_tracker, magnitude_HF);
 
+/*
+average v2 in the tracker with a gap of 2
+*/
+
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+    for(int jeta = 0; jeta < NetaBins; jeta++){
+
+      double deltaEta = fabs(etaBins_[ieta] - etaBins_[jeta]);
+
+      if( deltaEta < 2.0 ) continue;
+
+      double Q_real = get2Real(QnC[ieta][0]/QnC_count[ieta],QnC[jeta][0]/QnC_count[jeta],QnC[ieta][1]/QnC_count[ieta],-QnC[jeta][1]/QnC_count[jeta]);
+      double Q_imag = get2Imag(QnC[ieta][0]/QnC_count[ieta],QnC[jeta][0]/QnC_count[jeta],QnC[ieta][1]/QnC_count[ieta],-QnC[jeta][1]/QnC_count[jeta]);
+
+      QnCQnC_ave[0]->Fill(Q_real, QnC_count[ieta]*QnC_count[jeta]);
+      QnCQnC_ave[1]->Fill(Q_imag, QnC_count[ieta]*QnC_count[jeta]);
+
+    }
+  }
+
   if( doTrackerQ2_ ){
     if( magnitude_tracker > q2max_ || magnitude_tracker < q2min_ ) return; 
     q2_mag->Fill( magnitude_tracker );
@@ -350,6 +370,7 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
   else{
     if( magnitude_HF > q2max_ || magnitude_HF < q2min_ ) return; 
     q2_mag->Fill( magnitude_HF );
+    Ntrk_Q2->Fill(nTracks);
   }
   
 //loop over calo towers (HF)
@@ -363,7 +384,6 @@ ThreePointCorrelatorEtaGapQ2::analyze(const edm::Event& iEvent, const edm::Event
       Q3[i][j] = 0.;
     }
   }
-
 
   if( do3pTracker_ ){
 
@@ -675,6 +695,7 @@ ThreePointCorrelatorEtaGapQ2::beginJob()
   effTable = (TH2D*)f1.Get("recoHist");
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
+  Ntrk_Q2 = fs->make<TH1D>("Ntrk_Q2",";Ntrk", 5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
@@ -695,6 +716,7 @@ ThreePointCorrelatorEtaGapQ2::beginJob()
   for(int i = 0; i < 2; i++){
 
     QnCQnC[i] = fs->make<TH1D>(Form("QnCQnC_%d", i), "QnCQnC", 2000, -1, 1);
+    QnCQnC_ave[i] = fs->make<TH1D>(Form("QnCQnC_ave_%d", i), "QnCQnC_ave", 2000, -1, 1);
 
   }
 

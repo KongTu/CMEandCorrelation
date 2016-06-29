@@ -278,6 +278,7 @@ class ThreePointCorrelatorEtaGapQ2 : public edm::EDAnalyzer {
       TH2D* effTable;
 
       TH1D* Ntrk;
+      TH1D* Ntrk_Q2;
       TH1D* vtxZ;
       TH1D* trkPhi;
       TH1D* hfPhi;
@@ -290,6 +291,7 @@ class ThreePointCorrelatorEtaGapQ2 : public edm::EDAnalyzer {
       TH1D* delEta2p[3];
 
       TH1D* QnCQnC[2];
+      TH1D* QnCQnC_ave[2];
 
       TH1D* QnQnA[2];
       TH1D* QnAQnB[2];
