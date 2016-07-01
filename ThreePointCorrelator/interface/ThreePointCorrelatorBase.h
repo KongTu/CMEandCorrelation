@@ -642,6 +642,7 @@ class ThreePointCorrelatorGen : public edm::EDAnalyzer {
 
       //correction table
       TH2D* effTable;
+      TH2D* Ntrk2D;
 
       TH1D* Ntrk;
       TH1D* trkPhi;

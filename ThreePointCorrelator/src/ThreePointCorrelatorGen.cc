@@ -133,6 +133,26 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
   
   Ntrk->Fill(nTracks);
 
+  edm::Handle<reco::GenParticleCollection> genParticleCollection;
+  iEvent.getByLabel(genParticleSrc_, genParticleCollection);
+
+  int nTracks_gen = 0;
+  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+
+    const reco::GenParticle & genCand = (*genParticleCollection)[it];
+    int status = genCand.status();
+    double genpt = genCand.pt();
+    double geneta = genCand.eta();
+    int gencharge = genCand.charge();
+
+    if( status != 1 || gencharge == 0 ) continue;
+    if( genpt < 0.4 || fabs(geneta) > 2.4 ) continue;
+    nTracks_gen++;
+
+  }
+
+  Ntrk2D->Fill(nTracks, nTracks_gen);
+
 //loop over calo towers (HF)
 // initialize Qcos and Qsin
 
@@ -419,6 +439,8 @@ ThreePointCorrelatorGen::beginJob()
   }
   int HFside = 2;
   if( useBothSide_ ) HFside = 1;
+
+  Ntrk2D = fs->make<TH1D>("Ntrk2D",";Ntrk_reco;Ntrk_gen", 5000,0,5000,5000,0,5000);
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
