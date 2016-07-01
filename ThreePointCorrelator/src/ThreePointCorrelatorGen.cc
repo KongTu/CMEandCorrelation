@@ -440,7 +440,7 @@ ThreePointCorrelatorGen::beginJob()
   int HFside = 2;
   if( useBothSide_ ) HFside = 1;
 
-  Ntrk2D = fs->make<TH1D>("Ntrk2D",";Ntrk_reco;Ntrk_gen", 5000,0,5000,5000,0,5000);
+  Ntrk2D = fs->make<TH2D>("Ntrk2D",";Ntrk_reco;Ntrk_gen", 5000,0,5000,5000,0,5000);
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
