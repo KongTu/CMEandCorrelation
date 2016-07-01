@@ -196,8 +196,8 @@ ThreePointCorrelatorGen::analyze(const edm::Event& iEvent, const edm::EventSetup
   int HFside = 2;
   if( useBothSide_ ) HFside = 1;
 
-  edm::Handle<reco::GenParticleCollection> genParticleCollection;
-  iEvent.getByLabel(genParticleSrc_, genParticleCollection);
+  // edm::Handle<reco::GenParticleCollection> genParticleCollection;
+  // iEvent.getByLabel(genParticleSrc_, genParticleCollection);
 
   for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
