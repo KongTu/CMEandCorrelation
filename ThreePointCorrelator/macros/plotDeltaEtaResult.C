@@ -59,10 +59,12 @@ void plotDeltaEtaResult(){
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
 	//file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_4.root");
 
-	//file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_.root");
+	//file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_1.root");
 	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_4.root");
 	
 	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_MB_v4_1.root");
+
+ 	string multrange = "185 #leq N^{offline}_{trk} < 220";
 
 	TH1D* QvsdEta[16][48][3][2];
 
@@ -195,8 +197,8 @@ void plotDeltaEtaResult(){
 
 	TGaxis::SetMaxDigits(3);
 
-	TH1D* base1 = makeHist("base1", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 48,0,4.8,kBlack);
-	TH1D* base2 = makeHist("base2", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 48,0,4.8,kBlack);
+	TH1D* base1 = makeHist("base1", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}", 48,0,4.8,kBlack);
+	TH1D* base2 = makeHist("base2", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}", 48,0,4.8,kBlack);
 
 	base1->GetYaxis()->SetRangeUser(-0.0012,0.001);
 	//base1->GetYaxis()->SetRangeUser(-0.01, 0.03);
@@ -227,8 +229,10 @@ void plotDeltaEtaResult(){
 	base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.4);
 	
 	TH1D* base3 = (TH1D*) base1->Clone("base3");
-	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT (oppo - same)");
-	base3->GetYaxis()->SetRangeUser(-0.0007,0.0018);
+	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c} (oppo - same)");
+	
+	base3->GetYaxis()->SetRangeUser(-0.0012,0.0018);
+	
 	base3->GetYaxis()->SetTitleOffset(1.2);
 	base3->GetXaxis()->SetTitleOffset(1.1);
 	base3->GetYaxis()->SetTitleSize(base3->GetYaxis()->GetTitleSize()*1.2);
@@ -598,7 +602,7 @@ void plotDeltaEtaResult(){
     r33->SetTextColor(kBlack);
     //r33->Draw("same");
 
-    TLatex* lmult = new TLatex(0.20, 0.82, "185 #leq N^{offline}_{trk} < 220");
+    TLatex* lmult = new TLatex(0.20, 0.82, multrange.c_str());
     lmult->SetNDC();
     lmult->SetTextSize(26);
     lmult->SetTextFont(43);
@@ -1117,8 +1121,6 @@ void plotDeltaEtaResult(){
 	temp3_plot->Draw("Psame");
 	temp4->Draw("Psame");
 
-	
-
 
 	TFile t1("../dataPoints/diff.root","RECREATE");
 	diff1->Write();
@@ -1130,8 +1132,6 @@ void plotDeltaEtaResult(){
 	temp4->Write();
 	temp5->Write();
 	temp9->Write();
-//
-
 
 	//c2->Print("../results/deltaEtaResults.pdf");
 

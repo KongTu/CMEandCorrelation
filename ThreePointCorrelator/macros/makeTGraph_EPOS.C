@@ -8,16 +8,12 @@ double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1
 const int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
 double dEtaBins[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
 const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
-double ntrkBins[] = {0,35,60,90,120,150,185,220,260};
+
+
+double ntrkBins[] = {150,185,220,260};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
-int ntrkBinCenter[] = {17.5, 47.5, 75, 105, 135, 167.5, 202.5, 240};
 
-double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
-double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
-
-double PbPb_ntrkCentralityBinCenter[] = {151.6, 270.2, 441.9, 685.4,1024,1376,1721,40000};
-
+double xbinwidth[] = {0.0,0.0,0.0};
 double EPOS_ntrkBinCenter[] = {100.7, 133.7, 158.9};
 const int Nmults = 3;
 
@@ -27,11 +23,11 @@ double total_systematics_PbPb = 0.00014;
 
 void makeTGraph_EPOS(){
 
-	TFile* file[8];
+	TFile* file[3];
 
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v14.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v12_120_150.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v12_150_185.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v18andv16_1.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v18andv16_2.root");
 
 
 	TH1D* QvsdEta[30][48][3][2];
@@ -94,9 +90,9 @@ void makeTGraph_EPOS(){
 		}
 	}
 
-	double threeParticleNtrk[8][3][2];
-	double threeParticleNtrkError[8][3][2];
-	double totalWeight[8][3][2];
+	double threeParticleNtrk[3][3][2];
+	double threeParticleNtrkError[3][3][2];
+	double totalWeight[3][3][2];
 
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
@@ -126,8 +122,10 @@ void makeTGraph_EPOS(){
 				double value = threeParticleNtrk[mult][sign][HF]/totalWeight[mult][sign][HF];
 				value = value/v2[mult][HF];
 				hist1[sign][HF]->SetBinContent( mult+1, value);
+				
 				double error = threeParticleNtrkError[mult][sign][HF]/(totalWeight[mult][sign][HF]*totalWeight[mult][sign][HF]);
-				hist1[sign][HF]->SetBinError( mult+1, sqrt(error));
+				error = sqrt(error)/v2[mult][HF];
+				hist1[sign][HF]->SetBinError( mult+1, error);
 
 			}
 		}
@@ -157,28 +155,33 @@ void makeTGraph_EPOS(){
 	temp4->SetMarkerColor(kBlue);
 	temp4->SetLineColor(kBlue);
 
-    double value1[8];
-    double value1_error[8];
-    double value2[8];
-    double value2_error[8];
-    double value3[8];
-    double value3_error[8];
-    double value4[8];
-    double value4_error[8];
+    double value1[3];
+    double value1_error[3];
+    double value2[3];
+    double value2_error[3];
+    double value3[3];
+    double value3_error[3];
+    double value4[3];
+    double value4_error[3];
 
     for(int mult = 0; mult < 3; mult++){
 
     	value1[mult] = temp1->GetBinContent(mult+1);
-    	value1_error[mult] = temp1->GetBinError(mult+1);
+    	//value1_error[mult] = temp1->GetBinError(mult+1);
+    	value1_error[mult] = 0.0;
 
     	value2[mult] = temp2->GetBinContent(mult+1);
-    	value2_error[mult] = temp2->GetBinError(mult+1);
+    	//value2_error[mult] = temp2->GetBinError(mult+1);
+    	value2_error[mult] = 0.0;
 
     	value3[mult] = temp3->GetBinContent(mult+1);
-    	value3_error[mult] = temp3->GetBinError(mult+1);
+    	//value3_error[mult] = temp3->GetBinError(mult+1);
+    	value3_error[mult] = 0.0;
 
     	value4[mult] = temp4->GetBinContent(mult+1);
-    	value4_error[mult] = temp4->GetBinError(mult+1);
+    	//value4_error[mult] = temp4->GetBinError(mult+1);
+    	value4_error[mult] = 0.0;
+
     }
 
     TGraphErrors* gr1 = new TGraphErrors(3, EPOS_ntrkBinCenter, value1, xbinwidth, value1_error);

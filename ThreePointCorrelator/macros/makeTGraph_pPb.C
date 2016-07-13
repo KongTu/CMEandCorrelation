@@ -136,6 +136,7 @@ void makeTGraph_pPb(){
 			}
 		}
 	}	
+
 	//pPb:
 	for(int sign = 0; sign < 3; sign++){
 		for(int HF = 0; HF < 2; HF++){
@@ -187,6 +188,11 @@ void makeTGraph_pPb(){
     double value4[10];
     double value4_error[10];
 
+    double value5[10];
+    double value5_error[10];
+    double value6[10];
+    double value6_error[10];
+
     for(int mult = 0; mult < Nmults; mult++){
 
     	value1[mult] = temp1->GetBinContent(mult+1);
@@ -200,18 +206,30 @@ void makeTGraph_pPb(){
 
     	value4[mult] = temp4->GetBinContent(mult+1);
     	value4_error[mult] = temp4->GetBinError(mult+1);
+
+    	value5[mult] = v2[mult][0];
+    	value5_error[mult] = QcQb[mult]->GetMeanError();
+
+    	value6[mult] = v2[mult][1];
+    	value6_error[mult] = QaQc[mult]->GetMeanError();
     }
 
     TGraphErrors* gr1 = new TGraphErrors(10, pPb_ntrkBinCenter, value1, xbinwidth, value1_error);
     TGraphErrors* gr2 = new TGraphErrors(10, pPb_ntrkBinCenter, value2, xbinwidth, value2_error);
     TGraphErrors* gr3 = new TGraphErrors(10, pPb_ntrkBinCenter, value3, xbinwidth, value3_error);
     TGraphErrors* gr4 = new TGraphErrors(10, pPb_ntrkBinCenter, value4, xbinwidth, value4_error);
+    TGraphErrors* gr5 = new TGraphErrors(10, pPb_ntrkBinCenter, value5, xbinwidth, value5_error);
+    TGraphErrors* gr6 = new TGraphErrors(10, pPb_ntrkBinCenter, value6, xbinwidth, value6_error);
+
+
 
     TFile t1("../dataPoints/pPb_data.root","RECREATE");
     gr1->Write();
     gr2->Write();
     gr3->Write();
     gr4->Write();
+    gr5->Write();
+    gr6->Write();
 
 
 }

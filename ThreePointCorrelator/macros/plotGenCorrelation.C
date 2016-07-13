@@ -81,8 +81,8 @@ void plotGenCorrelation(){
 	}
 
 
-	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v40.root");
-	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v46.root");
+	TFile* file = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_GEN_v15.root");
+	TFile* file1 = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v53.root");
 	TFile* file2 = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3and4.root");
 
 	TH1D* delEta3p[3][2];
@@ -289,14 +289,14 @@ void plotGenCorrelation(){
 	
 	TH1D* base1 = makeHist("base1","","#Delta#eta", "#LTcos(#phi_{1}-#phi_{2})#GT", 48,0,4.8);
     base1->GetXaxis()->SetTitleColor(kBlack);
-    base1->GetYaxis()->SetRangeUser(-0.01,0.02);
+    base1->GetYaxis()->SetRangeUser(-0.001,0.002);
     base1->GetYaxis()->SetTitleOffset(1.9);
 
     TH1D* base2 = (TH1D*) base1->Clone("base4");
 
 	TH1D* base3 = makeHist("base3","","#Delta#eta", "#LTcos(#phi_{1}+#phi_{2}-2#Psi_{RP})#GT", 48,0,4.8);
     base3->GetXaxis()->SetTitleColor(kBlack);
-    base3->GetYaxis()->SetRangeUser(-0.0025,0.0045);
+    base3->GetYaxis()->SetRangeUser(-0.0005,0.0005);
     base3->GetYaxis()->SetTitleOffset(1.9);
 
     TH1D* base4 = (TH1D*) base3->Clone("base4");
@@ -351,10 +351,10 @@ void plotGenCorrelation(){
     w2->SetFillColor(0);
     w2->SetTextSize(20);
     w2->SetTextFont(43);
-    w2->AddEntry(temp, "same Ridge cut");
-    w2->AddEntry(temp2, "opposite Ridge cut");
-    w2->AddEntry(temp3, "same CME cut");
-    w2->AddEntry(temp4, "opposite CME cut");
+    w2->AddEntry(temp, "same GEN");
+    w2->AddEntry(temp2, "opposite GEN");
+    w2->AddEntry(temp3, "same RECO");
+    w2->AddEntry(temp4, "opposite RECO");
     w2->Draw("same");
 
     TLine* l1 = new TLine(0,0.00007,4.8,0.00007);
@@ -368,8 +368,8 @@ void plotGenCorrelation(){
 		gPad->SetLeftMargin(0.20);
 		gPad->SetBottomMargin(0.16);
 		
-		if(HF == 0) {TH1D* base5 = (TH1D*) base3->Clone();base5->GetYaxis()->SetRangeUser(-0.002, 0.002);base5->SetTitle("Pb-going");base5->Draw();base5->GetYaxis()->SetTitle("RECO - GEN");}
-		if(HF == 1) {TH1D* base6 = (TH1D*) base4->Clone();base6->GetYaxis()->SetRangeUser(-0.002, 0.002);base6->SetTitle("p-going");base6->Draw();base6->GetYaxis()->SetTitle("RECO - GEN");}
+		if(HF == 0) {TH1D* base5 = (TH1D*) base3->Clone();base5->GetYaxis()->SetRangeUser(-0.0005, 0.0005);base5->SetTitle("Pb-going");base5->Draw();base5->GetYaxis()->SetTitle("RECO - GEN");}
+		if(HF == 1) {TH1D* base6 = (TH1D*) base4->Clone();base6->GetYaxis()->SetRangeUser(-0.0005, 0.0005);base6->SetTitle("p-going");base6->Draw();base6->GetYaxis()->SetTitle("RECO - GEN");}
 
 		TH1D* ratio3 = (TH1D*)hist2[0][HF]->Clone("ratio3");
 		ratio3->Add(hist2[1][HF], +1);

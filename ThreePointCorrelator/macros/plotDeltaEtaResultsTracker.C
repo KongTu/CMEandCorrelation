@@ -69,7 +69,7 @@ void plotDeltaEtaResultsTracker(){
 	TFile* file[2];
 
 	//file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_v32_3.root");
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_HM_Systematics_v9.root");
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v12_4.root");
 
 	TH1D* QvsdEta[48][3];
 	TH1D* delEta3p[3];
@@ -136,29 +136,29 @@ void plotDeltaEtaResultsTracker(){
 
 	TH1D* hist1[3];
 	for(int sign = 0; sign < 3; sign++){
-		hist1[sign] = new TH1D(Form("hist1_%d",sign),"test", NdEtaReBins2, dEtaReBins2);
+		hist1[sign] = new TH1D(Form("hist1_%d",sign),"test", NdEtaReBins, dEtaReBins);
 	}	
 	
-	for(int deta = 0; deta < NdEtaReBins2; deta++){
+	for(int deta = 0; deta < NdEtaReBins; deta++){
 		for(int sign = 0; sign < 3; sign++){
 
 			if(deta < 8){
 
-				double Q_total_real_dEta1 = QvsdEta[3*deta][sign]->GetMean();
-				double Q_total_real_dEta_error1 = QvsdEta[3*deta][sign]->GetMeanError();
+				double Q_total_real_dEta1 = QvsdEta[2*deta][sign]->GetMean();
+				double Q_total_real_dEta_error1 = QvsdEta[2*deta][sign]->GetMeanError();
 
-				double Q_total_real_dEta2 = QvsdEta[3*deta+1][sign]->GetMean();
-				double Q_total_real_dEta_error2 = QvsdEta[3*deta+1][sign]->GetMeanError();
+				double Q_total_real_dEta2 = QvsdEta[2*deta+1][sign]->GetMean();
+				double Q_total_real_dEta_error2 = QvsdEta[2*deta+1][sign]->GetMeanError();
 
-				double Q_total_real_dEta3 = QvsdEta[3*deta+2][sign]->GetMean();
-				double Q_total_real_dEta_error3 = QvsdEta[3*deta+2][sign]->GetMeanError();
+				// double Q_total_real_dEta3 = QvsdEta[3*deta+2][sign]->GetMean();
+				// double Q_total_real_dEta_error3 = QvsdEta[3*deta+2][sign]->GetMeanError();
 
-				double weight1 = delEta3p[sign]->GetBinContent( 3*deta+1 );
-				double weight2 = delEta3p[sign]->GetBinContent( 3*deta+2 );
-				double weight3 = delEta3p[sign]->GetBinContent( 3*deta+3 );
+				double weight1 = delEta3p[sign]->GetBinContent( 2*deta+1 );
+				double weight2 = delEta3p[sign]->GetBinContent( 2*deta+2 );
+				//double weight3 = delEta3p[sign]->GetBinContent( 2*deta+3 );
 				
-				double value = weightedAverage(weight1, weight2, weight3, Q_total_real_dEta1, Q_total_real_dEta2, Q_total_real_dEta3);
-				double error = weightedAverageError(weight1, weight2, weight3, Q_total_real_dEta_error1, Q_total_real_dEta_error2, Q_total_real_dEta_error3 );				
+				double value = weightedAverage(weight1, weight2, 0, Q_total_real_dEta1, Q_total_real_dEta2, 0);
+				double error = weightedAverageError(weight1, weight2, 0, Q_total_real_dEta_error1, Q_total_real_dEta_error2, 0 );				
 
 				hist1[sign]->SetBinContent(deta+1, value );
 				hist1[sign]->SetBinError(deta+1, error );
@@ -426,14 +426,14 @@ void plotDeltaEtaResultsTracker(){
         box1[deta]->SetFillStyle(0);
     	box1[deta]->SetLineWidth(1);
     	box1[deta]->SetLineColor(kRed);
-        box1[deta]->Draw("SAME");
+        //box1[deta]->Draw("SAME");
 
 		box2[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value6[deta]-ye,dEtaReBinCenter2[deta]+xe,value6[deta]+ye);
 		box2[deta]->SetFillColor(kBlue);
         box2[deta]->SetFillStyle(0);
     	box2[deta]->SetLineWidth(1);
     	box2[deta]->SetLineColor(kBlue);
-        box2[deta]->Draw("SAME");
+        //box2[deta]->Draw("SAME");
     }
 
 	temp11->Draw("Psame");
@@ -543,6 +543,9 @@ void plotDeltaEtaResultsTracker(){
 
 
 
+ //    TFile t1("../dataPoints/alice_Tracker_60_70.root","RECREATE");
+ //    temp11->w
+	// temp22->w
 
 
 

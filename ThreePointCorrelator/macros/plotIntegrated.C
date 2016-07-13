@@ -12,14 +12,18 @@ double ntrkBins[] = {0,35,60,90,120,150,185,220,260};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 int ntrkBinCenter[] = {17.5, 47.5, 75, 105, 135, 167.5, 202.5, 240};
 
-double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
+
 double PbPb_5TeV_ntrkBinCenter[] = {103.921, 134.061, 166.539, 201.615, 239.096, 279.13, 324.044, 374.081, 448.17};
+//double PbPb_5TeV_ntrkBinCenter[] = {73.69, 103.921, 134.061, 166.539, 201.615, 239.096, 279.13, 324.044, 374.081, 448.17};
 
 double PbPb_ntrkCentralityBinCenter[] = {625.275, 811.118, 1025.79, 1257.64};
 
-double PbPb_centralityBinCenter[] = {85, 75, 65, 57.5, 52.5, 47.5, 42.5, 37.5, 32.5};
+//double PbPb_centralityBinCenter[] = {75, 65, 57.5, 52.5, 47.5, 42.5, 37.5, 32.5};
+double PbPb_centralityBinCenter[] = {75,67.5,62.5,57.5,52.5,47.5,42.5,37.5,32.5};
+double PbPb_centralityBinCenter_tracker[] = {65, 55, 45, 35};
 
 const int Nmults = 23;
 
@@ -30,7 +34,7 @@ void plotIntegrated(){
 
 	gStyle->SetErrorX(0);
 
-	TFile* file[7];
+	TFile* file[10];
 	file[0] = new TFile("../dataPoints/pPb_data.root");
 	file[1] = new TFile("../dataPoints/PbPb5TeV_data.root");
 	file[2] = new TFile("../dataPoints/PbPb_5TeV_centrality_data.root");
@@ -38,6 +42,10 @@ void plotIntegrated(){
 	file[4] = new TFile("../dataPoints/ALICE_STAR_backup_data.root");
 	file[5] = new TFile("../dataPoints/PbPb_5TeV_centrality_centrality_data.root");
 	file[6] = new TFile("../dataPoints/PbPb_centrality_data.root");
+	file[7] = new TFile("../dataPoints/PbPb_5TeV_centrality_centrality_data_tracker.root");
+	file[8] = new TFile("../dataPoints/EPOS_PbPb_data.root");
+	file[9] = new TFile("../dataPoints/EPOS_PbPb_centrality_data.root");
+
 
 	TGraphErrors* gr1[4];
 	for(int i = 0; i < 4; i++){
@@ -80,7 +88,25 @@ void plotIntegrated(){
 		gr7[i] = (TGraphErrors*) file[6]->Get(Form("Graph;%d", i+1));
 	}
 
+	TGraphErrors* gr8[2];
+	for(int i = 0; i < 2; i++){
 
+		gr8[i] = (TGraphErrors*) file[7]->Get(Form("Graph;%d", i+1));
+	}
+	TGraphErrors* gr9[2];
+	for(int i = 0; i < 2; i++){
+
+		gr9[i] = (TGraphErrors*) file[8]->Get(Form("Graph;%d", i+1));
+	}
+	TGraphErrors* gr10[2];
+	for(int i = 0; i < 2; i++){
+
+		gr10[i] = (TGraphErrors*) file[9]->Get(Form("Graph;%d", i+1));
+	}
+
+//fine tune the binning here
+
+//pPb Ntrk
 	for(int i = 0; i < 4; i++){
 		for(int mult = 0; mult < 3; mult++){
 			double x, y;
@@ -95,11 +121,11 @@ void plotIntegrated(){
 
 	TGaxis::SetMaxDigits(3);
 
-	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 5000,0.1,10000,kBlack);
-	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 5000,0.1,10000,kBlack);
+	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}", 5000,0.1,10000,kBlack);
+	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}", 5000,0.1,10000,kBlack);
 
-	base1->GetYaxis()->SetRangeUser(-0.0009, 0.0008);
-	base1->GetXaxis()->SetRangeUser(70, 2000);
+	base1->GetYaxis()->SetRangeUser(-0.001, 0.0008);
+	base1->GetXaxis()->SetRangeUser(81, 2000);
 
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	
@@ -109,24 +135,24 @@ void plotIntegrated(){
 	fixedFontHist1D(base1,1.1,1.25);
 	fixedFontHist1D(base2,1.1,1.25);
 
-	base1->GetYaxis()->SetTitleOffset(1.3);
+	base1->GetYaxis()->SetTitleOffset(1.23);
 	base1->GetYaxis()->SetTitleSize(base1->GetYaxis()->GetTitleSize()*1.4);
 	base1->GetXaxis()->SetTitleSize(base1->GetXaxis()->GetTitleSize()*1.4);
-	base1->GetYaxis()->SetLabelSize(base1->GetYaxis()->GetLabelSize()*1.4);
+	base1->GetYaxis()->SetLabelSize(base1->GetYaxis()->GetLabelSize()*1.5);
 	base1->GetXaxis()->SetLabelSize(base1->GetXaxis()->GetLabelSize()*1.4);
 	base1->GetXaxis()->SetNdivisions(8,18,0);
 	base1->GetYaxis()->SetNdivisions(4,6,0);
 
-	base2->GetYaxis()->SetTitleOffset(1.9);
+	base2->GetYaxis()->SetTitleOffset(1.23);
 	base2->GetYaxis()->SetTitleSize(base2->GetYaxis()->GetTitleSize()*1.4);
 	base2->GetXaxis()->SetTitleSize(base2->GetXaxis()->GetTitleSize()*1.4);
 	base2->GetYaxis()->SetLabelSize(base2->GetYaxis()->GetLabelSize()*1.4);
 	base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.4);
 	
 	TH1D* base3 = (TH1D*) base1->Clone("base3");
-	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT (oppo - same)");
+	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c} (oppo - same)");
 	base3->GetYaxis()->SetRangeUser(-0.0007,0.0018);
-	base3->GetYaxis()->SetTitleOffset(1.2);
+	base3->GetYaxis()->SetTitleOffset(1.23);
 	base3->GetXaxis()->SetTitleOffset(1.1);
 	base3->GetYaxis()->SetTitleSize(base3->GetYaxis()->GetTitleSize()*1.2);
 	base3->GetXaxis()->SetTitleSize(base3->GetXaxis()->GetTitleSize()*1.2);
@@ -141,17 +167,37 @@ void plotIntegrated(){
 	base4->GetYaxis()->SetTitleSize(base4->GetYaxis()->GetTitleSize()*1.0);
 	base4->GetYaxis()->SetNdivisions(6);
 
+
+	
+
 	TCanvas* c1 = new TCanvas("c1","c1",1,1,1300,650);
 	c1->Divide(2,1,0.01,0.01);
 	c1->cd(1);
 	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
+	gPad->SetLeftMargin(0.12);
 	gPad->SetBottomMargin(0.13);
+	gPad->SetRightMargin(0.05);
 	gStyle->SetPadBorderMode(0.1);
 	gStyle->SetOptTitle(0);
 	gPad->SetLogx(1);
 
+	base1->GetXaxis()->SetLabelOffset(999);
+	base1->GetXaxis()->SetTickLength(0);
+	
+	TGaxis *newaxis2 = new TGaxis(81,
+	                            -0.001,
+	                            2000,
+	                            -0.001,
+	                            81,
+	                            2000,
+	                            510,"G");
+	newaxis2->SetLabelOffset(0.01);
+	newaxis2->SetLabelFont(42);
+	
 	base1->Draw();
+	newaxis2->Draw("same");
+	gPad->Update();
+	gPad->SetLogx(1);
 
     TBox *box1[50];
     TBox *box2[50];
@@ -194,7 +240,7 @@ void plotIntegrated(){
 
     }
 
-    double xe2[9]; 
+    double xe2[11]; 
 
     for(int mult = 0; mult < 9; mult++){
 
@@ -316,22 +362,36 @@ void plotIntegrated(){
 	gr3[1]->SetLineColor(kBlue);
 	gr3[1]->Draw("Psame");
 
-	gr4[0]->SetMarkerStyle(24);
+//EPOS start
 	gr4[0]->SetMarkerSize(1.4);
 	gr4[0]->SetMarkerColor(kBlack);
 	gr4[0]->SetLineColor(kBlack);
 	gr4[0]->SetLineStyle(5);
-	gr4[0]->SetLineWidth(2.0);
+	gr4[0]->SetLineWidth(1.6);
 	gr4[0]->Draw("same");
 
-	gr4[1]->SetMarkerStyle(25);
 	gr4[1]->SetMarkerSize(1.4);
 	gr4[1]->SetMarkerColor(kGreen+2);
 	gr4[1]->SetLineColor(kGreen+2);
 	gr4[1]->SetLineStyle(5);
-	gr4[1]->SetLineWidth(2.0);
+	gr4[1]->SetLineWidth(1.6);
 	gr4[1]->Draw("same");
 
+	gr9[0]->SetMarkerSize(1.4);
+	gr9[0]->SetMarkerColor(kBlack);
+	gr9[0]->SetLineColor(kBlack);
+	gr9[0]->SetLineStyle(10);
+	gr9[0]->SetLineWidth(1.6);
+	gr9[0]->Draw("same");
+
+	gr9[1]->SetMarkerSize(1.4);
+	gr9[1]->SetMarkerColor(kGreen+2);
+	gr9[1]->SetLineColor(kGreen+2);
+	gr9[1]->SetLineStyle(10);
+	gr9[1]->SetLineWidth(1.6);
+	gr9[1]->Draw("same");
+
+//EPOS end
 	gr5[0]->SetMarkerStyle(26);
 	gr5[0]->SetMarkerSize(1.4);
 	gr5[0]->SetMarkerColor(kBlack);
@@ -357,12 +417,23 @@ void plotIntegrated(){
 	gr6[0]->SetMarkerColor(kRed);
 	gr6[0]->SetLineColor(kRed);
 
+
 	gr6[1]->SetMarkerStyle(25);
 	gr6[1]->SetMarkerSize(1.4);
 	gr6[1]->SetMarkerColor(kBlue);
 	gr6[1]->SetLineColor(kBlue);
 
-	TLegend *w1 = new TLegend(0.48,0.64,0.88,0.77);
+	gr8[0]->SetMarkerStyle(23);
+	gr8[0]->SetMarkerSize(1.4);
+	gr8[0]->SetMarkerColor(kGreen+2);
+	gr8[0]->SetLineColor(kGreen+2);
+
+	gr8[1]->SetMarkerStyle(23);
+	gr8[1]->SetMarkerSize(1.4);
+	gr8[1]->SetMarkerColor(kPink);
+	gr8[1]->SetLineColor(kPink);
+
+	TLegend *w1 = new TLegend(0.48,0.60,0.88,0.77);
     w1->SetLineColor(kWhite);
     w1->SetFillColor(0);
     w1->SetTextSize(18);
@@ -376,6 +447,12 @@ void plotIntegrated(){
 
     w1->AddEntry(gr2[0], "  ", "P");
     w1->AddEntry(gr2[1], "  PbPb", "P");
+
+    w1->AddEntry(gr4[0], "  ", "L");
+    w1->AddEntry(gr4[1], "  pPb EPOS, #Psi_{EP}(Pb-going)", "L");
+
+    w1->AddEntry(gr9[0], "  ", "L");
+    w1->AddEntry(gr9[1], "  PbPb EPOS", "L");
 
     //w1->AddEntry(gr5[0], "  ", "P");
     //w1->AddEntry(gr5[1], "ALICE PbPb #sqrt{s_{NN}} = 2.76 TeV", "P");
@@ -413,9 +490,9 @@ void plotIntegrated(){
     w2->SetTextFont(43);
     w2->AddEntry(gr4[1], "EPOS pPb, oppo", "L");
     w2->AddEntry(gr4[0], "EPOS pPb, same", "L");
-    w2->Draw("same");
+    //w2->Draw("same");
 
-    TLatex* r3 = new TLatex(0.63, 0.84, "PbPb centrality(%)");
+    TLatex* r3 = new TLatex(0.69, 0.94, "PbPb centrality(%)");
     r3->SetNDC();
     r3->SetTextSize(21);
     r3->SetTextFont(43);
@@ -423,15 +500,15 @@ void plotIntegrated(){
     r3->Draw("same");
 
     TLatex* cent1[7];
-    cent1[0] = new TLatex(0.54, 0.91, "55");
-    cent1[1] = new TLatex(0.66, 0.91, "45");
-    cent1[2] = new TLatex(0.76, 0.91, "35");
-    cent1[3] = new TLatex(0.69, 0.91, "25");
+    cent1[0] = new TLatex(0.52, 0.91, "55");
+    cent1[1] = new TLatex(0.68, 0.91, "45");
+    cent1[2] = new TLatex(0.80, 0.91, "35");
+    cent1[3] = new TLatex(0.34.5, 0.91, "65");
     cent1[4] = new TLatex(0.75, 0.91, "15");
     cent1[5] = new TLatex(0.80, 0.91, "7.5");
     cent1[6] = new TLatex(0.84, 0.91, "2.5");
 
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
     	cent1[i]->SetNDC();
     	cent1[i]->SetTextSize(13);
 	    cent1[i]->SetTextFont(63);
@@ -452,13 +529,13 @@ void plotIntegrated(){
     l1[2]->SetLineWidth(2);
     l1[2]->Draw("Lsame");
 
-    l1[3] = new TLine(1782,0.00077, 1782, 0.0008);
+    l1[3] = new TLine(81.412,0.00077, 81.412, 0.0008);
     l1[3]->SetLineWidth(2);
     //l1[3]->Draw("Lsame");
 
-    l1[4] = new TLine(2662,0.00077, 2662, 0.0008);
+    l1[4] = new TLine(197,0.00077, 197, 0.0008);
     l1[4]->SetLineWidth(2);
-    //l1[4]->Draw("Lsame");
+    l1[4]->Draw("Lsame");
 
     l1[5] = new TLine(3577.6,0.00077, 3577.6, 0.0008);
     l1[5]->SetLineWidth(2);
@@ -481,50 +558,57 @@ void plotIntegrated(){
 
 	c1->cd(2);
 	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
+	gPad->SetLeftMargin(0.12);
 	gPad->SetBottomMargin(0.13);
+	gPad->SetRightMargin(0.05);
 	gStyle->SetPadBorderMode(0.1);
 	gStyle->SetOptTitle(0);
 
-	TH1D* base10 = makeHist("base10", "", "Centrality (%)", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 100,0,100,kBlack);
+	TH1D* base10 = makeHist("base10", "", "Centrality (%)", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}", 100,0,100,kBlack);
 
 	// Remove the current axis
+	
 	base10->GetXaxis()->SetLabelOffset(999);
 	base10->GetXaxis()->SetTickLength(0);
 
 	// Redraw the new axis
 	gPad->Update();
 	TGaxis *newaxis1 = new TGaxis(80,
-	                            -0.0009,
+	                            -0.001,
 	                            0,
-	                            -0.0009,
+	                            -0.001,
 	                            0,
 	                            80,
 	                            510,"-");
 	newaxis1->SetLabelOffset(-0.03);
 	newaxis1->SetLabelFont(42);
 
-	base10->GetYaxis()->SetRangeUser(-0.0009, 0.0008);
+	base10->GetYaxis()->SetRangeUser(-0.001, 0.0008);
 	base10->GetXaxis()->SetRangeUser(0, 80);
 	base10->GetXaxis()->SetTitleColor(kBlack);
 
-	
 	fixedFontHist1D(base10,1.1,1.25);
 
-	base10->GetYaxis()->SetTitleOffset(1.3);
+	base10->GetYaxis()->SetTitleOffset(1.23);
 	base10->GetYaxis()->SetTitleSize(base10->GetYaxis()->GetTitleSize()*1.4);
 	base10->GetXaxis()->SetTitleSize(base10->GetXaxis()->GetTitleSize()*1.4);
-	base10->GetYaxis()->SetLabelSize(base10->GetYaxis()->GetLabelSize()*1.4);
-	base10->GetXaxis()->SetLabelSize(base10->GetXaxis()->GetLabelSize()*1.4);
+	base10->GetYaxis()->SetLabelSize(base10->GetYaxis()->GetLabelSize()*1.5);
+	base10->GetXaxis()->SetLabelSize(base10->GetXaxis()->GetLabelSize()*1.5);
 	base10->GetXaxis()->SetNdivisions(8,18,0);
 	base10->GetYaxis()->SetNdivisions(4,6,0);
 
 	base10->Draw("");
 	newaxis1->Draw("Asame");
 
-	double PbPb_centralityBinCenter_fill[9];
+	double PbPb_centralityBinCenter_fill[10];
 	for(int mult = 0; mult < 9; mult++){
     	PbPb_centralityBinCenter_fill[mult] = 80 - PbPb_centralityBinCenter[mult];
+
+	}
+
+	double PbPb_centralityBinCenter_tracker_fill[10];
+	for(int mult = 0; mult < 4; mult++){
+    	PbPb_centralityBinCenter_tracker_fill[mult] = 80 - PbPb_centralityBinCenter_tracker[mult];
 
 	}
 	
@@ -572,7 +656,77 @@ void plotIntegrated(){
 	gr6[0]->Draw("Psame");
 	gr6[1]->Draw("Psame");
 
-	TLegend *w2 = new TLegend(0.3,0.64,0.88,0.77);
+
+    double xe4;
+    for(int mult = 0; mult < 4; mult++){
+
+    	xe4 = 1;
+    	double ye = total_systematics_PbPb;
+
+    	double x1;
+    	double value1;
+    	gr8[0]->GetPoint(mult, x1, value1);
+
+    	double x2;
+    	double value2;
+    	gr8[1]->GetPoint(mult, x2, value2);
+
+
+    	box7[mult] = new TBox(PbPb_centralityBinCenter_tracker_fill[mult]-xe4,value1[mult]-ye,PbPb_centralityBinCenter_tracker_fill[mult]+xe4,value1[mult]+ye);
+		box7[mult]->SetFillColor(kRed);
+        box7[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box7[mult]->SetFillStyle(1001);
+    	box7[mult]->SetLineWidth(0);
+    	box7[mult]->SetLineColor(kRed);
+        //box7[mult]->Draw("SAME");
+
+		box8[mult] = new TBox(PbPb_centralityBinCenter_tracker_fill[mult]-xe4,value2[mult]-ye,PbPb_centralityBinCenter_tracker_fill[mult]+xe4,value2[mult]+ye);
+		box8[mult]->SetFillColor(kBlue);
+        box8[mult]->SetFillColorAlpha(kGray+1,0.3);
+        box8[mult]->SetFillStyle(1001);
+    	box8[mult]->SetLineWidth(0);
+    	box8[mult]->SetLineColor(kBlue);
+        //box8[mult]->Draw("SAME");
+    }
+
+
+	//gr8[0]->Draw("Psame");
+	//gr8[1]->Draw("Psame");
+
+	TLegend *w100 = new TLegend(0.45,0.15,0.85,0.25);
+    w100->SetLineColor(kWhite);
+    w100->SetFillColor(0);
+    w100->SetTextSize(20);
+    w100->SetTextFont(43);
+    w100->AddEntry(gr8[1], "ALICE compare #eta-gap 0, oppo", "P");
+    w100->AddEntry(gr8[0], "ALICE compare #eta-gap 0, same", "P");
+    //w100->Draw("same");
+
+	gr10[0]->SetMarkerSize(1.4);
+	gr10[0]->SetMarkerColor(kBlack);
+	gr10[0]->SetLineColor(kBlack);
+	gr10[0]->SetLineStyle(10);
+	gr10[0]->SetLineWidth(1.6);
+	gr10[0]->Draw("same");
+
+	gr10[1]->SetMarkerSize(1.4);
+	gr10[1]->SetMarkerColor(kGreen+2);
+	gr10[1]->SetLineColor(kGreen+2);
+	gr10[1]->SetLineStyle(10);
+	gr10[1]->SetLineWidth(1.6);
+	gr10[1]->Draw("same");
+
+	TLegend *w101 = new TLegend(0.33,0.15,0.90,0.25);
+    w101->SetLineColor(kWhite);
+    w101->SetFillColor(0);
+    w101->SetTextSize(18);
+    w101->SetTextFont(43);
+    w101->SetNColumns(2);
+    w101->AddEntry(gr10[1], "   ", "L");
+    w101->AddEntry(gr10[0], "EPOS PbPb #sqrt{s_{NN}} = 5.02 TeV", "L");
+    w101->Draw("same");
+
+	TLegend *w2 = new TLegend(0.33,0.64,0.90,0.77);
     w2->SetLineColor(kWhite);
     w2->SetFillColor(0);
     w2->SetTextSize(18);
@@ -585,25 +739,38 @@ void plotIntegrated(){
     w2->AddEntry(gr6[1], "CMS PbPb #sqrt{s_{NN}} = 5.02 TeV", "P");
 
     w2->AddEntry(gr5[0], "  ", "P");
-    w2->AddEntry(gr5[1], "ALICE PbPb #sqrt{s_{NN}} = 2.76 TeV", "P");
+    w2->AddEntry(gr5[1], "ALICE (TPC) PbPb #sqrt{s_{NN}} = 2.76 TeV", "P");
 
 	w2->AddEntry(gr5[2], "  ", "P");
     w2->AddEntry(gr5[3], "STAR AuAu #sqrt{s_{NN}} = 200 GeV", "P");
 
     w2->Draw("same");
 	
-	TLatex* latex1 = new TLatex(0.29, 0.78, "same");
+	TLatex* latex1 = new TLatex(0.32, 0.78, "same");
     latex1->SetNDC();
     latex1->SetTextSize(20);
     latex1->SetTextFont(43);
     latex1->SetTextColor(kBlack);
     latex1->Draw("same");
-    TLatex* latex2 = new TLatex(0.39, 0.78, "oppo");
+    TLatex* latex2 = new TLatex(0.42, 0.78, "oppo");
     latex2->SetNDC();
     latex2->SetTextSize(20);
     latex2->SetTextFont(43);
     latex2->SetTextColor(kBlack);
     latex2->Draw("same");
+
+	TLatex* latex3 = new TLatex(0.32, 0.23, "same");
+    latex3->SetNDC();
+    latex3->SetTextSize(20);
+    latex3->SetTextFont(43);
+    latex3->SetTextColor(kBlack);
+    latex3->Draw("same");
+    TLatex* latex4 = new TLatex(0.42, 0.23, "oppo");
+    latex4->SetNDC();
+    latex4->SetTextSize(20);
+    latex4->SetTextFont(43);
+    latex4->SetTextColor(kBlack);
+    latex4->Draw("same");
 
    	TLatex* r33 = new TLatex(0.18,0.84, "CMS");
     r33->SetNDC();
@@ -616,247 +783,276 @@ void plotIntegrated(){
     r44->SetTextFont(53);
     r44->Draw("same");
 
-    TCanvas* c3 = new TCanvas("c3","c3",1,1,650,650);
-    gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.13);
-	gStyle->SetPadBorderMode(0.1);
-	gPad->SetLogx(1);
-	gStyle->SetOptTitle(0);
+//     TCanvas* c3 = new TCanvas("c3","c3",1,1,650,650);
+//     gPad->SetTicks();
+// 	gPad->SetLeftMargin(0.15);
+// 	gPad->SetBottomMargin(0.13);
+// 	gStyle->SetPadBorderMode(0.1);
+// 	gPad->SetLogx(1);
+// 	gStyle->SetOptTitle(0);
 
-	base3->Draw();
+// 	base3->Draw();
 
-	TGraphErrors* new_gr1_pPb = new TGraphErrors(9);
-	TGraphErrors* new_gr2_pPb = new TGraphErrors(9);
+// 	TGraphErrors* new_gr1_pPb = new TGraphErrors(9);
+// 	TGraphErrors* new_gr2_pPb = new TGraphErrors(9);
 	
-	TGraphErrors* new_gr1_PbPb = new TGraphErrors(9);
-	TGraphErrors* new_gr2_PbPb = new TGraphErrors(9);
+// 	TGraphErrors* new_gr1_PbPb = new TGraphErrors(9);
+// 	TGraphErrors* new_gr2_PbPb = new TGraphErrors(9);
 
-	TGraphErrors* new_gr1_EPOS = new TGraphErrors(3);
-	TGraphErrors* new_gr2_EPOS = new TGraphErrors(3);
-
-
-
-	for(int mult = 0; mult < 6; mult++){
-
-		xe[mult] = 7*log(1.1*(mult+1));
-    	if(mult == 0) xe[mult] = 6;
-    	double ye = total_systematics_pPb;
-
-//pPb Pb-going
-		double x1, y1, y1_error;
-		gr1[0]->GetPoint(mult+3, x1, y1);
-		y1_error = gr1[0]->GetErrorY(mult+3);
-
-		double x2, y2, y2_error;
-		gr1[1]->GetPoint(mult+3, x2, y2);
-		y2_error = gr1[1]->GetErrorY(mult+3);
-
-		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
-
-		new_gr1_pPb->SetPoint(mult+3, x1, y2-y1);
-		new_gr1_pPb->SetPointError(mult+3, 0, total_error);
-
-		box1[mult] = new TBox(x1-xe[mult],y2-y1-ye,x1+xe[mult],y2-y1+ye);
-		box1[mult]->SetFillColor(kRed);
-	 	box1[mult]->SetFillColorAlpha(kGray+1,0.3);
-        box1[mult]->SetFillStyle(1001);
-    	box1[mult]->SetLineWidth(0);
-    	box1[mult]->SetLineColor(kRed);
-        box1[mult]->Draw("SAME");
-
-//pPb p-going
-		double x1, y1, y1_error;
-		gr1[2]->GetPoint(mult+3, x1, y1);
-		y1_error = gr1[2]->GetErrorY(mult+3);
-
-		double x2, y2, y2_error;
-		gr1[3]->GetPoint(mult+3, x2, y2);
-		y2_error = gr1[3]->GetErrorY(mult+3);
-
-		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
-
-		new_gr2_pPb->SetPoint(mult+3, x1, y2-y1);
-		new_gr2_pPb->SetPointError(mult+3, 0, total_error);
-
-		box2[mult] = new TBox(x1-xe[mult],y2-y1-ye,x1+xe[mult],y2-y1+ye);
-		box2[mult]->SetFillColor(kRed);
-	 	box2[mult]->SetFillColorAlpha(kGray+1,0.3);
-        box2[mult]->SetFillStyle(1001);
-    	box2[mult]->SetLineWidth(0);
-    	box2[mult]->SetLineColor(kRed);
-        box2[mult]->Draw("SAME");
-
-	}
-
-
-	for(int mult = 0; mult < 9; mult++){
-
-		xe2[mult] = 7*log(1.1*(mult+1));
-    	if(mult == 0) xe2[mult] = 6;
-
-    	double ye = total_systematics_PbPb;
-
-//PbPb Ntrk 
-		double x1, y1, y1_error;
-		gr2[0]->GetPoint(mult, x1, y1);
-		y1_error = gr2[0]->GetErrorY(mult);
-
-		double x2, y2, y2_error;
-		gr2[1]->GetPoint(mult, x2, y2);
-		y2_error = gr2[1]->GetErrorY(mult);
-
-		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
-
-		new_gr1_PbPb->SetPoint(mult, x1, y2-y1);
-		new_gr1_PbPb->SetPointError(mult, 0, total_error);
-
-		box1[mult] = new TBox(x1-xe2[mult],y2-y1-ye,x1+xe2[mult],y2-y1+ye);
-		box1[mult]->SetFillColor(kRed);
-	 	box1[mult]->SetFillColorAlpha(kGray+1,0.3);
-        box1[mult]->SetFillStyle(1001);
-    	box1[mult]->SetLineWidth(0);
-    	box1[mult]->SetLineColor(kRed);
-        box1[mult]->Draw("SAME");
-
-	}
-
-	for(int mult = 0; mult < 4; mult++){
-
-		xe3[mult] = 30*log(1.9*(mult+1));
-    	if(mult == 0) xe3[mult] = 35;
-    	double ye = total_systematics_PbPb;
+// 	TGraphErrors* new_gr1_EPOS = new TGraphErrors(3);
+// 	TGraphErrors* new_gr2_EPOS = new TGraphErrors(3);
 	
-//PbPb Centrality		
-		double x1, y1, y1_error;
-		gr3[0]->GetPoint(mult, x1, y1);
-		y1_error = gr3[0]->GetErrorY(mult);
+// 	TGraphErrors* new_gr1_EPOS_PbPb = new TGraphErrors(6);
 
-		double x2, y2, y2_error;
-		gr3[1]->GetPoint(mult, x2, y2);
-		y2_error = gr3[1]->GetErrorY(mult);
 
-		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
 
-		new_gr2_PbPb->SetPoint(mult, x1, y2-y1);
-		new_gr2_PbPb->SetPointError(mult, 0, total_error);
+// 	for(int mult = 0; mult < 6; mult++){
 
-		box2[mult] = new TBox(x1-xe3[mult],y2-y1-ye,x1+xe3[mult],y2-y1+ye);
-		box2[mult]->SetFillColor(kRed);
-	 	box2[mult]->SetFillColorAlpha(kGray+1,0.3);
-        box2[mult]->SetFillStyle(1001);
-    	box2[mult]->SetLineWidth(0);
-    	box2[mult]->SetLineColor(kRed);
-        box2[mult]->Draw("SAME");
+// 		xe[mult] = 7*log(1.1*(mult+1));
+//     	if(mult == 0) xe[mult] = 6;
+//     	double ye = total_systematics_pPb;
 
-	}
+// //pPb Pb-going
+// 		double x1, y1, y1_error;
+// 		gr1[0]->GetPoint(mult+3, x1, y1);
+// 		y1_error = gr1[0]->GetErrorY(mult+3);
 
-	for(int mult = 0; mult < 3; mult++){
+// 		double x2, y2, y2_error;
+// 		gr1[1]->GetPoint(mult+3, x2, y2);
+// 		y2_error = gr1[1]->GetErrorY(mult+3);
 
-//EPOS
-		double x1, y1, y1_error;
-		gr4[0]->GetPoint(mult, x1, y1);
-		y1_error = gr4[0]->GetErrorY(mult);
+// 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
 
-		double x2, y2, y2_error;
-		gr4[1]->GetPoint(mult, x2, y2);
-		y2_error = gr4[1]->GetErrorY(mult);
+// 		new_gr1_pPb->SetPoint(mult+3, x1, y2-y1);
+// 		new_gr1_pPb->SetPointError(mult+3, 0, total_error);
 
-		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
+// 		box1[mult] = new TBox(x1-xe[mult],y2-y1-ye,x1+xe[mult],y2-y1+ye);
+// 		box1[mult]->SetFillColor(kRed);
+// 	 	box1[mult]->SetFillColorAlpha(kGray+1,0.3);
+//         box1[mult]->SetFillStyle(1001);
+//     	box1[mult]->SetLineWidth(0);
+//     	box1[mult]->SetLineColor(kRed);
+//         box1[mult]->Draw("SAME");
 
-		new_gr1_EPOS->SetPoint(mult, x1, y2-y1);
-		new_gr1_EPOS->SetPointError(mult, 0, total_error);
+// //pPb p-going
+// 		double x1, y1, y1_error;
+// 		gr1[2]->GetPoint(mult+3, x1, y1);
+// 		y1_error = gr1[2]->GetErrorY(mult+3);
 
-		double x1, y1, y1_error;
-		gr4[2]->GetPoint(mult, x1, y1);
-		y1_error = gr4[2]->GetErrorY(mult);
+// 		double x2, y2, y2_error;
+// 		gr1[3]->GetPoint(mult+3, x2, y2);
+// 		y2_error = gr1[3]->GetErrorY(mult+3);
 
-		double x2, y2, y2_error;
-		gr4[3]->GetPoint(mult, x2, y2);
-		y2_error = gr4[3]->GetErrorY(mult);
+// 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
 
-		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
+// 		new_gr2_pPb->SetPoint(mult+3, x1, y2-y1);
+// 		new_gr2_pPb->SetPointError(mult+3, 0, total_error);
 
-		new_gr2_EPOS->SetPoint(mult, x1, y2-y1);
-		new_gr2_EPOS->SetPointError(mult, 0, total_error);
-	}
+// 		box2[mult] = new TBox(x1-xe[mult],y2-y1-ye,x1+xe[mult],y2-y1+ye);
+// 		box2[mult]->SetFillColor(kRed);
+// 	 	box2[mult]->SetFillColorAlpha(kGray+1,0.3);
+//         box2[mult]->SetFillStyle(1001);
+//     	box2[mult]->SetLineWidth(0);
+//     	box2[mult]->SetLineColor(kRed);
+//         box2[mult]->Draw("SAME");
 
-	new_gr1_pPb->SetMarkerStyle(20);
-	new_gr1_pPb->SetMarkerSize(1.4);
-	new_gr1_pPb->SetMarkerColor(kRed);
-	new_gr1_pPb->SetLineColor(kRed);
-	new_gr1_pPb->Draw("Psame");
+// 	}
 
-	new_gr2_pPb->SetMarkerStyle(21);
-	new_gr2_pPb->SetMarkerSize(1.4);
-	new_gr2_pPb->SetMarkerColor(kBlue);
-	new_gr2_pPb->SetLineColor(kBlue);
-	new_gr2_pPb->Draw("Psame");
 
-	new_gr1_PbPb->SetMarkerStyle(28);
-	new_gr1_PbPb->SetMarkerSize(1.4);
-	new_gr1_PbPb->SetMarkerColor(kBlack);
-	new_gr1_PbPb->SetLineColor(kBlack);
-	new_gr1_PbPb->Draw("Psame");
+// 	for(int mult = 0; mult < 9; mult++){
 
-	new_gr2_PbPb->SetMarkerStyle(28);
-	new_gr2_PbPb->SetMarkerSize(1.4);
-	new_gr2_PbPb->SetMarkerColor(kBlack);
-	new_gr2_PbPb->SetLineColor(kBlack);
-	new_gr2_PbPb->Draw("Psame");
+// 		xe2[mult] = 7*log(1.1*(mult+1));
+//     	if(mult == 0) xe2[mult] = 6;
 
-	new_gr1_EPOS->SetMarkerStyle(28);
-	new_gr1_EPOS->SetMarkerSize(1.4);
-	new_gr1_EPOS->SetMarkerColor(kGreen+2);
-	new_gr1_EPOS->SetLineColor(kGreen+2);
-	new_gr1_EPOS->SetLineWidth(3.0);
-	new_gr1_EPOS->SetLineStyle(5.0);
-	new_gr1_EPOS->Draw("same");
+//     	double ye = total_systematics_PbPb;
 
-	new_gr2_EPOS->SetMarkerStyle(28);
-	new_gr2_EPOS->SetMarkerSize(1.4);
-	new_gr2_EPOS->SetMarkerColor(kBlack);
-	new_gr2_EPOS->SetLineColor(kBlack);
-	new_gr2_EPOS->SetLineWidth(3.0);
-	new_gr2_EPOS->SetLineStyle(5.0);
-	new_gr2_EPOS->Draw("same");
+// //PbPb Ntrk 
+// 		double x1, y1, y1_error;
+// 		gr2[0]->GetPoint(mult, x1, y1);
+// 		y1_error = gr2[0]->GetErrorY(mult);
 
-	TLegend *w3 = new TLegend(0.40,0.5,0.6,0.7);
-    w3->SetLineColor(kWhite);
-    w3->SetFillColor(0);
-    w3->SetTextSize(20);
-    w3->SetTextFont(43);
-    w3->AddEntry(new_gr1_pPb, "pPb, Pb-going", "P");
-    w3->AddEntry(new_gr2_pPb, "pPb, p-going", "P");
-    w3->AddEntry(new_gr1_PbPb, "PbPb", "P");
-    w3->AddEntry(new_gr1_EPOS, "pPb EPOS, Pb-going", "L" );    
-    w3->AddEntry(new_gr2_EPOS, "pPb EPOS, p-going", "L" );    
-    w3->Draw("same");
+// 		double x2, y2, y2_error;
+// 		gr2[1]->GetPoint(mult, x2, y2);
+// 		y2_error = gr2[1]->GetErrorY(mult);
 
-    r4->Draw("same");
-    r11->Draw("same");
-    r22->Draw("same");
-    r3->Draw("same");
-    for(int i = 0; i < 3; i++){
-    	cent1[i]->SetNDC();
-    	cent1[i]->SetTextSize(13);
-	    cent1[i]->SetTextFont(63);
-	    cent1[i]->SetTextColor(kBlack);
-	    cent1[i]->Draw("same");
-    }
+// 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
 
-    TLine* l2[7];
-    l2[0] = new TLine(404.1,0.00175, 404.1, 0.0018);
-    l2[0]->SetLineWidth(2);
-    l2[0]->Draw("Lsame");
+// 		new_gr1_PbPb->SetPoint(mult, x1, y2-y1);
+// 		new_gr1_PbPb->SetPointError(mult, 0, total_error);
 
-    l2[1] = new TLine(717.6,0.00175, 717.6, 0.0018);
-    l2[1]->SetLineWidth(2);
-    l2[1]->Draw("Lsame");
+// 		box1[mult] = new TBox(x1-xe2[mult],y2-y1-ye,x1+xe2[mult],y2-y1+ye);
+// 		box1[mult]->SetFillColor(kRed);
+// 	 	box1[mult]->SetFillColorAlpha(kGray+1,0.3);
+//         box1[mult]->SetFillStyle(1001);
+//     	box1[mult]->SetLineWidth(0);
+//     	box1[mult]->SetLineColor(kRed);
+//         box1[mult]->Draw("SAME");
 
-    l2[2] = new TLine(1141,0.00175, 1141, 0.0018);
-    l2[2]->SetLineWidth(2);
-    l2[2]->Draw("Lsame");
+// 	}
+
+// 	for(int mult = 0; mult < 4; mult++){
+
+// 		xe3[mult] = 30*log(1.9*(mult+1));
+//     	if(mult == 0) xe3[mult] = 35;
+//     	double ye = total_systematics_PbPb;
+	
+// //PbPb Centrality		
+// 		double x1, y1, y1_error;
+// 		gr3[0]->GetPoint(mult, x1, y1);
+// 		y1_error = gr3[0]->GetErrorY(mult);
+
+// 		double x2, y2, y2_error;
+// 		gr3[1]->GetPoint(mult, x2, y2);
+// 		y2_error = gr3[1]->GetErrorY(mult);
+
+// 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
+
+// 		new_gr2_PbPb->SetPoint(mult, x1, y2-y1);
+// 		new_gr2_PbPb->SetPointError(mult, 0, total_error);
+
+// 		box2[mult] = new TBox(x1-xe3[mult],y2-y1-ye,x1+xe3[mult],y2-y1+ye);
+// 		box2[mult]->SetFillColor(kRed);
+// 	 	box2[mult]->SetFillColorAlpha(kGray+1,0.3);
+//         box2[mult]->SetFillStyle(1001);
+//     	box2[mult]->SetLineWidth(0);
+//     	box2[mult]->SetLineColor(kRed);
+//         box2[mult]->Draw("SAME");
+
+// 	}
+
+// 	for(int mult = 0; mult < 3; mult++){
+
+// //EPOS pPb
+// 		double x1, y1, y1_error;
+// 		gr4[0]->GetPoint(mult, x1, y1);
+// 		y1_error = gr4[0]->GetErrorY(mult);
+
+// 		double x2, y2, y2_error;
+// 		gr4[1]->GetPoint(mult, x2, y2);
+// 		y2_error = gr4[1]->GetErrorY(mult);
+
+// 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
+
+// 		new_gr1_EPOS->SetPoint(mult, x1, y2-y1);
+// 		new_gr1_EPOS->SetPointError(mult, 0, total_error);
+
+// 		double x1, y1, y1_error;
+// 		gr4[2]->GetPoint(mult, x1, y1);
+// 		y1_error = gr4[2]->GetErrorY(mult);
+
+// 		double x2, y2, y2_error;
+// 		gr4[3]->GetPoint(mult, x2, y2);
+// 		y2_error = gr4[3]->GetErrorY(mult);
+
+// 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
+
+// 		new_gr2_EPOS->SetPoint(mult, x1, y2-y1);
+// 		new_gr2_EPOS->SetPointError(mult, 0, total_error);
+// 	}
+
+// 	for(int mult = 0; mult < 6; mult++){
+
+// //EPOS PbPb
+// 		double x1, y1, y1_error;
+// 		gr9[0]->GetPoint(mult, x1, y1);
+// 		y1_error = gr9[0]->GetErrorY(mult);
+
+// 		double x2, y2, y2_error;
+// 		gr9[1]->GetPoint(mult, x2, y2);
+// 		y2_error = gr9[1]->GetErrorY(mult);
+
+// 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
+
+// 		new_gr1_EPOS_PbPb->SetPoint(mult, x1, y2-y1);
+// 		new_gr1_EPOS_PbPb->SetPointError(mult, 0, total_error);
+
+
+// 	}
+
+// 	new_gr1_pPb->SetMarkerStyle(20);
+// 	new_gr1_pPb->SetMarkerSize(1.4);
+// 	new_gr1_pPb->SetMarkerColor(kRed);
+// 	new_gr1_pPb->SetLineColor(kRed);
+// 	new_gr1_pPb->Draw("Psame");
+
+// 	new_gr2_pPb->SetMarkerStyle(21);
+// 	new_gr2_pPb->SetMarkerSize(1.4);
+// 	new_gr2_pPb->SetMarkerColor(kBlue);
+// 	new_gr2_pPb->SetLineColor(kBlue);
+// 	new_gr2_pPb->Draw("Psame");
+
+// 	new_gr1_PbPb->SetMarkerStyle(28);
+// 	new_gr1_PbPb->SetMarkerSize(1.4);
+// 	new_gr1_PbPb->SetMarkerColor(kBlack);
+// 	new_gr1_PbPb->SetLineColor(kBlack);
+// 	new_gr1_PbPb->Draw("Psame");
+
+// 	new_gr2_PbPb->SetMarkerStyle(28);
+// 	new_gr2_PbPb->SetMarkerSize(1.4);
+// 	new_gr2_PbPb->SetMarkerColor(kBlack);
+// 	new_gr2_PbPb->SetLineColor(kBlack);
+// 	new_gr2_PbPb->Draw("Psame");
+
+// 	new_gr1_EPOS->SetMarkerStyle(28);
+// 	new_gr1_EPOS->SetMarkerSize(1.4);
+// 	new_gr1_EPOS->SetMarkerColor(kGreen+2);
+// 	new_gr1_EPOS->SetLineColor(kGreen+2);
+// 	new_gr1_EPOS->SetLineWidth(3.0);
+// 	new_gr1_EPOS->SetLineStyle(5.0);
+// 	new_gr1_EPOS->Draw("same");
+
+// 	new_gr2_EPOS->SetMarkerStyle(28);
+// 	new_gr2_EPOS->SetMarkerSize(1.4);
+// 	new_gr2_EPOS->SetMarkerColor(kBlack);
+// 	new_gr2_EPOS->SetLineColor(kBlack);
+// 	new_gr2_EPOS->SetLineWidth(3.0);
+// 	new_gr2_EPOS->SetLineStyle(5.0);
+// 	new_gr2_EPOS->Draw("same");
+
+// 	new_gr1_EPOS_PbPb->SetMarkerSize(1.4);
+// 	new_gr1_EPOS_PbPb->SetMarkerColor(kBlue);
+// 	new_gr1_EPOS_PbPb->SetLineColor(kBlue);
+// 	new_gr1_EPOS_PbPb->SetLineWidth(3.0);
+// 	new_gr1_EPOS_PbPb->SetLineStyle(5.0);
+// 	new_gr1_EPOS_PbPb->Draw("same");
+
+// 	TLegend *w3 = new TLegend(0.40,0.5,0.6,0.7);
+//     w3->SetLineColor(kWhite);
+//     w3->SetFillColor(0);
+//     w3->SetTextSize(20);
+//     w3->SetTextFont(43);
+//     w3->AddEntry(new_gr1_pPb, "pPb, Pb-going", "P");
+//     w3->AddEntry(new_gr2_pPb, "pPb, p-going", "P");
+//     w3->AddEntry(new_gr1_PbPb, "PbPb", "P");
+//     w3->AddEntry(new_gr1_EPOS, "pPb EPOS, Pb-going", "L" );    
+//     w3->AddEntry(new_gr2_EPOS, "pPb EPOS, p-going", "L" );    
+//     w3->AddEntry(new_gr1_EPOS_PbPb, "PbPb EPOS", "L" );
+//     w3->Draw("same");
+
+//     r4->Draw("same");
+//     r11->Draw("same");
+//     r22->Draw("same");
+//     r3->Draw("same");
+//     for(int i = 0; i < 3; i++){
+//     	cent1[i]->SetNDC();
+//     	cent1[i]->SetTextSize(13);
+// 	    cent1[i]->SetTextFont(63);
+// 	    cent1[i]->SetTextColor(kBlack);
+// 	    cent1[i]->Draw("same");
+//     }
+
+//     TLine* l2[7];
+//     l2[0] = new TLine(404.1,0.00175, 404.1, 0.0018);
+//     l2[0]->SetLineWidth(2);
+//     l2[0]->Draw("Lsame");
+
+//     l2[1] = new TLine(717.6,0.00175, 717.6, 0.0018);
+//     l2[1]->SetLineWidth(2);
+//     l2[1]->Draw("Lsame");
+
+//     l2[2] = new TLine(1141,0.00175, 1141, 0.0018);
+//     l2[2]->SetLineWidth(2);
+//     l2[2]->Draw("Lsame");
 
 
 

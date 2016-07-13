@@ -21,10 +21,10 @@ double PbPb_ntrkCentralityBinCenter[] = {625.275, 811.118, 1025.79, 1257.64};
 
 double PbPb_centralityBinCenter[] = {57.5, 52.5, 47.5, 42.5, 37.5, 32.5};
 
-const int Nmults = 23;
+const int Nmults = 11;
 
-double total_systematics_pPb = 0.00006;
-double total_systematics_PbPb = 0.000051;
+double total_systematics_pPb = 0.0000;
+double total_systematics_PbPb = 0.0000;
 
 void plotIntegrated_Q2(){
 
@@ -32,6 +32,7 @@ void plotIntegrated_Q2(){
 
 	TFile* file1[7];
 	file1[0] = new TFile("../dataPoints/pPb_v2_Pb_data.root");
+    //file1[0] = new TFile("../dataPoints/pPb_v2_Pb_5Q2_data.root");
 
 	TGraphErrors* gr1[4];
 	for(int i = 0; i < 4; i++){
@@ -43,9 +44,9 @@ void plotIntegrated_Q2(){
 
 	TGaxis::SetMaxDigits(3);
 
-	TH1D* base1 = makeHist("base1", "Pb-going", "v_{2}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 1000,0,1.0,kBlack);
-	base1->GetYaxis()->SetRangeUser(-0.0017, 0.0028);
-	base1->GetXaxis()->SetRangeUser(0.04, 0.1);
+	TH1D* base1 = makeHist("base1", "Pb-going", "v_{2,tracker}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT", 1000,0,1.0,kBlack);
+	base1->GetYaxis()->SetRangeUser(-0.00013, 0.0001);
+	base1->GetXaxis()->SetRangeUser(0.05, 0.1);
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	
 	fixedFontHist1D(base1,1.1,1.25);
@@ -61,7 +62,7 @@ void plotIntegrated_Q2(){
 	//TCanvas* c1 = new TCanvas("c1","c1",1,1,1300,650);
 	//c1->Divide(2,1,0.01,0.01);
 	//c1->cd(1);
-	TCanvas* c1 = new TCanvas("c1","c1",1,1,800,800);
+	TCanvas* c1 = new TCanvas("c1","c1",1,1,700,700);
 	gPad->SetTicks();
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.13);
@@ -78,9 +79,9 @@ void plotIntegrated_Q2(){
     TBox *box5[50];
     TBox *box6[50];
 
-    double xe[11];
+    double xe[Nmults];
 
-    for(int mult = 0; mult < 11; mult++){
+    for(int mult = 0; mult < Nmults; mult++){
 
     	xe[mult] = 0.0005;
     	double ye = total_systematics_pPb;
@@ -112,9 +113,9 @@ void plotIntegrated_Q2(){
 
     }
 
-    double xe[9];
+    double xe[Nmults];
 
-    for(int mult = 0; mult < 11; mult++){
+    for(int mult = 0; mult < Nmults; mult++){
 
     	xe[mult] = 0.0005;
     	double ye = total_systematics_pPb;
@@ -162,15 +163,15 @@ void plotIntegrated_Q2(){
 	gr1[2]->SetMarkerColor(kRed);
 	gr1[2]->SetLineColor(kRed);
 	gr1[2]->SetMarkerSize(1.4);
-	//gr1[2]->Draw("Psame");
+	gr1[2]->Draw("Psame");
 
 	gr1[3]->SetMarkerStyle(25);
 	gr1[3]->SetMarkerColor(kBlue);
 	gr1[3]->SetLineColor(kBlue);
 	gr1[3]->SetMarkerSize(1.4);
-	//gr1[3]->Draw("Psame");
+	gr1[3]->Draw("Psame");
 
-	TLegend *w1 = new TLegend(0.5,0.14,0.85,0.24);
+	TLegend *w1 = new TLegend(0.3,0.14,0.65,0.24);
     w1->SetLineColor(kWhite);
     w1->SetFillColor(0);
     w1->SetTextSize(18);
@@ -180,9 +181,9 @@ void plotIntegrated_Q2(){
     w1->SetNColumns(2);
 
     w1->AddEntry(gr1[0], "  ", "P");
-    w1->AddEntry(gr1[1], "  #Psi_{EP}(Pb-going)", "P");
+    w1->AddEntry(gr1[1], "  #phi_{c}(Pb-going)", "P");
     w1->AddEntry(gr1[2], "  ", "P");
-    w1->AddEntry(gr1[3], "  #Psi_{EP}(p-going)", "P");
+    w1->AddEntry(gr1[3], "  #phi_{c}(p-going)", "P");
 
 
     w1->Draw("same");
@@ -192,22 +193,20 @@ void plotIntegrated_Q2(){
     r4->SetTextSize(23);
     r4->SetTextFont(43);
     r4->SetTextColor(kBlack);
-    r4->Draw("same");
 
     TLatex* lmult = new TLatex(0.18, 0.72, "185 #leq N^{offline}_{trk} < 260");
     lmult->SetNDC();
     lmult->SetTextSize(23);
     lmult->SetTextFont(43);
     lmult->SetTextColor(kBlack);
-    lmult->Draw("same");
 
-	TLatex* latex1 = new TLatex(0.49, 0.25, "same");
+	TLatex* latex1 = new TLatex(0.29, 0.25, "same");
     latex1->SetNDC();
     latex1->SetTextSize(20);
     latex1->SetTextFont(43);
     latex1->SetTextColor(kBlack);
     latex1->Draw("same");
-    TLatex* latex2 = new TLatex(0.56, 0.25, "oppo");
+    TLatex* latex2 = new TLatex(0.36, 0.25, "oppo");
     latex2->SetNDC();
     latex2->SetTextSize(20);
     latex2->SetTextFont(43);
@@ -218,20 +217,20 @@ void plotIntegrated_Q2(){
    	TLatex* r11 = new TLatex(0.18,0.84, "CMS");
     r11->SetNDC();
     r11->SetTextSize(0.04);
-    r11->Draw("same");
 
     TLatex* r22 = new TLatex(0.27,0.84, "Preliminary");
     r22->SetNDC();
     r22->SetTextSize(24);
     r22->SetTextFont(53);
+    
+    r4->Draw("same");
+    lmult->Draw("same");
+    r11->Draw("same");
     r22->Draw("same");
 
-
-    TGraphErrors* gr_new1 = new TGraphErrors(11);
-
-	TH1D* base2 = makeHist("base2", "Pb-going", "v_{2}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 100,0,1.0,kBlack);
-	base2->GetYaxis()->SetRangeUser(-0.0017, 0.0028);
-	base2->GetXaxis()->SetRangeUser(0.04, 0.1);
+	TH1D* base2 = makeHist("base2", "Pb-going", "v_{2,tracker}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT (oppo-same)", 1000,0,1.0,kBlack);
+	base2->GetYaxis()->SetRangeUser(-0.00004, 0.00015);
+	base2->GetXaxis()->SetRangeUser(0.045, 0.095);
 	base2->GetXaxis()->SetTitleColor(kBlack);
 	
 	fixedFontHist1D(base2,1.1,1.25);
@@ -252,7 +251,11 @@ void plotIntegrated_Q2(){
 	gStyle->SetPadBorderMode(0.1);
 	gStyle->SetOptTitle(0);
 
-	for(int mult = 0; mult < 11; mult++){
+    TGraphErrors* gr_new1 = new TGraphErrors(Nmults);
+    TGraphErrors* gr_new2 = new TGraphErrors(Nmults);
+
+
+	for(int mult = 0; mult < Nmults; mult++){
 
     	double ye = total_systematics_pPb;
 
@@ -275,16 +278,106 @@ void plotIntegrated_Q2(){
     	gr_new1->SetPoint(mult, x, y);
     	gr_new1->SetPointError(mult, 0, ey);
 
+
+        double x1;
+        double value1;
+        double value1_error;
+        gr1[2]->GetPoint(mult, x1, value1);
+        value1_error = gr1[2]->GetErrorY(mult);
+
+        double x2;
+        double value2;
+        double value2_error;
+        gr1[3]->GetPoint(mult, x2, value2);
+        value2_error = gr1[3]->GetErrorY(mult);
+
+        double x = x1;
+        double y = value2 - value1;
+        double ey = sqrt(value1_error*value1_error + value2_error*value2_error);
+
+        gr_new2->SetPoint(mult, x, y);
+        gr_new2->SetPointError(mult, 0, ey);
+
     }
 
 	gStyle->SetErrorX(0);
 
 
     base2->Draw();
-    gr_new1->SetMarkerStyle(20);
+    gr_new1->SetMarkerStyle(34);
+    gr_new1->SetMarkerSize(1.5);
     gr_new1->SetLineColor(kRed);
     gr_new1->SetMarkerColor(kRed);
     gr_new1->Draw("Psame");
+
+    gr_new1->Fit("pol1");
+    TF1 * myFunc1 = gr_new1->GetFunction("pol1");
+    myFunc1->SetLineStyle(2);
+    double intersect_1 = myFunc1->GetParameter(0);
+    double intersect_1_error = myFunc1->GetParError(0);
+    double slope_1 = myFunc1->GetParameter(1);
+    double slope_1_error = myFunc1->GetParError(1);
+
+    TLatex* latex3 = new TLatex(0.18, 0.66, Form("slope: %.4f +/- %.4f",slope_1, slope_1_error ));
+    latex3->SetNDC();
+    latex3->SetTextSize(20);
+    latex3->SetTextFont(43);
+    latex3->SetTextColor(kRed);
+    latex3->Draw("same");
+
+    TLatex* latex4 = new TLatex(0.18, 0.63, Form("intersect: %.4f +/- %.4f",intersect_1, intersect_1_error ));
+    latex4->SetNDC();
+    latex4->SetTextSize(20);
+    latex4->SetTextFont(43);
+    latex4->SetTextColor(kRed);
+    latex4->Draw("same");
+
+
+    gr_new2->SetMarkerStyle(28);
+    gr_new2->SetMarkerSize(1.5);
+    gr_new2->SetLineColor(kBlue);
+    gr_new2->SetMarkerColor(kBlue);
+    gr_new2->Draw("Psame");
+
+    gr_new2->Fit("pol1");
+
+    TF1 * myFunc2 = gr_new2->GetFunction("pol1");
+    myFunc2->SetLineColor(kBlue);
+    myFunc2->SetLineStyle(2);
+    double intersect_2 = myFunc2->GetParameter(0);
+    double intersect_2_error = myFunc2->GetParError(0);
+    double slope_2 = myFunc2->GetParameter(1);
+    double slope_2_error = myFunc2->GetParError(1);
+
+    TLatex* latex5 = new TLatex(0.18, 0.59, Form("slope: %.4f +/- %.4f",slope_2, slope_2_error ));
+    latex5->SetNDC();
+    latex5->SetTextSize(20);
+    latex5->SetTextFont(43);
+    latex5->SetTextColor(kBlue);
+    latex5->Draw("same");
+
+    TLatex* latex6 = new TLatex(0.18, 0.56, Form("intersect: %.4f +/- %.4f",intersect_2, intersect_2_error ));
+    latex6->SetNDC();
+    latex6->SetTextSize(20);
+    latex6->SetTextFont(43);
+    latex6->SetTextColor(kBlue);
+    latex6->Draw("same");
+
+
+
+    r4->Draw("same");
+    lmult->Draw("same");
+    r11->Draw("same");
+    r22->Draw("same");
+
+    TLegend *w2 = new TLegend(0.6,0.14,0.8,0.24);
+    w2->SetLineColor(kWhite);
+    w2->SetFillColor(0);
+    w2->SetTextSize(22);
+    w2->SetTextFont(43);
+    w2->AddEntry(gr_new1, "#phi_{c}(Pb-going)", "P");
+    w2->AddEntry(gr_new2, "#phi_{c}(p-going)", "P");
+    w2->Draw("same");
 
 
 

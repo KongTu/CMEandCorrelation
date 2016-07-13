@@ -56,9 +56,16 @@ void plotDeltaEtaResultChecks(){
 
 	TFile* file[16];
 
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_EPOS_v46.root");//no eff
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_1.root");//default
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v7.root");//right eff
+	string etarange1 = "|#eta_{#alpha,#beta}| < 2.4, 4.5 < |#eta_{c}| < 5.0";
+	string etarange2 = "|#eta_{#alpha,#beta}| < 0.8, 4.5 < |#eta_{c}| < 5.0";
+
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v22_1.root");//no eff
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v27_4.root");//default
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v27_7.root");//right eff
+
+	file[3] = new TFile("../dataPoints/alice_Tracker_60_70.root");
+	TH1D* alice_same = (TH1D*) file[3]->Get("temp11");
+	TH1D* alice_oppo = (TH1D*) file[3]->Get("temp22");
 
 	TH1D* QvsdEta[16][48][3][2];
 
@@ -126,62 +133,81 @@ void plotDeltaEtaResultChecks(){
 		v2[mult][0] = sqrt(c2_b - bCorr);
 		v2[mult][1] = sqrt(c2_a - aCorr );
 		v2[mult][2] = sqrt(c2_ab - abCorr );
+
+		cout << "v2[0]: " << v2[mult][0] << endl;
+		cout << "v2[1]: " << v2[mult][1] << endl;
+		cout << "v2[2]: " << v2[mult][2] << endl;
+
 	}
 
 	TH1D* hist1[8][3][2];
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
 			for(int HF = 0; HF < 2; HF++){
-				hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins2, dEtaReBins2);
+				hist1[mult][sign][HF] = new TH1D(Form("hist1_%d_%d_%d",mult,sign,HF),"test", NdEtaReBins, dEtaReBins);
 			}
 		}
 	}
 
 	for(int mult = 0; mult < Nmults; mult++){
-		for(int deta = 0; deta < NdEtaReBins2; deta++){
+		for(int deta = 0; deta < 8; deta++){
 			for(int sign = 0; sign < 3; sign++){
 				for(int HF = 0; HF < 2; HF++){
 
-					if(deta < 9){
+					double Q_total_real_dEta1 = QvsdEta[mult][2*deta][sign][HF]->GetMean();
+					double Q_total_real_dEta_error1 = QvsdEta[mult][2*deta][sign][HF]->GetMeanError();
 
-						double Q_total_real_dEta1 = QvsdEta[mult][3*deta][sign][HF]->GetMean();
-						double Q_total_real_dEta_error1 = QvsdEta[mult][3*deta][sign][HF]->GetMeanError();
+					double Q_total_real_dEta2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMean();
+					double Q_total_real_dEta_error2 = QvsdEta[mult][2*deta+1][sign][HF]->GetMeanError();
 
-						double Q_total_real_dEta2 = QvsdEta[mult][3*deta+1][sign][HF]->GetMean();
-						double Q_total_real_dEta_error2 = QvsdEta[mult][3*deta+1][sign][HF]->GetMeanError();
+					double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+1 );
+					double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 2*deta+2 );
 
-						double Q_total_real_dEta3 = QvsdEta[mult][3*deta+2][sign][HF]->GetMean();
-						double Q_total_real_dEta_error3 = QvsdEta[mult][3*deta+2][sign][HF]->GetMeanError();
+					double value = weightedAverage(weight1, weight2, 0, Q_total_real_dEta1, Q_total_real_dEta2, 0);
+				 	double error = weightedAverageError(weight1, weight2, 0, Q_total_real_dEta_error1, Q_total_real_dEta_error2, 0 );
 
-						double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+1 );
-						double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+2 );
-						double weight3 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+3 );
+					hist1[mult][sign][HF]->SetBinContent(deta+1, value );
+					hist1[mult][sign][HF]->SetBinError(deta+1, error );
+					// if(deta < 9){
+
+					// 	double Q_total_real_dEta1 = QvsdEta[mult][3*deta][sign][HF]->GetMean();
+					// 	double Q_total_real_dEta_error1 = QvsdEta[mult][3*deta][sign][HF]->GetMeanError();
+
+					// 	double Q_total_real_dEta2 = QvsdEta[mult][3*deta+1][sign][HF]->GetMean();
+					// 	double Q_total_real_dEta_error2 = QvsdEta[mult][3*deta+1][sign][HF]->GetMeanError();
+
+					// 	double Q_total_real_dEta3 = QvsdEta[mult][3*deta+2][sign][HF]->GetMean();
+					// 	double Q_total_real_dEta_error3 = QvsdEta[mult][3*deta+2][sign][HF]->GetMeanError();
+
+					// 	double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+1 );
+					// 	double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+2 );
+					// 	double weight3 = delEta3p[mult][sign][HF]->GetBinContent( 3*deta+3 );
 						
-						double value = weightedAverage(weight1, weight2, weight3, Q_total_real_dEta1, Q_total_real_dEta2, Q_total_real_dEta3);
-						double error = weightedAverageError(weight1, weight2, weight3, Q_total_real_dEta_error1, Q_total_real_dEta_error2, Q_total_real_dEta_error3 );
+					// 	double value = weightedAverage(weight1, weight2, weight3, Q_total_real_dEta1, Q_total_real_dEta2, Q_total_real_dEta3);
+					// 	double error = weightedAverageError(weight1, weight2, weight3, Q_total_real_dEta_error1, Q_total_real_dEta_error2, Q_total_real_dEta_error3 );
 						
-						hist1[mult][sign][HF]->SetBinContent(deta+1, value );
-						hist1[mult][sign][HF]->SetBinError(deta+1, error );
+					// 	hist1[mult][sign][HF]->SetBinContent(deta+1, value );
+					// 	hist1[mult][sign][HF]->SetBinError(deta+1, error );
 
 
-					}
-					else{
+					// }
+					// else{
 
-						double Q_total_real_dEta1 = QvsdEta[mult][27][sign][HF]->GetMean();
-						double Q_total_real_dEta_error1 = QvsdEta[mult][27][sign][HF]->GetMeanError();
+					// 	double Q_total_real_dEta1 = QvsdEta[mult][27][sign][HF]->GetMean();
+					// 	double Q_total_real_dEta_error1 = QvsdEta[mult][27][sign][HF]->GetMeanError();
 						
-						double Q_total_real_dEta2 = QvsdEta[mult][28][sign][HF]->GetMean();
-						double Q_total_real_dEta_error2 = QvsdEta[mult][28][sign][HF]->GetMeanError();
+					// 	double Q_total_real_dEta2 = QvsdEta[mult][28][sign][HF]->GetMean();
+					// 	double Q_total_real_dEta_error2 = QvsdEta[mult][28][sign][HF]->GetMeanError();
 
-						double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 28 );
-						double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 29 );
+					// 	double weight1 = delEta3p[mult][sign][HF]->GetBinContent( 28 );
+					// 	double weight2 = delEta3p[mult][sign][HF]->GetBinContent( 29 );
 
-						double value = weightedAverage(weight1, weight2, 0, Q_total_real_dEta1, Q_total_real_dEta2, 0);
-						double error = weightedAverageError(weight1, weight2, 0, Q_total_real_dEta_error1, Q_total_real_dEta_error2, 0 );
+					// 	double value = weightedAverage(weight1, weight2, 0, Q_total_real_dEta1, Q_total_real_dEta2, 0);
+					// 	double error = weightedAverageError(weight1, weight2, 0, Q_total_real_dEta_error1, Q_total_real_dEta_error2, 0 );
 						
-						hist1[mult][sign][HF]->SetBinContent(deta+1, value );
-						hist1[mult][sign][HF]->SetBinError(deta+1,  error);
-					}
+					// 	hist1[mult][sign][HF]->SetBinContent(deta+1, value );
+					// 	hist1[mult][sign][HF]->SetBinError(deta+1,  error);
+					// }
 
 
 				}
@@ -193,8 +219,8 @@ void plotDeltaEtaResultChecks(){
 
 	TH1D* base1 = makeHist("base1", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 48,0,4.8,kBlack);
 
-	base1->GetYaxis()->SetRangeUser(-0.0012,0.001);
-	base1->GetXaxis()->SetRangeUser(-0.2, 4.8);
+	base1->GetYaxis()->SetRangeUser(-0.0012,0.0016);
+	base1->GetXaxis()->SetRangeUser(-0.2, 1.8);
 	base1->GetXaxis()->SetTitleColor(kBlack);
 
 	fixedFontHist1D(base1,1.1,1.25);
@@ -300,44 +326,44 @@ void plotDeltaEtaResultChecks(){
     r44->SetTextSize(24);
     r44->SetTextFont(53);
     
-    TLatex* r45 = new TLatex(0.05, 0.80, "30-35%");
+    TLatex* r45 = new TLatex(0.05, 0.80, "60-70%");
     r45->SetNDC();
     r45->SetTextSize(23);
     r45->SetTextFont(43);
     r45->SetTextColor(kBlack);
 
-    TLatex* r46 = new TLatex(0.24, 0.80, "30-35%");
+    TLatex* r46 = new TLatex(0.24, 0.80, "60-70%");
     r46->SetNDC();
     r46->SetTextSize(23);
     r46->SetTextFont(43);
     r46->SetTextColor(kBlack);
 
-    TLegend *w4 = new TLegend(0.3,0.2,0.95,0.35);
+    TLegend *w4 = new TLegend(0.4,0.6,0.8,0.75);
     w4->SetLineColor(kWhite);
     w4->SetFillColor(0);
-    w4->SetTextSize(23);
+    w4->SetTextSize(18);
     w4->SetTextFont(45);
     w4->SetNColumns(2);
     w4->AddEntry(temp1, "  ");
-    w4->AddEntry(temp11, "  No tracking correction");
+    w4->AddEntry(temp11, etarange1.c_str());
     
     w4->AddEntry(temp5, "  ");
-    w4->AddEntry(temp9, "  default correction");
+    w4->AddEntry(temp9, etarange2.c_str());
 
-	TLatex* latex1 = new TLatex(0.28, 0.37, "same");
+	TLatex* latex1 = new TLatex(0.38, 0.76, "same");
     latex1->SetNDC();
     latex1->SetTextSize(20);
     latex1->SetTextFont(43);
     latex1->SetTextColor(kBlack);
-    TLatex* latex2 = new TLatex(0.39, 0.37, "oppo");
+    TLatex* latex2 = new TLatex(0.46, 0.76, "oppo");
     latex2->SetNDC();
     latex2->SetTextSize(20);
     latex2->SetTextFont(43);
     latex2->SetTextColor(kBlack);
     
-    TCanvas* c4 = new TCanvas("c4","c4",1000,600);
-	c4->Divide(2,1,0,0);
-	c4->cd(1);
+    TCanvas* c4 = new TCanvas("c4","c4",600,600);
+	// c4->Divide(2,1,0,0);
+	// c4->cd(1);
 	gPad->SetLeftMargin(0.20);
 	gPad->SetBottomMargin(0.13);
 	gPad->SetTopMargin(0.06);
@@ -364,7 +390,7 @@ void plotDeltaEtaResultChecks(){
     TBox* box5[50];
     TBox* box6[50];
 
-    for(int deta = 0; deta < NdEtaReBins2; deta++){
+    for(int deta = 0; deta < 8; deta++){
 
     	value1[deta] = temp1->GetBinContent(deta+1);
     	value1_error[deta] = temp1->GetBinError(deta+1);
@@ -386,44 +412,47 @@ void plotDeltaEtaResultChecks(){
 
     }
 
-	for(int deta = 0; deta < NdEtaReBins2; deta++){
+	for(int deta = 0; deta < 8; deta++){
 
     	double xe = 0.065;
     	double ye = total_systematics_pPb;
 
-    	box1[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value1[deta]-ye,dEtaReBinCenter2[deta]+xe,value1[deta]+ye);
+    	box1[deta] = new TBox(dEtaReBinCenter[deta]-xe,value1[deta]-ye,dEtaReBinCenter[deta]+xe,value1[deta]+ye);
 		box1[deta]->SetFillColor(kRed);
         box1[deta]->SetFillColorAlpha(kGray+1,0.4);
         box1[deta]->SetFillStyle(1001);
     	box1[deta]->SetLineWidth(0);
     	box1[deta]->SetLineColor(kRed);
-        box1[deta]->Draw("SAME");
+        //box1[deta]->Draw("SAME");
 
-		box2[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value2[deta]-ye,dEtaReBinCenter2[deta]+xe,value2[deta]+ye);
+		box2[deta] = new TBox(dEtaReBinCenter[deta]-xe,value2[deta]-ye,dEtaReBinCenter[deta]+xe,value2[deta]+ye);
 		box2[deta]->SetFillColor(kBlue);
         box2[deta]->SetFillColorAlpha(kGray+1,0.4);
         box2[deta]->SetFillStyle(1001);
     	box2[deta]->SetLineWidth(0);
     	box2[deta]->SetLineColor(kBlue);
-        box2[deta]->Draw("SAME");
+        //box2[deta]->Draw("SAME");
 
-        box3[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value3[deta]-ye,dEtaReBinCenter2[deta]+xe,value3[deta]+ye);
+        box3[deta] = new TBox(dEtaReBinCenter[deta]-xe,value3[deta]-ye,dEtaReBinCenter[deta]+xe,value3[deta]+ye);
 		box3[deta]->SetFillColor(kRed);
         box3[deta]->SetFillColorAlpha(kGray+1,0.4);
         box3[deta]->SetFillStyle(1001);
     	box3[deta]->SetLineWidth(0);
     	box3[deta]->SetLineColor(kRed);
-        box3[deta]->Draw("SAME");
+        //box3[deta]->Draw("SAME");
 
-		box4[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value4[deta]-ye,dEtaReBinCenter2[deta]+xe,value4[deta]+ye);
+		box4[deta] = new TBox(dEtaReBinCenter[deta]-xe,value4[deta]-ye,dEtaReBinCenter[deta]+xe,value4[deta]+ye);
 		box4[deta]->SetFillColor(kBlue);
         box4[deta]->SetFillColorAlpha(kGray+1,0.4);
         box4[deta]->SetFillStyle(1001);
     	box4[deta]->SetLineWidth(0);
     	box4[deta]->SetLineColor(kBlue);
-        box4[deta]->Draw("SAME");
+        //box4[deta]->Draw("SAME");
     }
 
+
+    //alice_same->Draw("Psame");
+    //alice_oppo->Draw("Psame");
     temp1->Draw("Psame");
 	temp11->Draw("Psame");
 	temp5->Draw("Psame");
@@ -434,6 +463,7 @@ void plotDeltaEtaResultChecks(){
     latex2->Draw("same");
     r46->Draw("same");
 
+/*
     c4->cd(2);
 	gPad->SetBottomMargin(0.13);
 	gPad->SetTopMargin(0.06);
@@ -447,7 +477,7 @@ void plotDeltaEtaResultChecks(){
     double value6[50];
     double value6_error[50];
 
-    for(int deta = 0; deta < NdEtaReBins2; deta++){
+    for(int deta = 0; deta < 8; deta++){
 
     	value5[deta] = temp5->GetBinContent(deta+1);
     	value5_error[deta] = temp5->GetBinError(deta+1);
@@ -457,12 +487,12 @@ void plotDeltaEtaResultChecks(){
 
     }	
 
-    for(int deta = 0; deta < NdEtaReBins2; deta++){
+    for(int deta = 0; deta < 8; deta++){
 
     	double xe = 0.065;
     	double ye = total_systematics_PbPb;
 
-    	box1[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value1[deta]-ye,dEtaReBinCenter2[deta]+xe,value1[deta]+ye);
+    	box1[deta] = new TBox(dEtaReBinCenter[deta]-xe,value1[deta]-ye,dEtaReBinCenter[deta]+xe,value1[deta]+ye);
 		box1[deta]->SetFillColor(kRed);
         box1[deta]->SetFillColorAlpha(kGray+1,0.4);
         box1[deta]->SetFillStyle(1001);
@@ -470,7 +500,7 @@ void plotDeltaEtaResultChecks(){
     	box1[deta]->SetLineColor(kRed);
         box1[deta]->Draw("SAME");
 
-		box2[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value2[deta]-ye,dEtaReBinCenter2[deta]+xe,value2[deta]+ye);
+		box2[deta] = new TBox(dEtaReBinCenter[deta]-xe,value2[deta]-ye,dEtaReBinCenter[deta]+xe,value2[deta]+ye);
 		box2[deta]->SetFillColor(kBlue);
         box2[deta]->SetFillColorAlpha(kGray+1,0.4);
         box2[deta]->SetFillStyle(1001);
@@ -478,7 +508,7 @@ void plotDeltaEtaResultChecks(){
     	box2[deta]->SetLineColor(kBlue);
         box2[deta]->Draw("SAME");
 
-    	box5[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value5[deta]-ye,dEtaReBinCenter2[deta]+xe,value5[deta]+ye);
+    	box5[deta] = new TBox(dEtaReBinCenter[deta]-xe,value5[deta]-ye,dEtaReBinCenter[deta]+xe,value5[deta]+ye);
 		box5[deta]->SetFillColor(kRed);
         box5[deta]->SetFillColorAlpha(kGray+1,0.4);
         box5[deta]->SetFillStyle(1001);
@@ -486,7 +516,7 @@ void plotDeltaEtaResultChecks(){
     	box5[deta]->SetLineColor(kRed);
         box5[deta]->Draw("SAME");
 
-		box6[deta] = new TBox(dEtaReBinCenter2[deta]-xe,value6[deta]-ye,dEtaReBinCenter2[deta]+xe,value6[deta]+ye);
+		box6[deta] = new TBox(dEtaReBinCenter[deta]-xe,value6[deta]-ye,dEtaReBinCenter[deta]+xe,value6[deta]+ye);
 		box6[deta]->SetFillColor(kBlue);
         box6[deta]->SetFillColorAlpha(kGray+1,0.4);
         box6[deta]->SetFillStyle(1001);
@@ -521,7 +551,7 @@ void plotDeltaEtaResultChecks(){
 	latex1->Draw("same");
     latex2->Draw("same");
     r434->Draw("same");
-
+*/
 
 
 

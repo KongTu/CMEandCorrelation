@@ -45,6 +45,12 @@ void makeTGraph_ALICE_STAR(){
 	double alice_centrality_same1[9];
 	double alice_centrality_same1_error[9];
 
+	double alice_centrality_oppo2[9];
+	double alice_centrality_oppo2_error[9];
+	
+	double alice_centrality_same2[9];
+	double alice_centrality_same2_error[9];
+
 //ZDC
 	double p8370_d4x1y1_yval[] = { -2.4E-5, -1.6E-5, -5.0E-6, -2.3E-5, -7.8E-5, 6.0E-6, -4.65E-4, -1.63E-4 };
 	double p8370_d4x1y1_yerrminus[] = { 2.5E-5, 1.0E-5, 1.2E-5, 1.8E-5, 3.4E-5, 7.6E-5, 2.25E-4, 8.95E-4 };
@@ -59,13 +65,7 @@ void makeTGraph_ALICE_STAR(){
 	double p8370_d3x1y2_yval[] = { 0.0, -1.0E-5, -4.6E-5, -9.8E-5, -1.47E-4, -2.48E-4, -3.66E-4, -3.7E-4, -3.93E-4 };
   	double p8370_d3x1y2_yerrminus[] = { 4.0E-6, 6.0E-6, 9.0E-6, 1.4E-5, 2.4E-5, 4.1E-5, 8.1E-5, 1.77E-4, 3.77E-4 };
 
-	double alice_centrality_oppo2[9];
-	double alice_centrality_oppo2_error[9];
-	
-	double alice_centrality_same2[9];
-	double alice_centrality_same2_error[9];
-
-	//TPC cumulant
+//TPC cumulant
 	double p8370_d2x1y1_yval[] = { -6.0E-6, 2.0E-6, -5.0E-6, -1.1E-5, -1.0E-5, -3.0E-5, -1.0E-5, 2.47E-4 };
 	double p8370_d2x1y1_yerrminus[] = { 3.0E-6, 4.0E-6, 3.0E-6, 5.0E-6, 7.0E-6, 1.2E-5, 2.2E-5, 4.6E-5 };
 
@@ -75,11 +75,11 @@ void makeTGraph_ALICE_STAR(){
 
 	for(int mult = 0; mult < 8; mult++){
 
-		alice_centrality_oppo1[mult] = p8370_d4x1y1_yval[7-mult];
-		alice_centrality_oppo1_error[mult] = p8370_d4x1y1_yerrminus[7-mult];
+		alice_centrality_oppo1[mult] = p8370_d3x1y1_yval[7-mult];
+		alice_centrality_oppo1_error[mult] = p8370_d3x1y1_yerrminus[7-mult];
 
-		alice_centrality_same1[mult] = p8370_d4x1y2_yval[7-mult];
-		alice_centrality_same1_error[mult] = p8370_d4x1y2_yerrminus[7-mult];
+		alice_centrality_same1[mult] = p8370_d3x1y2_yval[7-mult];
+		alice_centrality_same1_error[mult] = p8370_d3x1y2_yerrminus[7-mult];
 
 		alice_centrality_oppo2[mult] = p8370_d2x1y1_yval[7-mult];
 		alice_centrality_oppo2_error[mult] = p8370_d2x1y1_yerrminus[7-mult];
@@ -138,8 +138,8 @@ void makeTGraph_ALICE_STAR(){
 
 	//use the flipped value to place on the axis, so that it can be later drawed reversely. 
 
-	TGraphErrors* gr1 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, alice_centrality_same1, xbinwidth, alice_centrality_same1_error);
-	TGraphErrors* gr2 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, alice_centrality_oppo1, xbinwidth, alice_centrality_oppo1_error);
+	TGraphErrors* gr1 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, alice_centrality_same2, xbinwidth, alice_centrality_same2_error);
+	TGraphErrors* gr2 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, alice_centrality_oppo2, xbinwidth, alice_centrality_oppo2_error);
 	
 	TGraphErrors* gr3 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, star_centrality_same1, xbinwidth, star_centrality_same1_error);
 	TGraphErrors* gr4 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, star_centrality_oppo1, xbinwidth, star_centrality_oppo1_error);

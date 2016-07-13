@@ -8,14 +8,16 @@ double etabins[] = {-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1
 const int Nbins = sizeof(etabins) / sizeof(etabins[0]) - 1;
 double dEtaBins[] = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.2,2.4,2.6,2.8,3.0,3.4,3.8,4.2,4.8};
 const int NdEtaBins = sizeof(dEtaBins) / sizeof(dEtaBins[0]) - 1;
-double ntrkBins[] = {90,120,150,185,220,260,300,350,400,500};
+double ntrkBins[] = {60,90,120,150,185,220,260,300,350,400,500};
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 int ntrkBinCenter[] = {103.921, 134.061, 166.539, 201.615, 239.096, 279.13, 324.044, 374.081, 448.17};
 
-double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
+
 double PbPb_5TeV_ntrkBinCenter[] = {103.921, 134.061, 166.539, 201.615, 239.096, 279.13, 324.044, 374.081, 448.17};
+//double PbPb_5TeV_ntrkBinCenter[] = {73.69, 103.921, 134.061, 166.539, 201.615, 239.096, 279.13, 324.044, 374.081, 448.17};
 
 double PbPb_ntrkCentralityBinCenter[] = {151.6, 270.2, 441.9, 685.4,1024,1376,1721,40000};
 const int Nmults = 9;
@@ -26,7 +28,7 @@ double total_systematics_PbPb = 0.000071;
 
 void makeTGraph_PbPb(){
 
-	TFile* file[9];
+	TFile* file[10];
 
 	// file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_1.root");
 	// file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_2.root");
@@ -36,7 +38,8 @@ void makeTGraph_PbPb(){
 	// file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_6.root");
 	// file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_7.root");
 	// file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_50_100_v3_8.root");
-
+	//file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_lowMult_3.root");
+	
 	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_1.root");
 	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_2.root");
 	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v6_3.root");
@@ -51,7 +54,7 @@ void makeTGraph_PbPb(){
 
 	TH1D* delEta3p[30][3][2];
 
-	TH1D* Ntrk[9];
+	TH1D* Ntrk[10];
 
 	for(int mult = 0; mult < Nmults; mult++){
 
@@ -126,9 +129,9 @@ void makeTGraph_PbPb(){
 		}
 	}
 
-	double threeParticleNtrk[9][3][2];
-	double threeParticleNtrkError[9][3][2];
-	double totalWeight[9][3][2];
+	double threeParticleNtrk[10][3][2];
+	double threeParticleNtrkError[10][3][2];
+	double totalWeight[10][3][2];
 
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
@@ -152,7 +155,7 @@ void makeTGraph_PbPb(){
 	//pPb:
 	for(int sign = 0; sign < 3; sign++){
 		for(int HF = 0; HF < 2; HF++){
-			for(int mult = 0; mult < 9; mult++){
+			for(int mult = 0; mult < Nmults; mult++){
 
 				//pPb(0,7)
 				double value = threeParticleNtrk[mult][sign][HF]/totalWeight[mult][sign][HF];
@@ -196,15 +199,20 @@ void makeTGraph_PbPb(){
 
 
 
-    double value1[9];
-    double value1_error[9];
-    double value2[9];
-    double value2_error[9];
-    double value3[9];
-    double value3_error[9];
+    double value1[10];
+    double value1_error[10];
+    double value2[10];
+    double value2_error[10];
+    double value3[10];
+    double value3_error[10];
+
+    double value5[10];
+    double value5_error[10];
+    double value6[10];
+    double value6_error[10];
 
 
-    for(int mult = 0; mult < 9; mult++){
+    for(int mult = 0; mult < Nmults; mult++){
 
     	value1[mult] = temp1->GetBinContent(mult+1);
     	value1_error[mult] = temp1->GetBinError(mult+1);
@@ -215,17 +223,28 @@ void makeTGraph_PbPb(){
     	value3[mult] = total->GetBinContent(mult+1);
     	value3_error[mult] = 0.000071;
 
+    	value5[mult] = v2[mult][0];
+    	value5_error[mult] = QcQb[mult]->GetMeanError();
+
+    	value6[mult] = v2[mult][1];
+    	value6_error[mult] = QaQc[mult]->GetMeanError();
+
     }
 
-	TGraphErrors* gr5 = new TGraphErrors(9, PbPb_5TeV_ntrkBinCenter, value1, xbinwidth, value1_error);
-    TGraphErrors* gr6 = new TGraphErrors(9, PbPb_5TeV_ntrkBinCenter, value2, xbinwidth, value2_error);
-    TGraphErrors* gr7 = new TGraphErrors(9, PbPb_5TeV_ntrkBinCenter, value3, xbinwidth, value3_error);
+	TGraphErrors* gr5 = new TGraphErrors(Nmults, PbPb_5TeV_ntrkBinCenter, value1, xbinwidth, value1_error);
+    TGraphErrors* gr6 = new TGraphErrors(Nmults, PbPb_5TeV_ntrkBinCenter, value2, xbinwidth, value2_error);
+    TGraphErrors* gr7 = new TGraphErrors(Nmults, PbPb_5TeV_ntrkBinCenter, value3, xbinwidth, value3_error);
+	TGraphErrors* gr8 = new TGraphErrors(Nmults, PbPb_5TeV_ntrkBinCenter, value5, xbinwidth, value5_error);
+    TGraphErrors* gr9 = new TGraphErrors(Nmults, PbPb_5TeV_ntrkBinCenter, value6, xbinwidth, value6_error);
 
 
     TFile t1("../dataPoints/PbPb5TeV_data.root","RECREATE");
     gr5->Write();
     gr6->Write();
     gr7->Write();
+    gr8->Write();
+    gr9->Write();
+
 
 
 }

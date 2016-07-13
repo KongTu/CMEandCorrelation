@@ -21,6 +21,7 @@ double dEtaReBinCenter2[] = {0.15,0.45,0.75,1.05,1.35,1.65,2.0,2.5,3.3,4.3};
 double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
+
 double PbPb_5TeV_ntrkBinCenter[] = {103.921, 134.061, 166.539, 201.615, 239.096, 279.13, 324.044, 374.081, 448.17};
 
 double PbPb_ntrkCentralityBinCenter[] = {625.275, 811.118, 1025.79, 1257.64};
@@ -42,6 +43,7 @@ void plotDeltaEtaDifference(){
 	file[2] = new TFile("../dataPoints/PbPb_5TeV_centrality_data.root");
 	file[3] = new TFile("../dataPoints/EPOS_data.root");
 	file[4] = new TFile("../dataPoints/diff.root");
+	file[5] = new TFile("../dataPoints/EPOS_PbPb_data.root");
 
 
 	TGraphErrors* gr1[4];
@@ -73,6 +75,12 @@ void plotDeltaEtaDifference(){
 
 		gr5[i] = (TH1D*) file[4]->Get(Form("diff%d", i+1));
 	}
+
+	TGraphErrors* gr6[2];
+	for(int i = 0; i < 2; i++){
+
+		gr6[i] = (TGraphErrors*) file[5]->Get(Form("Graph;%d", i+1));
+	}
 	
 	for(int i = 0; i < 4; i++){
 		for(int mult = 0; mult < 3; mult++){
@@ -88,8 +96,8 @@ void plotDeltaEtaDifference(){
 
 	TGaxis::SetMaxDigits(3);
 
-	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 5000,0.1,10000,kBlack);
-	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 5000,0.1,10000,kBlack);
+	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "[#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}]", 5000,0.1,10000,kBlack);
+	TH1D* base2 = makeHist("base2", "p-going", "N^{offline}_{trk}", "[#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}]", 5000,0.1,10000,kBlack);
 
 	base1->GetYaxis()->SetRangeUser(-0.0009, 0.0008);
 	base1->GetXaxis()->SetRangeUser(70, 2000);
@@ -117,9 +125,9 @@ void plotDeltaEtaDifference(){
 	base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.4);
 	
 	TH1D* base3 = (TH1D*) base1->Clone("base3");
-	base3->GetYaxis()->SetTitle("#Delta#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT");
-	base3->GetYaxis()->SetRangeUser(-0.0007,0.0018);
-	base3->GetYaxis()->SetTitleOffset(1.2);
+	base3->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c} (OS-SS)");
+	base3->GetYaxis()->SetRangeUser(-0.00025,0.0016);
+	base3->GetYaxis()->SetTitleOffset(1.1);
 	base3->GetXaxis()->SetTitleOffset(1.1);
 	base3->GetYaxis()->SetTitleSize(base3->GetYaxis()->GetTitleSize()*1.2);
 	base3->GetXaxis()->SetTitleSize(base3->GetXaxis()->GetTitleSize()*1.2);
@@ -127,21 +135,22 @@ void plotDeltaEtaDifference(){
 	base3->GetXaxis()->SetLabelSize(base3->GetXaxis()->GetLabelSize()*1.3);
 	base3->GetXaxis()->SetNdivisions(5,6,0);
 
-	TH1D* base4 = makeHist("base4", "", "#Delta#eta", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT", 48,0,4.8,kBlack);
+	TH1D* base4 = makeHist("base4", "", "#Delta#eta", "[#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}]", 48,0,4.8,kBlack);
 	base4->GetYaxis()->SetRangeUser(-0.0012,0.001);
 	//base4->GetYaxis()->SetRangeUser(-0.01, 0.03);
 	base4->GetXaxis()->SetRangeUser(-0.2, 4.8);
 	base4->GetXaxis()->SetTitleColor(kBlack);
 	fixedFontHist1D(base4,1.1,1.25);
-	base4->GetYaxis()->SetTitle("#Delta#LTcos(#phi_{#alpha}+#phi_{#beta}-2#Psi_{EP})#GT");
-	base4->GetYaxis()->SetRangeUser(-0.0007,0.0018);
-	base4->GetYaxis()->SetTitleOffset(1.2);
+	base4->GetYaxis()->SetTitle("#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c} (OS-SS)");
+	base4->GetYaxis()->SetRangeUser(-0.00025,0.0016);
+	base4->GetYaxis()->SetTitleOffset(1.1);
 	base4->GetXaxis()->SetTitleOffset(1.1);
 	base4->GetYaxis()->SetTitleSize(base1->GetYaxis()->GetTitleSize()*1.2);
 	base4->GetXaxis()->SetTitleSize(base1->GetXaxis()->GetTitleSize()*1.2);
 	base4->GetYaxis()->SetLabelSize(base1->GetYaxis()->GetLabelSize()*1.3);
 	base4->GetXaxis()->SetLabelSize(base1->GetXaxis()->GetLabelSize()*1.3);
-	base4->GetXaxis()->SetNdivisions(5,6,0);
+	base4->GetXaxis()->SetNdivisions(5,9,0);
+	base4->GetYaxis()->SetNdivisions(5,9,0);
 
     TBox *box1[50];
     TBox *box2[50];
@@ -157,7 +166,7 @@ void plotDeltaEtaDifference(){
 
     TLatex* r4 = new TLatex(0.18, 0.78, "#sqrt{s_{NN}} = 5.02 TeV");
     r4->SetNDC();
-    r4->SetTextSize(23);
+    r4->SetTextSize(24);
     r4->SetTextFont(43);
     r4->SetTextColor(kBlack);
 	
@@ -177,26 +186,27 @@ void plotDeltaEtaDifference(){
     latex3->SetTextFont(43);
     latex3->SetTextColor(kBlack);
 
-    TLatex* r3 = new TLatex(0.63, 0.84, "PbPb centrality(%)");
+    TLatex* r3 = new TLatex(0.69, 0.94, "PbPb centrality(%)");
     r3->SetNDC();
     r3->SetTextSize(21);
     r3->SetTextFont(43);
     r3->SetTextColor(kBlack);
 
     TLatex* cent1[7];
-    cent1[0] = new TLatex(0.54, 0.91, "55");
-    cent1[1] = new TLatex(0.66, 0.91, "45");
-    cent1[2] = new TLatex(0.76, 0.91, "35");
-    cent1[3] = new TLatex(0.69, 0.91, "25");
+    cent1[0] = new TLatex(0.55, 0.91, "55");
+    cent1[1] = new TLatex(0.69, 0.91, "45");
+    cent1[2] = new TLatex(0.80, 0.91, "35");
+    cent1[3] = new TLatex(0.38, 0.91, "65");
     cent1[4] = new TLatex(0.75, 0.91, "15");
     cent1[5] = new TLatex(0.80, 0.91, "7.5");
     cent1[6] = new TLatex(0.84, 0.91, "2.5");
 
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
     	cent1[i]->SetNDC();
     	cent1[i]->SetTextSize(13);
 	    cent1[i]->SetTextFont(63);
 	    cent1[i]->SetTextColor(kBlack);
+	    //cent1[i]->Draw("same");
     }
 
    	TLatex* r11 = new TLatex(0.18,0.84, "CMS");
@@ -210,15 +220,31 @@ void plotDeltaEtaDifference(){
 
     TCanvas* c3 = new TCanvas("c3","c3",1,1,1300,650);
     c3->Divide(2,1,0.01,0.01);
-    c3->cd(1);
+    c3->cd(2);
     gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
+	gPad->SetLeftMargin(0.14);
 	gPad->SetBottomMargin(0.13);
+	gPad->SetRightMargin(0.05);
 	gStyle->SetPadBorderMode(0.1);
 	gPad->SetLogx(1);
 	gStyle->SetOptTitle(0);
 
+	base3->GetXaxis()->SetLabelOffset(999);
+	base3->GetXaxis()->SetTickLength(0);
+	
+	TGaxis *newaxis2 = new TGaxis(81,
+	                            -0.00025,
+	                            2000,
+	                            -0.00025,
+	                            81,
+	                            2000,
+	                            510,"G");
+	newaxis2->SetLabelOffset(0.0);
+	newaxis2->SetLabelFont(42);
+	newaxis2->SetLabelSize(0.045);
+
 	base3->Draw();
+	newaxis2->Draw("same");
 
 	TGraphErrors* new_gr1_pPb = new TGraphErrors(9);
 	TGraphErrors* new_gr2_pPb = new TGraphErrors(9);
@@ -228,6 +254,8 @@ void plotDeltaEtaDifference(){
 
 	TGraphErrors* new_gr1_EPOS = new TGraphErrors(3);
 	TGraphErrors* new_gr2_EPOS = new TGraphErrors(3);
+
+	TGraphErrors* new_gr1_EPOS_PbPb = new TGraphErrors(6);
 
 	for(int mult = 0; mult < 6; mult++){
 
@@ -268,6 +296,7 @@ void plotDeltaEtaDifference(){
 
 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
 
+		if(mult == 5) y2 = 100;
 		new_gr2_pPb->SetPoint(mult+3, x1, y2-y1);
 		new_gr2_pPb->SetPointError(mult+3, 0, total_error);
 
@@ -355,7 +384,6 @@ void plotDeltaEtaDifference(){
 		y2_error = gr4[1]->GetErrorY(mult);
 
 		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
-
 		new_gr1_EPOS->SetPoint(mult, x1, y2-y1);
 		new_gr1_EPOS->SetPointError(mult, 0, total_error);
 
@@ -372,7 +400,25 @@ void plotDeltaEtaDifference(){
 		new_gr2_EPOS->SetPoint(mult, x1, y2-y1);
 		new_gr2_EPOS->SetPointError(mult, 0, total_error);
 	}
+	
+	for(int mult = 0; mult < 6; mult++){
 
+//EPOS PbPb
+		double x1, y1, y1_error;
+		gr6[0]->GetPoint(mult, x1, y1);
+		y1_error = gr6[0]->GetErrorY(mult);
+
+		double x2, y2, y2_error;
+		gr6[1]->GetPoint(mult, x2, y2);
+		y2_error = gr6[1]->GetErrorY(mult);
+
+		double total_error = sqrt(y1_error*y1_error + y2_error*y2_error);
+
+		new_gr1_EPOS_PbPb->SetPoint(mult, x1, y2-y1);
+		new_gr1_EPOS_PbPb->SetPointError(mult, 0, total_error);
+
+
+	}
 	new_gr1_pPb->SetMarkerStyle(20);
 	new_gr1_pPb->SetMarkerSize(1.4);
 	new_gr1_pPb->SetMarkerColor(kRed);
@@ -412,26 +458,32 @@ void plotDeltaEtaDifference(){
 	new_gr2_EPOS->SetLineWidth(3.0);
 	new_gr2_EPOS->SetLineStyle(5.0);
 	new_gr2_EPOS->Draw("same");
+	
+	new_gr1_EPOS_PbPb->SetMarkerSize(1.4);
+	new_gr1_EPOS_PbPb->SetMarkerColor(kBlue);
+	new_gr1_EPOS_PbPb->SetLineColor(kBlue);
+	new_gr1_EPOS_PbPb->SetLineWidth(3.0);
+	new_gr1_EPOS_PbPb->SetLineStyle(5.0);
+	new_gr1_EPOS_PbPb->Draw("same");
 
-	TLegend *w3 = new TLegend(0.50,0.6,0.7,0.8);
+	TLegend *w3 = new TLegend(0.50,0.63,0.7,0.8);
     w3->SetLineColor(kWhite);
     w3->SetFillColor(0);
     w3->SetTextSize(20);
     w3->SetTextFont(43);
-    w3->AddEntry(new_gr1_pPb, "pPb, Pb-going", "P");
-    w3->AddEntry(new_gr2_pPb, "pPb, p-going", "P");
-    w3->AddEntry(new_gr1_EPOS, "pPb EPOS, Pb-going", "L" );    
-    w3->AddEntry(new_gr2_EPOS, "pPb EPOS, p-going", "L" );    
-    
-    w3->AddEntry(new_gr1_PbPb, "PbPb", "P");
-
+    //w3->AddEntry(new_gr1_pPb, "pPb, #Psi_{EP}(Pb-going)", "P");
+    //w3->AddEntry(new_gr2_pPb, "pPb, #Psi_{EP}(p-going)", "P");
+    w3->AddEntry(new_gr1_EPOS, "pPb EPOS, #Psi_{EP}(Pb-going)", "L" );    
+    w3->AddEntry(new_gr2_EPOS, "pPb EPOS, #Psi_{EP}(p-going)", "L" );    
+    //w3->AddEntry(new_gr1_PbPb, "PbPb", "P");
+    w3->AddEntry(new_gr1_EPOS_PbPb, "PbPb EPOS", "L" );
     w3->Draw("same");
 
     r4->Draw("same");
     r11->Draw("same");
     r22->Draw("same");
     r3->Draw("same");
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
     	cent1[i]->SetNDC();
     	cent1[i]->SetTextSize(13);
 	    cent1[i]->SetTextFont(63);
@@ -440,24 +492,33 @@ void plotDeltaEtaDifference(){
     }
 
     TLine* l2[7];
-    l2[0] = new TLine(404.1,0.00175, 404.1, 0.0018);
+    l2[0] = new TLine(404.1,0.00157, 404.1, 0.0016);
     l2[0]->SetLineWidth(2);
     l2[0]->Draw("Lsame");
 
-    l2[1] = new TLine(717.6,0.00175, 717.6, 0.0018);
+    l2[1] = new TLine(717.6,0.00157, 717.6, 0.0016);
     l2[1]->SetLineWidth(2);
     l2[1]->Draw("Lsame");
 
-    l2[2] = new TLine(1141,0.00175, 1141, 0.0018);
+    l2[2] = new TLine(1141,0.00157, 1141, 0.0016);
     l2[2]->SetLineWidth(2);
     l2[2]->Draw("Lsame");
 
-	latex3->Draw("same");
+    l2[3] = new TLine(81.412,0.00157, 81.412, 0.0016);
+    l2[3]->SetLineWidth(2);
+    //l2[3]->Draw("Lsame");
 
-    c3->cd(2);
+    l2[4] = new TLine(197,0.00157, 197, 0.0016);
+    l2[4]->SetLineWidth(2);
+    l2[4]->Draw("Lsame");
+
+//	latex3->Draw("same");
+
+    c3->cd(1);
 	gPad->SetTicks();
-	gPad->SetLeftMargin(0.15);
+	gPad->SetLeftMargin(0.14);
 	gPad->SetBottomMargin(0.13);
+	gPad->SetRightMargin(0.05);
 	gStyle->SetPadBorderMode(0.1);
 	gStyle->SetOptTitle(0);
     base4->Draw();
@@ -470,9 +531,9 @@ void plotDeltaEtaDifference(){
     r33->SetTextColor(kBlack);
     //r33->Draw("same");
 
-    TLatex* lmult = new TLatex(0.20, 0.82, "185 #leq N^{offline}_{trk} < 220");
+    TLatex* lmult = new TLatex(0.20, 0.84, "185 #leq N^{offline}_{trk} < 220");
     lmult->SetNDC();
-    lmult->SetTextSize(26);
+    lmult->SetTextSize(24);
     lmult->SetTextFont(43);
     lmult->SetTextColor(kBlack);
     lmult->Draw("same");
@@ -535,27 +596,35 @@ void plotDeltaEtaDifference(){
     gr5[1]->Draw("Psame");
     gr5[2]->Draw("Psame");
 
-   	TLatex* r11 = new TLatex(0.62,0.91, "CMS");
+   	TLatex* r11 = new TLatex(0.67,0.91, "CMS");
     r11->SetNDC();
     r11->SetTextSize(0.04);
     r11->Draw("same");
 
-    TLatex* r22 = new TLatex(0.71,0.91, "Preliminary");
+    TLatex* r22 = new TLatex(0.77,0.91, "Preliminary");
     r22->SetNDC();
     r22->SetTextSize(24);
     r22->SetTextFont(53);
     r22->Draw("same");
 
-	TLegend *w4 = new TLegend(0.40,0.5,0.6,0.7);
+    TLatex* r44 = new TLatex(0.20, 0.78, "#sqrt{s_{NN}} = 5.02 TeV");
+    r44->SetNDC();
+    r44->SetTextSize(23);
+    r44->SetTextFont(43);
+    r44->SetTextColor(kBlack);
+    r44->Draw("same");
+
+	TLegend *w4 = new TLegend(0.5,0.63,0.7,0.8);
     w4->SetLineColor(kWhite);
     w4->SetFillColor(0);
     w4->SetTextSize(20);
     w4->SetTextFont(43);
-    w4->AddEntry(gr5[0], "pPb #sqrt{s_{NN}} = 5.02 TeV, Pb-going");
-    w4->AddEntry(gr5[1], "pPb #sqrt{s_{NN}} = 5.02 TeV, p-going");
-    w4->AddEntry(gr5[2], "PbPb #sqrt{s_{NN}} = 5.02 TeV");
-    //w4->Draw("same");
+    w4->AddEntry(gr5[0], "pPb, #Psi_{EP}(Pb-going)", "P");
+    w4->AddEntry(gr5[1], "pPb, #Psi_{EP}(p-going)", "P");
+    w4->AddEntry(gr5[2], "PbPb", "P");
+    w4->Draw("same");
 
-	latex3->Draw("same");
+
+//	latex3->Draw("same");
 
 }

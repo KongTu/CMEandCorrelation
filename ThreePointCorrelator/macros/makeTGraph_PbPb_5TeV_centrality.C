@@ -12,16 +12,16 @@ double ntrkBins[] = {0,35,60,90,120,150,185,220,260,300};//dummy bins
 const int NntrkBins = sizeof(ntrkBins) / sizeof(ntrkBins[0]) - 1;
 int ntrkBinCenter[] = {17.5, 47.5, 75, 105, 135, 167.5, 202.5, 240};
 
-double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+double xbinwidth[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
 double pPb_ntrkBinCenter[] = {16.29,46.1,74.22,101.7,131.3,162.1,196.7,231.5};
 double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
 
 double PbPb_ntrkCentralityBinCenter[] = {624.8, 810.5, 1025, 1256};
 
-double PbPb_centralityBinCenter[] = {75, 65, 57.5, 52.5, 47.5, 42.5, 37.5, 32.5};
+double PbPb_centralityBinCenter[] = {77.5,72.5,67.5,62.5,57.5,52.5,47.5,42.5,37.5,32.5};
 
-const int Nmults = 8;
+const int Nmults = 10;
 
 double total_systematics_pPb = 0.00006;
 double total_systematics_PbPb = 0.000051;
@@ -29,17 +29,23 @@ double total_systematics_PbPb = 0.000051;
 
 void makeTGraph_PbPb_5TeV_centrality(){
 
-	TFile* file[9];
+	TFile* file[10];
 
 	//file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v10_resubmit_3.root");
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v10_resubmit_2.root");	
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v10_resubmit_1.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_6.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_5.root");	
-	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_4.root");
-	file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_3.root");
-	file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_2.root");
-	file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_1.root");
+	//file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v10_resubmit_2.root");	
+	//file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v10_resubmit_1.root");
+
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v17_4.root");	
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v17_3.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v17_2.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v17_1.root");
+
+	file[4] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_6.root");
+	file[5] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_5.root");	
+	file[6] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_4.root");
+	file[7] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_3.root");
+	file[8] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_2.root");
+	file[9] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_1.root");
 
 	// file[0] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_4.root");
 	// file[1] = new TFile("../rootfiles/CME_QvsdEta_PbPb_5TeV_30_100_v5_3.root");
@@ -126,9 +132,9 @@ void makeTGraph_PbPb_5TeV_centrality(){
 		}
 	}
 
-	double threeParticleNtrk[9][3][2];
-	double threeParticleNtrkError[9][3][2];
-	double totalWeight[9][3][2];
+	double threeParticleNtrk[10][3][2];
+	double threeParticleNtrkError[10][3][2];
+	double totalWeight[10][3][2];
 
 	for(int mult = 0; mult < Nmults; mult++){
 		for(int sign = 0; sign < 3; sign++){
@@ -191,12 +197,12 @@ void makeTGraph_PbPb_5TeV_centrality(){
 	temp5->SetLineColor(kBlue);
 
 
-    double value1[9];
-    double value1_error[9];
-    double value2[9];
-    double value2_error[9];
+    double value1[10];
+    double value1_error[10];
+    double value2[10];
+    double value2_error[10];
 	
-	double PbPb_centralityBinCenter_fill[9];
+	double PbPb_centralityBinCenter_fill[10];
 
     for(int mult = 0; mult < Nmults; mult++){
 
@@ -215,10 +221,10 @@ void makeTGraph_PbPb_5TeV_centrality(){
  //    TGraphErrors* gr6 = new TGraphErrors(4, PbPb_ntrkCentralityBinCenter, value2, xbinwidth, value2_error);
  //    TFile t1("../dataPoints/PbPb_5TeV_centrality_data.root","RECREATE");
     
-    TGraphErrors* gr5 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, value1, xbinwidth, value1_error);
-    TGraphErrors* gr6 = new TGraphErrors(8, PbPb_centralityBinCenter_fill, value2, xbinwidth, value2_error);
+    TGraphErrors* gr5 = new TGraphErrors(Nmults, PbPb_centralityBinCenter_fill, value1, xbinwidth, value1_error);
+    TGraphErrors* gr6 = new TGraphErrors(Nmults, PbPb_centralityBinCenter_fill, value2, xbinwidth, value2_error);
     
-    TFile t1("../dataPoints/PbPb_5TeV_centrality_centrality_data.root","RECREATE");
+    TFile t1("../dataPoints/PbPb_5TeV_centrality_centrality_10bins_data.root","RECREATE");
 
     gr5->Write();
     gr6->Write();

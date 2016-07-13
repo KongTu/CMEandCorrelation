@@ -18,12 +18,11 @@ double PbPb_ntrkBinCenter[] ={13.8,46.15,73.67,103.9,134,167,202,239.1};
 
 double PbPb_ntrkCentralityBinCenter[] = {151.6, 270.2, 441.9, 685.4,1024,1376,1721,40000};
 
-//double pPb_v2_bincenter[] = {0.0926906, 0.153734, 0.179698, 0.20368, 0.236909};
-//double pPb_v2_bincenter[] = {0.0668533, 0.0677262, 0.0692565, 0.0713513, 0.0717508, 0.0718288, 0.0728788};
-double pPb_v2_bincenter[] = {0.0615888, 0.063264, 0.0645388, 0.0664797, 0.0683457, 0.069671, 0.0722222, 0.0748879, 0.0783003, 0.0822621, 0.0857548};
 
+//double pPb_v2_bincenter[] = {0.06167, 0.063072, 0.0648051, 0.0665957, 0.0682464, 0.0699678, 0.0723474, 0.07504, 0.0784839, 0.0821738, 0.0860937};
+double pPb_v2_bincenter[] = {0.0635647, 0.0683152, 0.0746466, 0.0820526, 0.0855418};
 
-const int Nmults = 11;
+const int Nmults = 5;
 
 double total_systematics_pPb = 0.00015;
 double total_systematics_PbPb = 0.00014;
@@ -33,17 +32,23 @@ void makeTGraph_pPb_Q2(){
 
 	TFile* file[11];
 
-	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_1.root");
-	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_2.root");
-	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_3.root");
-	file[3] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_4.root");
-	file[4] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_5.root");
-	file[5] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_6.root");
-	file[6] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_7.root");
-	file[7] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_8.root");
-	file[8] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_9.root");
-	file[9] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_10.root");
-	file[10] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v6_11.root");
+	// file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_1.root");
+	// file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_2.root");
+	// file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_3.root");
+	// file[3] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_4.root");
+	// file[4] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_5.root");
+	// file[5] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_6.root");
+	// file[6] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_7.root");
+	// file[7] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_8.root");
+	// file[8] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_9.root");
+	// file[9] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_10.root");
+	// file[10] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_11.root");
+	
+	file[0] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_1and2and3.root");
+	file[1] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_4and5and6.root");
+	file[2] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_7and8and9.root");
+	file[3] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_10.root");
+	file[4] = new TFile("../rootfiles/CME_QvsdEta_pPb_Q2_v7_11.root");
 
 
 	TH1D* QvsdEta[30][48][3][2];
@@ -64,6 +69,8 @@ void makeTGraph_pPb_Q2(){
 			}
 		}
 	}
+
+	cout << endl;
 
 	TH1D* QaQb[30]; TH1D* QaQc[30]; TH1D* QcQb[30];
 	TH1D* aveQ3[30][2][2];
@@ -119,6 +126,7 @@ void makeTGraph_pPb_Q2(){
 		v2[mult][2] = sqrt(c2_ab - abCorr );
 	}
 
+
 	TH1D* hist1[3][2];
 	for(int sign = 0; sign < 3; sign++){
 		for(int HF = 0; HF < 2; HF++){
@@ -160,6 +168,7 @@ void makeTGraph_pPb_Q2(){
 				hist1[sign][HF]->SetBinContent( mult+1, value);
 				double error = threeParticleNtrkError[mult][sign][HF]/(totalWeight[mult][sign][HF]*totalWeight[mult][sign][HF]);
 				error = sqrt(error)/v2[mult][HF];
+				//error = sqrt(error);
 				hist1[sign][HF]->SetBinError( mult+1, error);
 
 			}
@@ -177,6 +186,31 @@ void makeTGraph_pPb_Q2(){
 	temp2->SetMarkerStyle(25);
 	temp2->SetMarkerColor(kBlue);
 	temp2->SetLineColor(kBlue);
+
+	// cout << endl;
+
+	// cout << "pPb error 1: " << hist1[0][0]->GetBinError(1) << endl;
+	// cout << "pPb error 2: " << hist1[0][1]->GetBinError(1) << endl;
+	// cout << "pPb error 3: " << hist1[1][0]->GetBinError(1) << endl;
+	// cout << "pPb error 4: " << hist1[1][1]->GetBinError(1) << endl;
+
+	// TH1D* temp1 = (TH1D*)hist1[0][0]->Clone("temp1");
+	// temp1->Add(hist1[0][1], +1);
+	// temp1->Add(hist1[1][0], +1);
+	// temp1->Add(hist1[1][1], +1);
+	// temp1->Scale(0.25);
+	// temp1->SetMarkerStyle(24);
+	// temp1->SetMarkerColor(kRed);
+	// temp1->SetLineColor(kRed);
+
+	// cout << "pPb error all: " << temp1->GetBinError(1) << endl;
+
+	// TH1D* temp2 = (TH1D*) hist1[2][0]->Clone("temp2");
+	// temp2->Add(hist1[2][1],+1);
+	// temp2->Scale(0.5);
+	// temp2->SetMarkerStyle(25);
+	// temp2->SetMarkerColor(kBlue);
+	// temp2->SetLineColor(kBlue);
 
 	TH1D* temp3 = (TH1D*)hist1[0][1]->Clone("temp3");
 	temp3->Add(hist1[1][1], +1);
@@ -214,12 +248,12 @@ void makeTGraph_pPb_Q2(){
     	value4_error[mult] = temp4->GetBinError(mult+1);
     }
 
-    TGraphErrors* gr1 = new TGraphErrors(11, pPb_v2_bincenter, value1, xbinwidth, value1_error);
-    TGraphErrors* gr2 = new TGraphErrors(11, pPb_v2_bincenter, value2, xbinwidth, value2_error);
-    TGraphErrors* gr3 = new TGraphErrors(11, pPb_v2_bincenter, value3, xbinwidth, value3_error);
-    TGraphErrors* gr4 = new TGraphErrors(11, pPb_v2_bincenter, value4, xbinwidth, value4_error);
+    TGraphErrors* gr1 = new TGraphErrors(Nmults, pPb_v2_bincenter, value1, xbinwidth, value1_error);
+    TGraphErrors* gr2 = new TGraphErrors(Nmults, pPb_v2_bincenter, value2, xbinwidth, value2_error);
+    TGraphErrors* gr3 = new TGraphErrors(Nmults, pPb_v2_bincenter, value3, xbinwidth, value3_error);
+    TGraphErrors* gr4 = new TGraphErrors(Nmults, pPb_v2_bincenter, value4, xbinwidth, value4_error);
 
-    TFile t1("../dataPoints/pPb_v2_Pb_data.root","RECREATE");
+    TFile t1("../dataPoints/pPb_norm_v2_Pb_5Q2_data.root","RECREATE");
     gr1->Write();
     gr2->Write();
     gr3->Write();
